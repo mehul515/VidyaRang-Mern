@@ -1,9 +1,12 @@
 import Image from "next/image";
+import Homee from "./Homee";
 
 export default function Home() {
   return (
     <>
-    home page
+    <div>
+      <Homee/>
+    </div>
     </>
   );
 }
