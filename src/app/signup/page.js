@@ -1,10 +1,13 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import axios from "axios";
 import { useRouter } from "next/navigation";
+import supabase from "../supabaseClient"; // Import Supabase client
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 export default function Signup() {
-  const router=useRouter()
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -13,17 +16,61 @@ export default function Signup() {
 
   const onSubmit = async (data) => {
     try {
-      const response = await axios.post("http://localhost:8000/signup", data);
-      console.log("Signup Success:", response.data);
-      router.push('/login')
+      // Check if the user already exists
+      const { data: existingUser, error: fetchError } = await supabase
+        .from("users") // Replace "users" with your actual user table name if applicable
+        .select("email")
+        .eq("email", data.email)
+        .single();
+  
+      if (fetchError && fetchError.code !== "PGRST116") {
+        throw fetchError;
+      }
+  
+      if (existingUser) {
+        toast.error("User already exists. Please log in instead.");
+        return router.push("/login"); // Redirect to login
+      }
+  
+      // Proceed with signup if user does not exist
+      const { user, error } = await supabase.auth.signUp({
+        email: data.email,
+        password: data.password,
+        options: {
+          data: {
+            username: data.username,
+            role: data.role, // Store role in user metadata
+          },
+        },
+      });
+  
+      if (error) {
+        throw error;
+      }
+      toast.success("Signup successful! Check your email to verify your account.");
+      router.push("/login"); // Redirect to login after signup
     } catch (error) {
-      console.error("Signup Error:", error);
-      alert("Signup Failed!");
+      console.error("Signup Error:", error.message);
+      toast.error(error.message);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+    });
+  
+    if (error) {
+      console.error("Google Sign-in Error:", error.message);
+      toast.error("Google Sign-in Failed!");
+    } else {
+      console.log("Google Sign-in successful. Redirecting..."); // Debugging
     }
   };
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
+       <ToastContainer/>
       <div className="bg-white p-8 rounded-lg shadow-md w-96">
         <h2 className="text-2xl font-semibold text-center mb-6">Sign Up</h2>
 
@@ -57,9 +104,9 @@ export default function Signup() {
             <label className="block text-gray-700">Password</label>
             <input
               type="password"
-              {...register("password", { 
-                required: "Password is required", 
-                minLength: { value: 6, message: "Password must be at least 6 characters" } 
+              {...register("password", {
+                required: "Password is required",
+                minLength: { value: 6, message: "Password must be at least 6 characters" },
               })}
               placeholder="••••••••"
               className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
@@ -72,21 +119,11 @@ export default function Signup() {
             <label className="block text-gray-700">Role</label>
             <div className="flex gap-4">
               <label className="flex items-center">
-                <input
-                  type="radio"
-                  value="instructor"
-                  {...register("role", { required: "Please select a role" })}
-                  className="mr-2"
-                />
+                <input type="radio" value="instructor" {...register("role", { required: "Please select a role" })} className="mr-2" />
                 Instructor
               </label>
               <label className="flex items-center">
-                <input
-                  type="radio"
-                  value="learner"
-                  {...register("role", { required: "Please select a role" })}
-                  className="mr-2"
-                />
+                <input type="radio" value="learner" {...register("role", { required: "Please select a role" })} className="mr-2" />
                 Learner
               </label>
             </div>
@@ -106,8 +143,8 @@ export default function Signup() {
         </div>
 
         {/* Google Sign-in Button */}
-        <button className="w-full flex items-center justify-center border py-2 rounded-md hover:bg-gray-100 transition">
-          <img src="https://w7.pngwing.com/pngs/249/19/png-transparent-google-logo-g-suite-google-guava-google-plus-company-text-logo.png" alt="Google" className="w-5 h-5 mr-2" />
+        <button onClick={handleGoogleSignIn} className="w-full flex items-center justify-center border py-2 rounded-md hover:bg-gray-100 transition">
+          <img src="/google.png" alt="Google" className="w-5 h-5 mr-2" />
           Continue with Google
         </button>
 
@@ -115,6 +152,8 @@ export default function Signup() {
           Already have an account? <a href="/login" className="text-blue-500">Sign in</a>
         </p>
       </div>
+     
+    
     </div>
   );
 }
