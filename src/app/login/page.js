@@ -26,7 +26,7 @@ export default function Login() {
       }
 
       console.log("Login Success:", session);
-      router.push("/"); // Redirect after successful login
+      router.push("/main"); // Redirect after successful login
     } catch (error) {
       console.error("Unexpected Error:", error);
       alert("An unexpected error occurred. Please try again.");
@@ -45,8 +45,8 @@ export default function Login() {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md w-96">
+    <div className="flex justify-center items-center h-screen ">
+      <div className="p-8 rounded-lg shadow-md w-96">
         <h2 className="text-2xl font-semibold text-center mb-6">Sign In</h2>
 
         <form onSubmit={handleSubmit(onSubmit)}>
