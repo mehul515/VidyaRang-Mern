@@ -1,12 +1,14 @@
 import React from 'react'
 import Footer from './Footer'
+import Navbar from './Navbar'
+import './landingpage.css'
+import Herosection from './Herosection'
 
 export default function LandingPage() {
   return (
     <div>
-    Add other components here, like hero section, features, etc
-      Landing Page
-      <Footer/>
+      <Navbar/>
+      <Herosection/>
     </div>
   )
 }
