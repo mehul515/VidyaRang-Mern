@@ -1,10 +1,11 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import axios from "axios";
 import { useRouter } from "next/navigation";
+import supabase from "../supabaseClient";
+
 export default function Login() {
-    const router=useRouter()
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -13,12 +14,33 @@ export default function Login() {
 
   const onSubmit = async (data) => {
     try {
-      const response = await axios.post("http://localhost:8000/login", data);
-      console.log("Login Success:", response.data);
-      router.push('/')
+      const { data: session, error } = await supabase.auth.signInWithPassword({
+        email: data.email,
+        password: data.password,
+      });
+
+      if (error) {
+        console.error("Login Error:", error.message);
+        alert(error.message);
+        return;
+      }
+
+      console.log("Login Success:", session);
+      router.push("/"); // Redirect after successful login
     } catch (error) {
-      console.error("Login Error:", error);
-      alert("Login Failed!");
+      console.error("Unexpected Error:", error);
+      alert("An unexpected error occurred. Please try again.");
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+    });
+
+    if (error) {
+      console.error("Google Sign-in Error:", error.message);
+      alert("Google Sign-in Failed!");
     }
   };
 
@@ -49,13 +71,13 @@ export default function Login() {
             />
             {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
           </div>
-            
+
           <div className="flex items-center justify-between mb-4">
             <div>
               <input type="checkbox" className="mr-2" />
               <span className="text-gray-700 text-sm">Remember me</span>
             </div>
-            <a href="#" className="text-blue-500 text-sm">Forgot password?</a>
+            <a href="/forgot-password" className="text-blue-500 text-sm">Forgot password?</a>
           </div>
 
           <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition">
@@ -69,8 +91,11 @@ export default function Login() {
           <div className="w-full h-px bg-gray-300"></div>
         </div>
 
-        <button className="w-full flex items-center justify-center border py-2 rounded-md hover:bg-gray-100 transition">
-          <img src="https://w7.pngwing.com/pngs/249/19/png-transparent-google-logo-g-suite-google-guava-google-plus-company-text-logo.png" alt="Google" className="w-5 h-5 mr-2" />
+        <button
+          onClick={handleGoogleSignIn}
+          className="w-full flex items-center justify-center border py-2 rounded-md hover:bg-gray-100 transition"
+        >
+          <img src="/google.png" alt="Google" className="w-5 h-5 mr-2" />
           Continue with Google
         </button>
 
