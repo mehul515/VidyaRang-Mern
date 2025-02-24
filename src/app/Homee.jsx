@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-
+import { RainbowButton } from "@/components/magicui/rainbow-button";
 const Homee = () => {
   return (
     <div>
@@ -15,7 +15,7 @@ const Homee = () => {
         </div>
         <div className="lg:flex lg:flex-1 lg:justify-end">
           <a href="/login" className="text-sm font-semibold text-gray-900">
-            Log in <span aria-hidden="true">&rarr;</span>
+          <RainbowButton>Get Started</RainbowButton>
           </a>
         </div>
       </nav>
