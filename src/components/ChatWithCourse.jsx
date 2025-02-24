@@ -1,9 +1,9 @@
 import React from 'react'
 
-export default function Home() {
+export default function ChatWithCourse() {
   return (
     <div className='text-black'>
-      Home Component
+      Chat With Course Component
     </div>
   )
 }
