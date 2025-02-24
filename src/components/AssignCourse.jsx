@@ -1,9 +1,9 @@
 import React from 'react'
 
-export default function Home() {
+export default function AssignCourse() {
   return (
     <div className='text-black'>
-      Home Component
+      Assign Course Component
     </div>
   )
 }

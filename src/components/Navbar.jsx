@@ -1,7 +1,7 @@
 'use client'
 import React from 'react'
 import { RainbowButton } from "@/components/magicui/rainbow-button";
-const Homee = () => {
+const Header = () => {
   return (
     <div>
     <header className="bg-white">
@@ -23,4 +23,4 @@ const Homee = () => {
   )
 }
 
-export default Homee
+export default Header

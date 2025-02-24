@@ -1,9 +1,9 @@
 import React from 'react'
 
-export default function Home() {
+export default function DataAnalysis() {
   return (
     <div className='text-black'>
-      Home Component
+      Data Analysis Component
     </div>
   )
 }
