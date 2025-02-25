@@ -31,7 +31,7 @@ const MainPage = () => {
   };
 
   return (
-    <div className="flex h-screen bg-white text-white">
+    <div className="flex h-screen text-white">
       {/* Sidebar Component */}
       <Sidebar selectedOption={selectedOption} setSelectedOption={setSelectedOption} />
       
