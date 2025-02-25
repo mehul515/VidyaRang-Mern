@@ -28,11 +28,13 @@ const ChatInterface = () => {
   return (
     <div className="py-2 px-1 md:p-6">
       <div className="mb-10">
-        <h1 className="text-3xl font-bold text-center">VidyaRANG : Learning Made Easy</h1>
+        <h2 className="text-3xl font-bold text-center">VidyaRANG : Learning Made Easy</h2>
         <p className="text-gray-300 mt-1 text-center">
           Upload, Learn, Interact, Assess, and Improve – Your Complete Learning Journey.
         </p>
       </div>
+
+      <h2 className="text-2xl font-semibold">Chat With Course</h2>
 
       {/* Course Selection */}
       <label className="block mt-4 text-gray-400 font-semibold">
