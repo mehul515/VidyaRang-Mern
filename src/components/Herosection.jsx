@@ -17,7 +17,7 @@ const Herosection = () => {
         
         <a href="">
     
-        <button className='rounded-2xl p-3 px-8 bg-gradient-to-r from-cyan-700 via-cyan-400 to-cyan-200 font-bold text-black   lg:text-base text-sm hover:bg-gradient-to-r'>Login</button>
+        <button className='rounded-2xl p-3 px-8 bg-gradient-to-r  from-cyan-700 via-cyan-400 to-cyan-200 font-bold text-black  border-2 border-cyan-400 lg:text-base text-sm hover:bg-gradient-to-r'>Login</button>
 
         </a>
         <a href="">

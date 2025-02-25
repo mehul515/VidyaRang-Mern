@@ -1,13 +1,14 @@
 import React from 'react'
-import './landingpage.css'
 import Herosection from './Herosection'
 import Navbar from './Navbar'
+import About from './About'
 
 export default function LandingPage() {
   return (
     <div>
       <Navbar/>
       <Herosection/>
+      <About/>
     </div>
   )
 }
