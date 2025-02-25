@@ -26,12 +26,12 @@ export default function ResetPassword() {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md w-96">
-        <h2 className="text-2xl font-semibold text-center mb-6">Reset Password</h2>
+    <div className="flex justify-center items-center h-screen bg-[#010912]">
+      <div className="bg-gray-900 p-8 rounded-lg shadow-md w-96">
+        <h2 className="text-2xl font-semibold text-center mb-6 text-gray-100">Reset Password</h2>
         <form onSubmit={handleResetPassword}>
           <div className="mb-4">
-            <label className="block text-gray-700">New Password</label>
+            <label className="block text-gray-100">New Password</label>
             <input
               type="password"
               value={password}

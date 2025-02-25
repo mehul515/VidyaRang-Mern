@@ -23,12 +23,12 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md w-96">
-        <h2 className="text-2xl font-semibold text-center mb-6">Forgot Password</h2>
+    <div className="flex justify-center items-center h-screen bg-[#010912]">
+      <div className="bg-gray-900 p-8 rounded-lg shadow-md w-96">
+        <h2 className="text-2xl font-semibold text-gray-50 text-center mb-6">Forgot Password</h2>
         <form onSubmit={handleForgotPassword}>
           <div className="mb-4">
-            <label className="block text-gray-700">Email</label>
+            <label className="block text-gray-100">Email</label>
             <input
               type="email"
               value={email}
