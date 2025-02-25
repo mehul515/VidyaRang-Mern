@@ -7,6 +7,7 @@ import ChatWithCourse from "@/components/ChatWithCourse";
 import AssignCourse from "@/components/AssignCourse";
 import DataAnalysis from "@/components/DataAnalysis";
 import Home from "@/components/Home";
+import Navbar from "@/components/Navbar"
 
 const MainPage = () => {
   const [selectedOption, setSelectedOption] = useState("Home");
@@ -31,6 +32,8 @@ const MainPage = () => {
   };
 
   return (
+    <>
+      <Navbar/>
     <div className="flex h-screen text-white">
       {/* Sidebar Component */}
       <Sidebar selectedOption={selectedOption} setSelectedOption={setSelectedOption} />
@@ -38,6 +41,7 @@ const MainPage = () => {
       {/* Content Area */}
       <div className="flex-1 p-4">{renderContent()}</div>
     </div>
+    </>
   );
 };
 
