@@ -13,11 +13,11 @@ const Herosection = () => {
 
       </div>
 
-      <div className="flex gap-10 mt-10 justify-center items-center">
+      <div className="flex lg:gap-24 gap-10 mt-10 justify-center items-center">
         
         <a href="">
     
-        <button className='rounded-2xl p-3 px-8 bg-gradient-to-r from-cyan-700 via-cyan-400 to-cyan-200 font-bold text-black border-cyan-400 border-2 lg:text-base text-sm hover:bg-gradient-to-r'>Login</button>
+        <button className='rounded-2xl p-3 px-8 bg-gradient-to-r from-cyan-700 via-cyan-400 to-cyan-200 font-bold text-black   lg:text-base text-sm hover:bg-gradient-to-r'>Login</button>
 
         </a>
         <a href="">
