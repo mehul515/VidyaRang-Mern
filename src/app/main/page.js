@@ -15,19 +15,19 @@ const MainPage = () => {
   const renderContent = () => {
     switch (selectedOption) {
       case "Home":
-        return <div className="p-4 text-white"><Home/></div>;
+        return <div className="text-white"><Home/></div>;
       case "About":
-        return <div className="p-4 text-white"><About/></div>;
+        return <div className="text-white"><About/></div>;
       case "Create new course":
-        return <div className="p-4 text-white"><CreateNewCourse/></div>;
+        return <div className="text-white"><CreateNewCourse/></div>;
       case "Chat with course":
-        return <div className="p-4 text-white"><ChatWithCourse/></div>;
+        return <div className="text-white"><ChatWithCourse/></div>;
       case "Assign course":
-        return <div className="p-4 text-white"><AssignCourse/></div>;
+        return <div className="text-white"><AssignCourse/></div>;
       case "Analysis":
-        return <div className="p-4 text-white"><DataAnalysis/></div>;
+        return <div className="text-white"><DataAnalysis/></div>;
       default:
-        return <div className="p-4 text-white"><Home/></div>;
+        return <div className="text-white"><Home/></div>;
     }
   };
 
@@ -39,7 +39,7 @@ const MainPage = () => {
       <Sidebar selectedOption={selectedOption} setSelectedOption={setSelectedOption} />
       
       {/* Content Area */}
-      <div className="flex-1 p-4">{renderContent()}</div>
+      <div className="flex-1 p-4 ps-0 md:ps-4">{renderContent()}</div>
     </div>
     </>
   );
