@@ -66,7 +66,7 @@ export default function Signup() {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-[#010912]">
+    <div className="flex justify-center items-center h-screen">
       <ToastContainer />
       <div className="bg-gray-900 p-8 rounded-lg shadow-md w-96 text-white">
         <h2 className="text-2xl font-semibold text-center mb-6 text-gray-100">Sign Up</h2>

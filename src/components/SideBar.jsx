@@ -17,12 +17,12 @@ const Sidebar = ({ selectedOption, setSelectedOption }) => {
     ];
 
     return (
-        <div className=" m-5">
+        <div className="m-5">
             <div className={`relative rounded-2xl bg-gray-900 border-r border-gray-700 transition-all ${isCollapsed ? "w-14 px-2 py-4" : "w-72 p-7"} h-full flex flex-col`}>
 
                 {/* Collapse Button */}
                 <button
-                    className={`hidden md:block absolute top-6 ${isCollapsed ? "right-[10px]" : "right-[20px]"} bg-gray-800 p-2 rounded-full shadow-md hover:bg-gray-700 transition z-50`}
+                    className={`hidden md:block absolute top-6 ${isCollapsed ? "right-[10px]" : "right-[20px]"} bg-gray-700 p-2 rounded-full shadow-md hover:bg-gray-600 transition z-50`}
                     onClick={() => setIsCollapsed(!isCollapsed)}
                 >
                     {isCollapsed ? <ChevronRight size={20} fill="white" /> : <ChevronLeft size={20} fill="white" />}
@@ -39,7 +39,7 @@ const Sidebar = ({ selectedOption, setSelectedOption }) => {
                                     .map((item) => (
                                         <button
                                             key={item.name}
-                                            className={`group relative flex items-center gap-3 p-2.5 w-full rounded-lg transition-colors ${selectedOption === item.name ? "bg-[#a56d3d]" : "hover:bg-gray-800"
+                                            className={`group relative flex items-center gap-3 p-2.5 w-full rounded-[5px] transition-colors ${selectedOption === item.name ? "bg-[#a56d3d]" : "hover:bg-gray-800"
                                                 } ${isCollapsed && "justify-center"}`}
                                             onClick={() => setSelectedOption(item.name)}
                                         >
@@ -48,7 +48,7 @@ const Sidebar = ({ selectedOption, setSelectedOption }) => {
 
                                             {/* Tooltip for collapsed mode */}
                                             {isCollapsed && (
-                                                <div className="absolute left-14 bg-gray-800 text-white text-sm px-3 py-1 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none w-auto whitespace-nowrap">
+                                                <div className="absolute left-14 bg-gray-800 text-white text-sm px-3 py-1 rounded-[5px] shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none w-auto whitespace-nowrap">
                                                     {item.name}
                                                 </div>
                                             )}
