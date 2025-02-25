@@ -14,7 +14,7 @@ const Header = () => {
         <div className="lg:flex lg:flex-1 lg:justify-end">
           <a href="/login" className="text-sm font-semibold text-gray-900">
           
-          <button className='rounded-md p-3 px-6 text-cyan-400 border-cyan-400 border-2 lg:text-sm text-xs hover:bg-gradient-to-r hover:from-cyan-500 hover:text-white hover:to-cyan-300 '>Get Started</button>
+          <button className='rounded-lg p-3 px-6 text-cyan-400 border-cyan-400 border-2 lg:text-sm text-xs hover:bg-gradient-to-r hover:from-cyan-500 hover:text-white hover:to-cyan-300 '>Get Started</button>
           </a>
         </div>
       </nav>
