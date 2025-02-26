@@ -57,9 +57,9 @@ export default function Login() {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen">
+    <div className="flex justify-center items-center min-h-screen px-4">
       <ToastContainer/>
-      <div className="p-8 rounded-lg shadow-md w-96 bg-gray-900">
+      <div className="p-8 rounded-lg shadow-md w-full max-w-sm bg-gray-900">
         <h2 className="text-2xl font-semibold text-center mb-6 text-white">Sign In</h2>
 
         <form onSubmit={handleSubmit(onSubmit)}>
