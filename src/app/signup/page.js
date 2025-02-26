@@ -2,7 +2,7 @@
 
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
-import supabase from "../supabaseClient"; // Import Supabase client
+import supabase from "../supabaseClient";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useState } from "react";
@@ -53,7 +53,7 @@ export default function Signup() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/main`, 
+        redirectTo: `${window.location.origin}/main`,
       },
     });
 
@@ -66,13 +66,12 @@ export default function Signup() {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen">
+    <div className="flex justify-center items-center min-h-screen px-4 sm:px-6 lg:px-8">
       <ToastContainer />
-      <div className="bg-gray-900 p-8 rounded-lg shadow-md w-96 text-white">
+      <div className="bg-gray-900 p-6 sm:p-8 rounded-lg shadow-md w-full max-w-md text-white">
         <h2 className="text-2xl font-semibold text-center mb-6 text-gray-100">Sign Up</h2>
 
         <form onSubmit={handleSubmit(onSubmit)}>
-          {/* Username Field */}
           <div className="mb-4">
             <label className="block text-gray-300">Username</label>
             <input
@@ -84,7 +83,6 @@ export default function Signup() {
             {errors.username && <p className="text-red-400 text-sm">{errors.username.message}</p>}
           </div>
 
-          {/* Email Field */}
           <div className="mb-4">
             <label className="block text-gray-300">Email</label>
             <input
@@ -96,7 +94,6 @@ export default function Signup() {
             {errors.email && <p className="text-red-400 text-sm">{errors.email.message}</p>}
           </div>
 
-          {/* Password Field */}
           <div className="mb-4">
             <label className="block text-gray-300">Password</label>
             <input
@@ -111,10 +108,9 @@ export default function Signup() {
             {errors.password && <p className="text-red-400 text-sm">{errors.password.message}</p>}
           </div>
 
-          {/* Role Selection */}
           <div className="mb-4">
             <label className="block text-gray-300">Role</label>
-            <div className="flex gap-4">
+            <div className="flex flex-col sm:flex-row gap-4">
               <label className="flex items-center text-gray-300">
                 <input type="radio" value="instructor" {...register("role", { required: "Please select a role" })} className="mr-2" />
                 Instructor
@@ -127,7 +123,6 @@ export default function Signup() {
             {errors.role && <p className="text-red-400 text-sm">{errors.role.message}</p>}
           </div>
 
-          {/* Submit Button */}
           <button type="submit" disabled={loading} className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition">
             {loading ? "Processing..." : "Sign Up"}
           </button>
@@ -139,7 +134,6 @@ export default function Signup() {
           <div className="w-full h-px bg-gray-700"></div>
         </div>
 
-        {/* Google Sign-in Button */}
         <button onClick={handleGoogleSignIn} disabled={loading} className="w-full flex items-center justify-center border py-2 rounded-md bg-gray-800 text-white hover:bg-gray-700 transition">
           <img src="/google.png" alt="Google" className="w-5 h-5 mr-2" />
           {loading ? "Processing..." : "Continue with Google"}
