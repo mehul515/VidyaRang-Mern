@@ -18,7 +18,7 @@ const Sidebar = ({ selectedOption, setSelectedOption }) => {
 
     return (
         <div className="m-5">
-            <div className={`relative rounded-2xl bg-gray-900 border-r border-gray-700 transition-all ${isCollapsed ? "w-14 px-2 py-4" : "w-72 p-7"} h-full flex flex-col`}>
+            <div className={`relative  rounded-2xl bg-gray-900 border-r border-gray-700 transition-all ${isCollapsed ? "w-14 px-2 py-4" : "w-72 p-7  "}  flex flex-col`}>
 
                 {/* Collapse Button */}
                 <button
