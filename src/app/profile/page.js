@@ -51,15 +51,12 @@ export default function ProfilePage() {
 
     if (!userData) return <p>Loading...</p>;
 
-    const { email, full_name, avatar_url, created_at, last_sign_in_at } = userData.user_metadata;
+    const { email, full_name, avatar_url } = userData.user_metadata;
 
-    const formattedCreatedAt = created_at ? new Date(created_at).toLocaleDateString() : 'N/A';
-    const formattedLastSignIn = last_sign_in_at ? new Date(last_sign_in_at).toLocaleString() : 'N/A';
 
     const profilePicUrl = avatar_url?.startsWith('http') 
         ? avatar_url 
-        : `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/avatars/${avatar_url}`;
-
+        :"/profile.png";
     return (
         <>
         
@@ -67,9 +64,9 @@ export default function ProfilePage() {
             <div className="shadow-xl rounded-2xl p-6 w-full max-w-md">
                 <div className="flex flex-col items-center">
                     <img
-                        src={profilePicUrl || '/default-avatar.png'}
+                        src={profilePicUrl}
                         alt="Profile Picture"
-                        className="w-24 h-24 rounded-full mb-4"
+                        className="w-auto h-24 rounded-full mb-4"
                     />
                     <h1 className="text-2xl font-bold">{full_name || 'User'}</h1>
                     <p className="text-gray-500">{email}</p>
