@@ -3,13 +3,20 @@ import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
 import { BackgroundLines } from "@/components/ui/background-lines";
 import { SparklesCore } from "@/components/ui/sparkles";
 import { AnimatedGradientText } from "@/components/magicui/animated-gradient-text";
+import { Poppins } from "next/font/google";
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["400", "600", "700"], // Choose desired weights
+  variable: "--font-poppins",
+});
 
 const Herosection = () => {
 
-  const words = 'Upload, Learn, Interact, Assess, and Improve - Your Complete Learning Journey';
+  const words = 'Learn, Interact, Assess, and Improve - Your Complete Learning Journey';
 
   return (
-    <div className="relative text-center py-28 flex flex-col justify-center items-center">
+    <div className={`${poppins.variable} font-sans relative text-center py-28 flex flex-col justify-center items-center`}>
 
 
       {/* <Spotlight className="absolute top-10 left-0 md:left-40 md:top-0" fill="white" /> */}
@@ -23,7 +30,7 @@ const Herosection = () => {
 
 
       <div className="text-white pb-2">
-        <h1 className="lg:text-6xl text-5xl font-semibold inline-block ">VidyaRANG</h1>
+        <h1 className="lg:text-7xl text-5xl font-semibold inline-block ">VidyaRANG</h1>
 
       </div>
       <h2 className="lg:text-4xl text-2xl mt-5 text-white font-medium">Learning Made Easy</h2>
@@ -35,7 +42,7 @@ const Herosection = () => {
 
       <div className="flex lg:gap-24 z-99 gap-10 mt-10 justify-center items-center">
 
-        <a href="/login">
+        <a href="/signup">
           <button className='rounded-[10px] p-2.5 px-6 text-white border-purple-900 border-2  hover:bg-gradient-to-r hover:from-purple-700 hover:text-white hover:to-purple-500 '>Get Started</button>
         </a>
       </div>
