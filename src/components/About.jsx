@@ -6,17 +6,30 @@ import "react-vertical-timeline-component/style.min.css";
 import { array } from "./content.js"
 export default function About() {
   return (
-    <div className='h-screen  ' style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
+    <div className='h-screen lg:px-20 px-0 ' style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
 
-      <div className='text-white lg:p-32 p-5 mt-32 flex w-full lg:gap-10 gap-3  items-center  lg:flex-row flex-col-reverse'>
-        <div className='lg:w-1/2 w-full text-white text-justify lg:text-xl text-base lg:p-0 p-5'>
+<div>
+
+      <div className='mt-32 lg:text-6xl text-4xl font-medium text-center'>
+        What is{' '}
+        <span className='bg-gradient-to-t from-purple-800  to-white text-transparent bg-clip-text'>
+          VidyaRANG
+        </span>
+      </div>
+      <h1 className='text-center mt-10 lg:text-3xl text-xl text-zinc-400'>Know everything about
+        {' '} <span className='font-semibold text-white underline-offset-4 underline'>     VidyaRANG    </span>  {' '}for Transformative Learning and Growth</h1>
+</div>
+
+
+      <div className='text-white lg:p-32 p-5 mt-5 flex w-full lg:gap-10 gap-3  items-center  lg:flex-row flex-col-reverse'>
+        <div className='lg:w-1/2 w-full text-white font-sans text-justify lg:text-xl text-base lg:p-0 p-5'>
           <h1>Welcome to VidyaRANG, your smart companion for learning! VidyaRANG is an AI-powered educational platform designed to make studying simpler, more interactive, and engaging. With VidyaRANG, you can easily upload your study materials, chat directly with your documents to get instant answers, take quizzes to test your knowledge, and analyze your progress with in-depth feedback.
           </h1>
 
           <h1 className='mt-5'>Whether you're a student or a lifelong learner, VidyaRANG makes learning easier and more effective. Dive into a personalized learning experience and see how VidyaRANG can help you reach your educational goals with confidence!</h1>
         </div>
         <div className=' rounded-2xl flex justify-center lg:w-1/2 w-full  '>
-          <img className='object-fill lg:h-[450px] h-[310px]  rounded-2xl ' src="/assets/main.png" alt="" />
+          <img className='object-fill lg:h-[450px] h-[310px]  rounded-2xl shadow-[0_0_15px_5px_rgba(120,43,226,0.6)] ' src="/assets/main.png" alt="" />
         </div>
 
       </div>
@@ -58,8 +71,8 @@ export default function About() {
             <VerticalTimelineElement
               key={e.id}
               className=""
-              visible={ false }
-              contentStyle={{ padding: '20px', marginBottom: '-10px', backgroundColor : '#080d32' }} 
+              visible={false}
+              contentStyle={{ padding: '20px', marginBottom: '-10px', backgroundColor: '#080d32' }}
               iconStyle={{
                 background: '#080d24',
                 color: '#fff',
