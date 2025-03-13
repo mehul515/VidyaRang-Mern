@@ -15,7 +15,7 @@ export default function LandingPage() {
           background="transparent"
           minSize={0.6}
           maxSize={1.4}
-          particleDensity={2}
+          particleDensity={5}
           className="w-full h-full"
           particleColor="#FFFFFF"
         />
