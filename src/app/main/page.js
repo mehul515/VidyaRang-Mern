@@ -35,13 +35,13 @@ const MainPage = () => {
     <>
       <Navbar/>
 
-    <div className="flex h-screen text-white">
+    <div className="flex  text-white">
       {/* Sidebar Component */}
       <Sidebar selectedOption={selectedOption} setSelectedOption={setSelectedOption} />
       
       {/* Content Area */}
       <div className="flex-1 p-4 ps-0 md:ps-4">{renderContent()}</div>
-    </div>
+
     </>
   );
 };

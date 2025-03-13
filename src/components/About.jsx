@@ -6,9 +6,9 @@ import "react-vertical-timeline-component/style.min.css";
 import { array } from "./content.js"
 export default function About() {
   return (
-    <div className='h-screen overflow-y-auto ' style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
+    <div className='h-screen  ' style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
 
-      <div className='text-white lg:p-24 p-5'>
+      <div className='text-white lg:p-24 p-5 mt-32'>
         <div className='w-full  lg:h-96 h-44 bg-white rounded-2xl'>
           <img className='w-full h-full object-cover rounded-2xl' src="/assets/main.jpg" alt="" />
         </div>
@@ -24,7 +24,7 @@ export default function About() {
 
       <div className=" w-full ">
 
-        <div className=" bg-[#080d24] opacity-95 lg:p-10 p-4 ">
+        <div className="  opacity-95 lg:p-10 p-4 ">
           <div>
             <h1 className='lg:text-5xl text-4xl text-center font-bold' >Key Features of VidyaRANG</h1>
             <h2 className='mt-8 text-center'>Secure Sharing, Engaging Learning, In-Depth Insights </h2>
