@@ -1,13 +1,13 @@
 "use client";
 import { useState } from "react";
-import Sidebar from "@/components/Sidebar";
-import About from "@/components/About";
-import CreateNewCourse from "@/components/CreateNewCourse";
-import ChatWithCourse from "@/components/ChatWithCourse";
-import AssignCourse from "@/components/AssignCourse";
-import DataAnalysis from "@/components/DataAnalysis";
-import Home from "@/components/Home";
-import Navbar from "@/components/Navbar"
+import Sidebar from "../../components/SideBar";
+import About from "../../components/About";
+import CreateNewCourse from "../../components/CreateNewCourse";
+import ChatWithCourse from "../../components/ChatWithCourse";
+import AssignCourse from "../../components/AssignCourse";
+import DataAnalysis from "../../components/DataAnalysis";
+import Home from "../../components/Home";
+import Navbar from "../../components/Navbar"
 
 const MainPage = () => {
   const [selectedOption, setSelectedOption] = useState("Home");
@@ -33,7 +33,6 @@ const MainPage = () => {
 
   return (
     <>
-      <div className=" ">
       <Navbar/>
 
     <div className="flex  text-white">
@@ -42,8 +41,7 @@ const MainPage = () => {
       
       {/* Content Area */}
       <div className="flex-1 p-4 ps-0 md:ps-4">{renderContent()}</div>
-    </div>
-      </div>
+
     </>
   );
 };
