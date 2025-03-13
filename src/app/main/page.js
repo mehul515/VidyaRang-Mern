@@ -33,6 +33,7 @@ const MainPage = () => {
 
   return (
     <>
+
       <Navbar/>
 
     <div className="flex  text-white">
@@ -41,7 +42,7 @@ const MainPage = () => {
       
       {/* Content Area */}
       <div className="flex-1 p-4 ps-0 md:ps-4">{renderContent()}</div>
-
+    </div>
     </>
   );
 };
