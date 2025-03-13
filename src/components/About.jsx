@@ -15,8 +15,8 @@ export default function About() {
 
           <h1 className='mt-5'>Whether you're a student or a lifelong learner, VidyaRANG makes learning easier and more effective. Dive into a personalized learning experience and see how VidyaRANG can help you reach your educational goals with confidence!</h1>
         </div>
-        <div className=' rounded-2xl flex justify-center lg:w-1/2 w-full lg:p-2 p-6 '>
-          <img className='object-fill lg:h-[450px] h-60  rounded-2xl ' src="/assets/main.png" alt="" />
+        <div className=' rounded-2xl flex justify-center lg:w-1/2 w-full  '>
+          <img className='object-fill lg:h-[450px] h-[310px]  rounded-2xl ' src="/assets/main.png" alt="" />
         </div>
 
       </div>
