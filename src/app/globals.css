@@ -3,9 +3,21 @@
 @tailwind utilities;
 
 body {
-  @apply bg-[#010912] text-white;
+  @apply  text-white;
+  background: 
+  linear-gradient(to bottom, 
+    #000000,  
+    #07000f,  
+    #080121,  
+    #080018,    
+    #030012,  
+    #020006,  
+    #020005   
+  );
 }
-
+* {
+  scrollbar-width: none;
+}
 
 
 @layer base {}

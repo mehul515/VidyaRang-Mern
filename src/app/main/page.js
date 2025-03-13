@@ -33,10 +33,10 @@ const MainPage = () => {
 
   return (
     <>
-      <div className="h-screen overflow-hidden">
+      <div className=" ">
       <Navbar/>
 
-    <div className="flex h-screen text-white">
+    <div className="flex  text-white">
       {/* Sidebar Component */}
       <Sidebar selectedOption={selectedOption} setSelectedOption={setSelectedOption} />
       
