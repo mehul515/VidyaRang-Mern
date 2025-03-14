@@ -6,23 +6,23 @@ import "react-vertical-timeline-component/style.min.css";
 import { array } from "./content.js"
 export default function About() {
   return (
-    <div className='h-screen lg:px-20 px-0 ' style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
+    <div className='mt-36 lg:px-6 px-2 ' style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
+      
+      <div className='bg-[#0c0c0c] p-10'>
 
-<div>
-
-      <div className='mt-32 lg:text-6xl text-4xl font-medium text-center'>
-        What is{' '}
-        <span className='bg-gradient-to-t from-purple-800  to-white text-transparent bg-clip-text'>
-          VidyaRANG
-        </span>
-      </div>
-      <h1 className='text-center mt-10 lg:text-3xl text-xl text-zinc-400'>Know everything about
-        {' '} <span className='font-semibold text-white underline-offset-4 underline'>     VidyaRANG    </span>  {' '}for Transformative Learning and Growth</h1>
-</div>
-
-
-      <div className='text-white lg:p-32 p-5 mt-5 flex w-full lg:gap-10 gap-3  items-center  lg:flex-row flex-col-reverse'>
+      <div className='text-white lg:p-14 p-5 mt-5 flex w-full lg:gap-10 gap-3  items-center  lg:flex-row flex-col'>
         <div className='lg:w-1/2 w-full text-white font-sans text-justify lg:text-xl text-base lg:p-0 p-5'>
+
+          <h1 className='lg:text-5xl text-2xl font-medium text-left '> What is{' '}
+          <span className='bg-gradient-to-t from-cyan-400  to-white text-transparent bg-clip-text'>
+            VidyaRANG
+          </span></h1>
+
+          
+        <h1 className='text-left mt-10 lg:text-2xl text-xl text-zinc-400'>Know everything about
+          {' '} <span className='font-semibold text-white underline-offset-4 underline'>     VidyaRANG    </span>  {' '}for Transformative Learning and Growth</h1>
+
+        
           <h1>Welcome to VidyaRANG, your smart companion for learning! VidyaRANG is an AI-powered educational platform designed to make studying simpler, more interactive, and engaging. With VidyaRANG, you can easily upload your study materials, chat directly with your documents to get instant answers, take quizzes to test your knowledge, and analyze your progress with in-depth feedback.
           </h1>
 
@@ -34,6 +34,7 @@ export default function About() {
 
       </div>
 
+      </div>
 
       <div className=" w-full ">
 

@@ -1,7 +1,4 @@
 import React from "react";
-import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
-import { BackgroundLines } from "@/components/ui/background-lines";
-import { SparklesCore } from "@/components/ui/sparkles";
 import { AnimatedGradientText } from "@/components/magicui/animated-gradient-text";
 import { Poppins } from "next/font/google";
 
@@ -13,37 +10,31 @@ const poppins = Poppins({
 
 const Herosection = () => {
 
-  const words = 'Learn, Interact, Assess, and Improve - Your Complete Learning Journey';
 
   return (
-    <div className={`${poppins.variable} font-sans relative text-center py-28 flex flex-col justify-center items-center`}>
+    <div className={`${poppins.variable} font-sans relative text-center mt-44 flex flex-col justify-center items-center`}>
 
 
       {/* <Spotlight className="absolute top-10 left-0 md:left-40 md:top-0" fill="white" /> */}
 
-      <div className=" flex justify-between items-center gap-3 py-1 px-3  mb-10 rounded-3xl bg-transparent border border-blue-500 ">
-        <h1 className="bg-slate-700 text-white text-center rounded-3xl px-2 lg:text-sm text-xs">New </h1>
-        <AnimatedGradientText className="lg:text-sm text-xs font-medium">
-          Unlock your full potential with -
-        </AnimatedGradientText>
-      </div>
-
 
       <div className="text-white pb-2">
-        <h1 className="lg:text-7xl text-5xl font-semibold inline-block ">VidyaRANG</h1>
+        <h1 className="lg:text-7xl text-5xl text-cyan-400 font-bold inline-block ">VidyaRANG</h1>
 
       </div>
       <h2 className="lg:text-4xl text-2xl mt-5 text-white font-medium">Learning Made Easy</h2>
 
-      <div className="lg:mt-5 mt-2 px-4 ">
-        <TextGenerateEffect className="" words={words} />
-
+      <div className=" p-2 mt-5 lg:text-2xl text-xl cursor-not-allowed ">
+        <h1 className=" text-gray-300">An AIGurukul Initiative - Build by students for students</h1>
       </div>
 
-      <div className="flex lg:gap-24 z-99 gap-10 mt-10 justify-center items-center">
+      <div className="flex gap-10 z-99  mt-10 justify-center items-center">
 
         <a href="/signup">
-          <button className='rounded-[10px] p-2.5 px-6 text-white border-purple-900 border-2  hover:bg-gradient-to-r hover:from-purple-700 hover:text-white hover:to-purple-500 '>Get Started</button>
+          <button className='rounded-[10px] p-2.5 px-6 text-black bg-cyan-400 hover:bg-cyan-500 '>Get Started</button>
+        </a>
+        <a href="">
+          <button className="rounded-[10px] p-2.5 px-6 border-gray-700 border bg-black hover:bg-gray-950 " >How It Works</button>
         </a>
       </div>
     </div>

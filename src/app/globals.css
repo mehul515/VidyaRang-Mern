@@ -6,13 +6,9 @@ body {
   @apply  text-white;
   background: 
   linear-gradient(to bottom, 
-    #000000,  
-    #030005,  
-    #070018,  
-    #080018,    
-    #030012,  
-    #020006,  
-    #020005   
+    #030303,  
+
+    #030303   
   );
 }
 * {
