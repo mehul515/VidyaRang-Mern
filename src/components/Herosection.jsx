@@ -31,7 +31,7 @@ const Herosection = () => {
       <div className="flex gap-10 z-99  mt-10 justify-center items-center">
 
         <a href="/signup">
-          <button className='rounded-[10px] p-2.5 px-6 text-black bg-cyan-400 hover:bg-cyan-500 '>Get Started</button>
+          <button className='rounded-[10px] p-2.5 px-6  text-black bg-cyan-400 hover:bg-cyan-500 '>Get Started</button>
         </a>
         <a href="">
           <button className="rounded-[10px] p-2.5 px-6 border-gray-700 border bg-black hover:bg-gray-950 " >How It Works</button>

@@ -4,32 +4,35 @@ import React from 'react'
 import { VerticalTimeline, VerticalTimelineElement } from 'react-vertical-timeline-component';
 import "react-vertical-timeline-component/style.min.css";
 import { array } from "./content.js"
+import { MdPlayCircle } from "react-icons/md";
 export default function About() {
   return (
     <div className='mt-36 lg:px-6 px-2 ' style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
       
-      <div className='bg-[#0c0c0c] p-10'>
+      <div className='bg-[#0c0c0c] lg:p-10 p-2'>
 
       <div className='text-white lg:p-14 p-5 mt-5 flex w-full lg:gap-10 gap-3  items-center  lg:flex-row flex-col'>
-        <div className='lg:w-1/2 w-full text-white font-sans text-justify lg:text-xl text-base lg:p-0 p-5'>
+        <div className='lg:w-1/2 w-full text-white font-sans text-justify lg:text-xl text-base lg:p-0 p-2'>
 
-          <h1 className='lg:text-5xl text-2xl font-medium text-left '> What is{' '}
+          <h1 className='lg:text-5xl text-4xl font-medium lg:text-left text-center '> What is{' '}
           <span className='bg-gradient-to-t from-cyan-400  to-white text-transparent bg-clip-text'>
             VidyaRANG
           </span></h1>
 
-          
-        <h1 className='text-left mt-10 lg:text-2xl text-xl text-zinc-400'>Know everything about
-          {' '} <span className='font-semibold text-white underline-offset-4 underline'>     VidyaRANG    </span>  {' '}for Transformative Learning and Growth</h1>
+        <div className='flex items-center  mt-10'>
+        <h1 className='lg:text-left text-center  lg:text-2xl text-xl text-zinc-400'>Know everything about
+          {' '} <span className='font-semibold text-white underline-offset-4 underline'> VidyaRANG   </span>  {' '}  </h1>
+          {/* <MdPlayCircle className='lg:text-3xl text-2xl' /> */}
+          </div>          
 
         
-          <h1>Welcome to VidyaRANG, your smart companion for learning! VidyaRANG is an AI-powered educational platform designed to make studying simpler, more interactive, and engaging. With VidyaRANG, you can easily upload your study materials, chat directly with your documents to get instant answers, take quizzes to test your knowledge, and analyze your progress with in-depth feedback.
+          <h1 className='mt-6'>Welcome to VidyaRANG, your smart companion for learning! VidyaRANG is an AI-powered educational platform designed to make studying simpler, more interactive, and engaging. With VidyaRANG, you can easily upload your study materials, chat directly with your documents to get instant answers, take quizzes to test your knowledge, and analyze your progress with in-depth feedback.
           </h1>
 
           <h1 className='mt-5'>Whether you're a student or a lifelong learner, VidyaRANG makes learning easier and more effective. Dive into a personalized learning experience and see how VidyaRANG can help you reach your educational goals with confidence!</h1>
         </div>
         <div className=' rounded-2xl flex justify-center lg:w-1/2 w-full  '>
-          <img className='object-fill lg:h-[450px] h-[310px]  rounded-2xl shadow-[0_0_15px_5px_rgba(120,43,226,0.6)] ' src="/assets/main.png" alt="" />
+          <img className='object-fill lg:h-[450px] h-[310px]  rounded-2xl  ' src="/assets/main.png" alt="" />
         </div>
 
       </div>
