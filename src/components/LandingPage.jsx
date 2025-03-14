@@ -10,15 +10,7 @@ export default function LandingPage() {
     <div className="relative">
       {/* Sparkles Background - Positioned Behind Everything */}
       <div className="absolute inset-0 h-[calc(100vh)] -z-10 overflow-hidden">
-        <SparklesCore
-          id="tsparticlesfullpage"
-          background="transparent"
-          minSize={0.6}
-          maxSize={1.4}
-          particleDensity={5}
-          className="w-full h-full"
-          particleColor="#FFFFFF"
-        />
+
       </div>
 
       {/* Components with Sparkles Background */}
