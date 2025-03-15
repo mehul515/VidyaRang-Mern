@@ -4,6 +4,9 @@ import Herosection from "./Herosection";
 import Navbar from "./Navbar";
 import About from "./About";
 import { SparklesCore } from "@/components/ui/sparkles";
+import CreateNewCourse from "./CreateNewCourse";
+import Createcourse from "./Createcourse";
+import Footer from "./Footer";
 
 export default function LandingPage() {
   return (
@@ -21,6 +24,8 @@ export default function LandingPage() {
 
       {/* Normal Components */}
       <About />
+      <Createcourse/>
+      <Footer/>
     </div>
   );
 }

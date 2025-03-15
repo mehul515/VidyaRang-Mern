@@ -17,7 +17,7 @@ const Header = () => {
 
           <a href="/login" className="text-sm font-semibold text-gray-900">
           
-          <button className='rounded-[7px] p-2.5 px-4 text-black  bg-cyan-400 lg:text-sm  hover:bg-cyan-500 '>Sign Up</button>
+          <button className='rounded-[7px] p-2.5 px-4 text-black  bg-cyan-400 lg:text-sm  hover:bg-cyan-500 '>Sign In</button>
           </a>
         </div>
       </nav>

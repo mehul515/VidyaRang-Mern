@@ -1,12 +1,9 @@
 "use client"
 
 import React from 'react'
-import { VerticalTimeline, VerticalTimelineElement } from 'react-vertical-timeline-component';
-import "react-vertical-timeline-component/style.min.css";
 import { FaLock } from "react-icons/fa";
 import { FaChartBar } from "react-icons/fa";
 import { FaBrain } from "react-icons/fa";
-import { array } from "./content.js"
 import { MdPlayCircle } from "react-icons/md";
 export default function About() {
   return (
@@ -18,7 +15,7 @@ export default function About() {
           <div className='lg:w-1/2 w-full text-white font-sans text-justify lg:text-xl text-base '>
 
             <h1 className='lg:text-5xl sm:text-4xl text-3xl font-medium lg:text-left text-center '> What is{' '}
-              <span className='bg-gradient-to-t from-cyan-400  to-white text-transparent bg-clip-text'>
+              <span className='bg-gradient-to-t from-cyan-400 font-bold  to-white text-transparent bg-clip-text'>
                 VidyaRANG
               </span></h1>
 
@@ -72,40 +69,7 @@ export default function About() {
 
 
 
-      <div className='w-full mt-16 mb-60 '>
-        <div className='mb-8'>
-          <h1 className='lg:text-5xl text-4xl font-bold text-center'>Steps To On-Board Your Course</h1>
-        </div>
-        <VerticalTimeline>
-
-          {array.map((e) => (
-
-            <VerticalTimelineElement
-              key={e.id}
-              className=""
-              visible={false}
-              contentStyle={{ padding: '20px', marginBottom: '-10px', backgroundColor: '#080d32' }}
-              iconStyle={{
-                background: '#080d24',
-                color: '#fff',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-
-              }}
-              icon={<div className="text-white font-bold text-lg">{e.id}</div>} // Number inside the circle
-            >
-              <h1 className='text-white text-center lg:text-xl text-lg font-semibold'>{e.des}</h1>
-            </VerticalTimelineElement>
-
-
-
-          ))}
-
-
-        </VerticalTimeline>
-      </div>
-
+      
 
     </div>
   )
