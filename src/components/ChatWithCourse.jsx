@@ -273,20 +273,20 @@ export default function ChatWithCourse() {
         <CardFooter className="border-t border-cyan-900/30 p-3 md:px-32 flex flex-col gap-2">
           {!conversationEnded ? (
             <form onSubmit={handleSubmit} className="w-full space-y-3">
-                <div className="flex gap-2">
-                  <Select value={selectedCourse} onValueChange={setSelectedCourse} disabled={isTyping}>
-                    <SelectTrigger className="w-full md:w-[200px] bg-[#0a1628] border-cyan-900/50 text-gray-300 focus:ring-cyan-600">
-                      <SelectValue placeholder="Select Course" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-[#0a1628] border-cyan-900/50 text-gray-300">
-                      {courses.map((course) => (
-                        <SelectItem key={course.id} value={course.id}>
-                          {course.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+              <div className="flex gap-2">
+                <Select value={selectedCourse} onValueChange={setSelectedCourse} disabled={isTyping}>
+                  <SelectTrigger className="w-full md:w-[200px] bg-[#0a1628] border-cyan-900/50 text-gray-300 focus:ring-cyan-600">
+                    <SelectValue placeholder="Select Course" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-[#0a1628] border-cyan-900/50 text-gray-300">
+                    {courses.map((course) => (
+                      <SelectItem key={course.id} value={course.id}>
+                        {course.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
               <div className="flex w-full space-x-2 items-end">
                 <div className="relative flex-grow">
@@ -296,46 +296,9 @@ export default function ChatWithCourse() {
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={handleKeyDown}
                     placeholder="Ask a question about the selected course..."
-                    className="min-h-[100px] pr-20 resize-none bg-[#0a1628] border-cyan-900/50 text-gray-300 focus-visible:ring-cyan-600"
+                    className="min-h-16 pr-20 resize-none bg-[#0a1628] border-cyan-900/50 text-gray-300 focus-visible:ring-cyan-600"
                     disabled={isTyping || !selectedCourse}
                   />
-                  <div className="absolute bottom-2 right-2 flex space-x-1">
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 text-gray-600 hover:text-cyan-400"
-                            disabled={isTyping}
-                          >
-                            <PaperclipIcon className="h-4 w-4" />
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent className="bg-[#0a1628] border-cyan-900/50 text-gray-300">
-                          Attach file
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 text-gray-600 hover:text-cyan-400"
-                            disabled={isTyping}
-                          >
-                            <Smile className="h-4 w-4" />
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent className="bg-[#0a1628] border-cyan-900/50 text-gray-300">
-                          Insert emoji
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </div>
                 </div>
                 <Button
                   type="submit"
@@ -347,6 +310,7 @@ export default function ChatWithCourse() {
                 </Button>
               </div>
 
+              {/* </div> */}
               <div className="text-xs text-gray-500 text-center">Press Enter to send, Shift+Enter for new line</div>
             </form>
           ) : (
