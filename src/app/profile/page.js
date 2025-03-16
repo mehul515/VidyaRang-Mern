@@ -105,7 +105,7 @@ export default function ProfilePage() {
         </div>
 
         <div className="flex flex-col md:flex-row justify-between border-t border-gray-700 p-4 bg-gray-800/50 gap-2">
-          <Link href="/">
+          <Link href="/main">
             <button className="flex items-center gap-2 bg-gray-700/50 text-gray-200 hover:bg-gray-600 hover:text-white transition-colors px-4 py-2 rounded w-full md:w-auto">
               <Home className="h-4 w-4" />
               Home
