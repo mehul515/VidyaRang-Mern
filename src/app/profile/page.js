@@ -75,7 +75,6 @@ export default function ProfilePage() {
               </h1>
             )}
           </div>
-
           {!userData.role && (
             <div className="space-y-4">
               <h2 className="text-lg font-medium text-gray-300">

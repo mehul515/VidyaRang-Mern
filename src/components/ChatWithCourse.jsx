@@ -1,117 +1,338 @@
-import { useState } from "react";
+"use client"
 
-const ChatInterface = () => {
-  const [selectedCourse, setSelectedCourse] = useState("Course 1");
-  const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState([]);
-  const [rating, setRating] = useState(3);
-  const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
+import { useState, useRef, useEffect } from "react"
+import { Send, Star, X, PaperclipIcon, Smile, ChevronDown, ChevronUp } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Textarea } from "@/components/ui/textarea"
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Avatar } from "@/components/ui/avatar"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { cn } from "@/lib/utils"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
-  const courses = ["Course 1", "Course 2", "Course 3"];
+const courses = [
+  { id: "react", name: "React Fundamentals" },
+  { id: "nextjs", name: "Next.js Advanced" },
+  { id: "typescript", name: "TypeScript Essentials" },
+  { id: "node", name: "Node.js Backend Development" },
+]
 
-  // Function to handle message sending
-  const handleSendMessage = () => {
-    if (message.trim()) {
-      const newMessage = { text: message, sender: "You", course: selectedCourse };
-      const demoResponse = { text: `This is an automated response for "${message}".`, sender: "Bot" };
+// Add custom scrollbar hiding CSS
+const scrollbarHideStyles = `
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+`
 
-      setMessages([...messages, newMessage, demoResponse]);
-      setMessage("");
+export default function ChatWithCourse() {
+  const [messages, setMessages] = useState([])
+  const [input, setInput] = useState("")
+  const [selectedCourse, setSelectedCourse] = useState("")
+  const [isTyping, setIsTyping] = useState(false)
+  const [showRating, setShowRating] = useState(false)
+  const [conversationEnded, setConversationEnded] = useState(false)
+  const [rating, setRating] = useState(0)
+  const [feedback, setFeedback] = useState("")
+  const [showFeedbackForm, setShowFeedbackForm] = useState(false)
+  const messagesEndRef = useRef(null)
+  const textareaRef = useRef(null)
+
+  // Auto-scroll to bottom when messages change
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }, [messages])
+
+  // Auto-resize textarea
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto"
+      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 200)}px`
     }
-  };
+  }, [input])
 
-  // Function to handle feedback submission
-  const handleSubmitFeedback = () => {
-    setFeedbackSubmitted(true);
-  };
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    if (!input.trim() || !selectedCourse) return
+
+    // Add user message
+    const userMessage = {
+      id: Date.now(),
+      role: "user",
+      content: input,
+      course: selectedCourse,
+    }
+    setMessages((prevMessages) => [...prevMessages, userMessage])
+    setInput("")
+
+    // Simulate AI typing
+    setIsTyping(true)
+
+    // Simulate AI response after a delay
+    setTimeout(() => {
+      const courseName = courses.find((c) => c.id === selectedCourse)?.name
+      const aiMessage = {
+        id: Date.now() + 1,
+        role: "assistant",
+        content: `Based on the ${courseName} curriculum, here's my response to your question: "${input}".\n\nThis would be a detailed explanation related to the ${courseName} course content. The actual implementation would connect to your AI backend to generate a real response based on the course material.`,
+      }
+      setMessages((prevMessages) => [...prevMessages, aiMessage])
+      setIsTyping(false)
+
+      // After a few messages, show the rating option
+      if (messages.length >= 3 && !conversationEnded) {
+        setShowRating(true)
+      }
+    }, 1500)
+  }
+
+  const handleEndConversation = () => {
+    setConversationEnded(true)
+    setShowRating(true)
+  }
+
+  const handleRating = (value) => {
+    setRating(value)
+    setShowFeedbackForm(true)
+  }
+
+  const submitFeedback = () => {
+    // Here you would send the rating and feedback to your backend
+    console.log("Rating:", rating, "Feedback:", feedback)
+    setShowFeedbackForm(false)
+
+    // Add a system message acknowledging the feedback
+    const systemMessage = {
+      id: Date.now(),
+      role: "system",
+      content: `Thank you for your feedback! You rated this conversation ${rating} stars.`,
+    }
+    setMessages((prevMessages) => [...prevMessages, systemMessage])
+  }
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault()
+      handleSubmit(e)
+    }
+  }
 
   return (
-    <div className="py-2 px-1 md:p-6">
-      <div className="mb-10">
-        <h2 className="text-3xl font-bold text-center">VidyaRANG : Learning Made Easy</h2>
-        <p className="text-gray-300 mt-1 text-center">
-          Upload, Learn, Interact, Assess, and Improve – Your Complete Learning Journey.
-        </p>
-      </div>
+    <div className="mt-16 flex items-center justify-center min-h-[calc(100vh-2rem)] md:min-h-[calc(100vh-4rem)] p-0 md:p-2">
+      <Card className="w-full shadow-lg bg-[#010912] border-cyan-900/30">
+        <CardHeader className="border-cyan-900/30 p-3 md:p-4">
+          <CardTitle className="flex items-center justify-between">
+            {messages.length > 0 && !conversationEnded && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleEndConversation}
+                className="text-xs border-cyan-900 text-gray-400 hover:bg-cyan-900/20 hover:text-cyan-300"
+              >
+                End Conversation
+              </Button>
+            )}
+          </CardTitle>
+        </CardHeader>
 
-      <h2 className="text-2xl font-semibold">Chat With Course</h2>
+        <CardContent className="h-[50vh] md:h-[60vh] overflow-y-auto p-3 md:p-4 space-y-4 scrollbar-hide no-scrollbar">
+          {messages.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-full text-center space-y-4">
+              <div className="text-xl md:text-2xl font-bold text-cyan-400">Welcome to VidyRANG</div>
+              <div className="text-gray-400 max-w-md">
+                Select a course and ask a question to get started. I'll provide answers based on the course curriculum.
+              </div>
+            </div>
+          ) : (
+            <>
+              {messages.map((message) => (
+                <div
+                  key={message.id}
+                  className={cn(
+                    "flex",
+                    message.role === "user" ? "justify-end" : "justify-start",
+                    message.role === "system" ? "justify-center" : "",
+                  )}
+                >
+                  {message.role === "assistant" && (
+                    <Avatar className="h-8 w-8 mr-2 mt-1 flex-shrink-0">
+                      <div className="bg-cyan-900 rounded-full h-full w-full flex items-center justify-center text-cyan-400 font-semibold">
+                        AI
+                      </div>
+                    </Avatar>
+                  )}
 
-      {/* Course Selection */}
-      <label className="block mt-4 text-gray-400 font-semibold">
-        Select Course
-      </label>
-      <select
-        value={selectedCourse}
-        onChange={(e) => setSelectedCourse(e.target.value)}
-        className="w-full p-2 border rounded-[5px] mt-1 text-gray-800 text-base font-semibold"
-      >
-        {courses.map((course, index) => (
-          <option key={index} value={course}>
-            {course}
-          </option>
-        ))}
-      </select>
+                  <div
+                    className={cn(
+                      "max-w-[80%] rounded-[10px] p-3",
+                      message.role === "user"
+                        ? "bg-cyan-800/30 text-gray-200 border border-cyan-800/50"
+                        : message.role === "system"
+                          ? "bg-[#0a1628] text-gray-400 text-sm py-2 border border-cyan-900/30"
+                          : "bg-[#0a1628] text-gray-300 border border-cyan-900/30",
+                    )}
+                  >
+                    {message.role === "user" && message.course && (
+                      <div className="text-xs opacity-80 mb-1 text-cyan-400">
+                        Course: {courses.find((c) => c.id === message.course)?.name}
+                      </div>
+                    )}
+                    <div className="whitespace-pre-line">{message.content}</div>
+                  </div>
 
-      {/* Message Input */}
-      <label className="block mt-4 text-gray-400 font-semibold">
-        Enter your message:
-      </label>
-      <input
-        type="text"
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        className="w-full p-2 border rounded-[5px] mt-1 text-gray-800 text-base font-semibold"
-      />
-      <button
-        onClick={handleSendMessage}
-        className="mt-2 bg-[#a56d3d] px-4 py-1.5 rounded-[5px]"
-      >
-        Send
-      </button>
+                  {message.role === "user" && (
+                    <Avatar className="h-8 w-8 ml-2 mt-1 flex-shrink-0">
+                      <div className="bg-cyan-900/50 rounded-full h-full w-full flex items-center justify-center text-cyan-300 font-semibold">
+                        U
+                      </div>
+                    </Avatar>
+                  )}
+                </div>
+              ))}
 
-      {/* Chat Messages */}
-      {messages.length > 0 && (
-        <div className="mt-4">
-          <h3 className="font-semibold text-gray-400">Chat History:</h3>
-          <div className="mt-2 space-y-2">
-            {messages.map((msg, index) => (
-              <p key={index} className={`${msg.sender === "You" ? "text-blue-400" : "text-green-400"}`}>
-                <strong>{msg.sender}:</strong> {msg.text}
-              </p>
-            ))}
-          </div>
-        </div>
-      )}
+              {isTyping && (
+                <div className="flex justify-start">
+                  <Avatar className="h-8 w-8 mr-2 mt-1 flex-shrink-0">
+                    <div className="bg-cyan-900 rounded-full h-full w-full flex items-center justify-center text-cyan-400 font-semibold">
+                      AI
+                    </div>
+                  </Avatar>
+                  <div className="bg-[#0a1628] rounded-[10px] p-3 border border-cyan-900/30">
+                    <div className="flex space-x-1">
+                      <div
+                        className="w-2 h-2 bg-cyan-700 rounded-full animate-bounce"
+                        style={{ animationDelay: "0ms" }}
+                      ></div>
+                      <div
+                        className="w-2 h-2 bg-cyan-700 rounded-full animate-bounce"
+                        style={{ animationDelay: "150ms" }}
+                      ></div>
+                      <div
+                        className="w-2 h-2 bg-cyan-700 rounded-full animate-bounce"
+                        style={{ animationDelay: "300ms" }}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
 
-      {/* Rating Section */}
-      <label className="block mt-4 text-gray-400 font-semibold">
-        Rate your experience:
-      </label>
-      <input
-        type="range"
-        min="1"
-        max="5"
-        value={rating}
-        onChange={(e) => setRating(e.target.value)}
-        className="w-full mt-2"
-      />
-      <p className="text-gray-400 font-semibold">Rating: {rating}</p>
+          {showRating && conversationEnded && !showFeedbackForm && (
+            <div className="bg-[#0a1628] rounded-[10px] p-4 mx-auto max-w-md border border-cyan-900/30">
+              <div className="text-center mb-3 text-cyan-400">How would you rate this conversation?</div>
+              <div className="flex justify-center space-x-2">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <button
+                    key={star}
+                    onClick={() => handleRating(star)}
+                    className={cn(
+                      "p-1 rounded-full transition-all",
+                      rating >= star ? "text-cyan-400" : "text-gray-700 hover:text-cyan-700",
+                    )}
+                  >
+                    <Star className="h-8 w-8" fill={rating >= star ? "currentColor" : "none"} />
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
-      <button
-        onClick={handleSubmitFeedback}
-        className="mt-2 bg-[#a56d3d] text-white px-4 py-1.5 rounded-[5px] "
-      >
-        Submit Rating
-      </button>
+          {showFeedbackForm && (
+            <div className="bg-[#0a1628] rounded-[10px] p-4 mx-auto border border-cyan-900/30">
+              <div className="flex justify-between items-center mb-2">
+                <div className="font-medium text-cyan-400">Additional Feedback</div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowFeedbackForm(false)}
+                  className="text-gray-400 hover:text-cyan-400"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+              <Textarea
+                placeholder="What did you like or dislike about this conversation?"
+                value={feedback}
+                onChange={(e) => setFeedback(e.target.value)}
+                className="mb-3 bg-[#0a1628] border-cyan-900/50 text-gray-300 focus-visible:ring-cyan-600"
+                rows={3}
+              />
+              <Button onClick={submitFeedback} className="w-full bg-cyan-700 hover:bg-cyan-600 text-white">
+                Submit Feedback
+              </Button>
+            </div>
+          )}
 
-      {/* Thank-you message after feedback */}
-      {feedbackSubmitted && (
-        <p className="mt-3 text-green-400">
-          Thank you for your feedback! We appreciate your time.
-        </p>
-      )}
+          <div ref={messagesEndRef} />
+        </CardContent>
+
+        <CardFooter className="border-t border-cyan-900/30 p-3 md:px-32 flex flex-col gap-2">
+          {!conversationEnded ? (
+            <form onSubmit={handleSubmit} className="w-full space-y-3">
+              <div className="flex gap-2">
+                <Select value={selectedCourse} onValueChange={setSelectedCourse} disabled={isTyping}>
+                  <SelectTrigger className="w-full md:w-[200px] bg-[#0a1628] border-cyan-900/50 text-gray-300 focus:ring-cyan-600">
+                    <SelectValue placeholder="Select Course" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-[#0a1628] border-cyan-900/50 text-gray-300">
+                    {courses.map((course) => (
+                      <SelectItem key={course.id} value={course.id}>
+                        {course.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="flex w-full space-x-2 items-end">
+                <div className="relative flex-grow">
+                  <Textarea
+                    ref={textareaRef}
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    placeholder="Ask a question about the selected course..."
+                    className="min-h-16 pr-20 resize-none bg-[#0a1628] border-cyan-900/50 text-gray-300 focus-visible:ring-cyan-600"
+                    disabled={isTyping || !selectedCourse}
+                  />
+                </div>
+                <Button
+                  type="submit"
+                  size="icon"
+                  className="h-10 w-10 bg-cyan-700 hover:bg-cyan-600 text-white rounded-[10px]"
+                  disabled={isTyping || !input.trim() || !selectedCourse}
+                >
+                  <Send className="h-4 w-4" />
+                </Button>
+              </div>
+
+              {/* </div> */}
+              <div className="text-xs text-gray-500 text-center">Press Enter to send, Shift+Enter for new line</div>
+            </form>
+          ) : (
+            <div className="w-full text-center">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setConversationEnded(false)
+                  setShowRating(false)
+                  setShowFeedbackForm(false)
+                  setRating(0)
+                  setFeedback("")
+                }}
+                className="border-cyan-900 text-cyan-400 hover:bg-cyan-900/20"
+              >
+                Start New Conversation
+              </Button>
+            </div>
+          )}
+        </CardFooter>
+      </Card>
     </div>
-  );
-};
+  )
+}
 
-export default ChatInterface;
