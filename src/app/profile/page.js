@@ -54,7 +54,7 @@ export default function ProfilePage() {
     <Navbar/>
     
     <div className="min-h-screen flex items-center justify-center p-6">
-      <div className="w-full max-w-lg mx-auto overflow-hidden backdrop-blur-sm bg-gray-800/80 shadow-xl border border-gray-700 rounded-xl p-4">
+      <div className="w-full max-w-lg mx-auto overflow-hidden backdrop-blur-sm bg-gray-950/80 shadow-xl border border-gray-700 rounded-xl p-4">
         <div className="relative h-32 bg-gradient-to-r from-gray-700 to-gray-800 rounded-t-xl flex justify-center items-center">
           <img
             src={userData.avatarUrl}
