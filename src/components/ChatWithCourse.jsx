@@ -152,7 +152,7 @@ export default function ChatWithCourse() {
                 <div
                   key={message.id}
                   className={cn(
-                    "flex",
+                    "flex mb-4",
                     message.role === "user" ? "justify-end" : "justify-start",
                     message.role === "system" ? "justify-center" : "",
                   )}
@@ -160,7 +160,7 @@ export default function ChatWithCourse() {
                   {message.role === "assistant" && (
                     <Avatar className="h-8 w-8 mr-2 mt-1 flex-shrink-0">
                       <div className="bg-cyan-900 rounded-full h-full w-full flex items-center justify-center text-cyan-400 font-semibold">
-                        AI
+                        V
                       </div>
                     </Avatar>
                   )}
@@ -197,7 +197,7 @@ export default function ChatWithCourse() {
                 <div className="flex justify-start">
                   <Avatar className="h-8 w-8 mr-2 mt-1 flex-shrink-0">
                     <div className="bg-cyan-900 rounded-full h-full w-full flex items-center justify-center text-cyan-400 font-semibold">
-                      AI
+                      V
                     </div>
                   </Avatar>
                   <div className="bg-[#0a1628] rounded-[10px] p-3 border border-cyan-900/30">
@@ -323,6 +323,7 @@ export default function ChatWithCourse() {
                   setShowFeedbackForm(false)
                   setRating(0)
                   setFeedback("")
+                  setMessages([])
                 }}
                 className="border-cyan-900 text-cyan-400 hover:bg-cyan-900/20"
               >

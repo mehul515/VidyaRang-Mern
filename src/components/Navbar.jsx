@@ -106,29 +106,6 @@ const Header = ({ selectedOption, setSelectedOption }) => {
           </div>
         )}
 
-        {/* Desktop Menu */}
-        {/* <div className="hidden lg:flex lg:gap-6"> */}
-        {/* Home Button (Always Visible) */}
-        {/* <button onClick={() => router.push("/main")} className="flex items-center gap-2 text-white hover:opacity-80 transition">
-            <HomeIcon size={20} className="text-gray-400" />
-            <span>Home</span>
-          </button> */}
-
-        {/* Other Menu Items (Only Visible in /main) */}
-        {/* {pathname === "/main" &&
-            menuItems.map(item => (
-              <button
-                key={item.name}
-                onClick={() => setSelectedOption(item.name)}
-                className={`flex items-center gap-2 text-white hover:opacity-80 transition ${selectedOption === item.name ? "text-cyan-400 font-bold" : ""
-                  }`}
-              >
-                <item.icon size={20} className="text-gray-400" />
-                <span>{item.name}</span>
-              </button>
-            ))}
-        </div> */}
-
         {/* User Profile / Login Button */}
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
           {user ? (
@@ -139,19 +116,23 @@ const Header = ({ selectedOption, setSelectedOption }) => {
             </div>
             </a>
           ) : (
-            <button onClick={() => setSelectedOption("Login")} className="rounded-[7px] p-2.5 px-6 text-black bg-cyan-400 lg:text-sm hover:bg-cyan-500">
+            <Link href="/login">
+            <button className="rounded-[7px] p-2.5 px-6 text-black bg-cyan-400 lg:text-sm hover:bg-cyan-500">
               Sign In
             </button>
+            </Link>
           )}
         </div>
 
         {/* Mobile Login Button */}
         {!user && (
+          <Link href="/login">
           <div className="lg:hidden">
-            <button onClick={() => setSelectedOption("Login")} className="rounded-[7px] p-2.5 px-6 text-black bg-cyan-400 lg:text-sm hover:bg-cyan-500">
+            <button className="rounded-[7px] p-2.5 px-6 text-black bg-cyan-400 lg:text-sm hover:bg-cyan-500">
               Sign In
             </button>
           </div>
+          </Link>
         )}
       </nav>
     </header>
