@@ -13,7 +13,7 @@ const Sidebar = ({ selectedOption, setSelectedOption }) => {
             const { data: { session } } = await supabase.auth.getSession();
             if (session) {
                 const { user_metadata } = session.user;
-                setUserRole(user_metadata.role || "learner");
+                setUserRole(user_metadata.role || "Learner");
             } else {
                 setUserRole(null);
             }
@@ -23,7 +23,7 @@ const Sidebar = ({ selectedOption, setSelectedOption }) => {
         supabase.auth.onAuthStateChange((_, session) => {
             if (session) {
                 const { user_metadata } = session.user;
-                setUserRole(user_metadata.role || "learner");
+                setUserRole(user_metadata.role || "Learner");
             } else {
                 setUserRole(null);
             }
@@ -33,9 +33,9 @@ const Sidebar = ({ selectedOption, setSelectedOption }) => {
     const menuItems = [
         { name: "Home", icon: HomeIcon, section: "Navigation", path: "/main" },
         { name: "About", icon: InfoIcon, section: "Navigation" },
-        { name: "Create new course", icon: PlusCircleIcon, section: "Choose Action", roles: ["admin", "instructor"] },
+        { name: "Create new course", icon: PlusCircleIcon, section: "Choose Action", roles: ["Instructor"] },
         { name: "Chat with course", icon: MessageCircleIcon, section: "Choose Action" },
-        { name: "Assign course", icon: UsersIcon, section: "Choose Action", roles: ["admin"] },
+        { name: "Assign course", icon: UsersIcon, section: "Choose Action", roles: ["Instructor"] },
         { name: "Analysis", icon: BarChartIcon, section: "Analysis" },
     ];
 
