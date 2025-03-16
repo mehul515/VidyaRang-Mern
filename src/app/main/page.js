@@ -8,7 +8,6 @@ import AssignCourse from "../../components/AssignCourse";
 import DataAnalysis from "../../components/DataAnalysis";
 import Home from "../../components/Home";
 import Navbar from "../../components/Navbar"
-import Aboutmain from "@/components/Aboutmain";
 
 const MainPage = () => {
   const [selectedOption, setSelectedOption] = useState("Home");
@@ -18,7 +17,7 @@ const MainPage = () => {
       case "Home":
         return <div className="text-white"><Home/></div>;
       case "About":
-        return <div className="text-white"><Aboutmain/></div>;
+        return <div className="text-white"><About/></div>;
       case "Create new course":
         return <div className="text-white"><CreateNewCourse/></div>;
       case "Chat with course":
@@ -35,13 +34,6 @@ const MainPage = () => {
   return (
     <>
 
-<style jsx global>{`
-        html, body {
-          height: 100%;
-          overflow: hidden; /* Prevent page scrolling */
-        }
-      `}</style>
-
       <Navbar/>
 
     <div className="flex  text-white">
@@ -51,7 +43,7 @@ const MainPage = () => {
     </div>
       
       {/* Content Area */}
-      <div className="flex-1  ">{renderContent()}</div>
+      <div className="flex-1 ">{renderContent()}</div>
     </div>
     </>
   );
