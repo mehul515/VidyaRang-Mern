@@ -7,7 +7,7 @@ import ChatWithCourse from "../../components/ChatWithCourse";
 import AssignCourse from "../../components/AssignCourse";
 import DataAnalysis from "../../components/DataAnalysis";
 import Home from "../../components/Home";
-import Navbar from "../../components/Navbar"
+import Navbar from "../../components/Navbar";
 import Aboutmain from "@/components/Aboutmain";
 
 const MainPage = () => {
@@ -16,43 +16,42 @@ const MainPage = () => {
   const renderContent = () => {
     switch (selectedOption) {
       case "Home":
-        return <div className="text-white"><Home/></div>;
+        return <Home />;
       case "About":
-        return <div className="text-white"><Aboutmain/></div>;
+        return <Aboutmain />;
       case "Create new course":
-        return <div className="text-white"><CreateNewCourse/></div>;
+        return <CreateNewCourse />;
       case "Chat with course":
-        return <div className="text-white"><ChatWithCourse/></div>;
+        return <ChatWithCourse />;
       case "Assign course":
-        return <div className="text-white"><AssignCourse/></div>;
+        return <AssignCourse />;
       case "Analysis":
-        return <div className="text-white"><DataAnalysis/></div>;
+        return <DataAnalysis />;
       default:
-        return <div className="text-white"><Home/></div>;
+        return <Home />;
     }
   };
 
   return (
     <>
-
-<style jsx global>{`
+      <style jsx global>{`
         html, body {
           height: 100%;
           overflow: hidden; /* Prevent page scrolling */
         }
       `}</style>
 
-      <Navbar/>
+      <Navbar selectedOption={selectedOption} setSelectedOption={setSelectedOption} />
 
-    <div className="flex  text-white">
-      {/* Sidebar Component */}
-      <div className=" h-screen ">
-      <Sidebar selectedOption={selectedOption} setSelectedOption={setSelectedOption} />
-    </div>
-      
-      {/* Content Area */}
-      <div className="flex-1  ">{renderContent()}</div>
-    </div>
+      <div className="flex text-white">
+        {/* Sidebar for Desktop */}
+        <div className="hidden lg:block h-screen">
+          <Sidebar selectedOption={selectedOption} setSelectedOption={setSelectedOption} />
+        </div>
+
+        {/* Main Content */}
+        <div className="flex-1 p-4">{renderContent()}</div>
+      </div>
     </>
   );
 };
