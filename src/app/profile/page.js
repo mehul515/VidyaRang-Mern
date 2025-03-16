@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { User, LogOut, Home, BookOpen, Users } from "lucide-react";
 import supabase from "../supabaseClient";
-
+import Navbar from "@/components/Navbar"
 export default function ProfilePage() {
   const router = useRouter();
   const [userData, setUserData] = useState(null);
@@ -50,7 +50,10 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 flex items-center justify-center p-6">
+    <>
+    <Navbar/>
+    
+    <div className="min-h-screen flex items-center justify-center p-6">
       <div className="w-full max-w-lg mx-auto overflow-hidden backdrop-blur-sm bg-gray-800/80 shadow-xl border border-gray-700 rounded-xl p-4">
         <div className="relative h-32 bg-gradient-to-r from-gray-700 to-gray-800 rounded-t-xl flex justify-center items-center">
           <img
@@ -120,5 +123,6 @@ export default function ProfilePage() {
         </div>
       </div>
     </div>
+    </>
   );
 }

@@ -112,11 +112,11 @@ export default function Signup() {
             <label className="block text-gray-300">Role</label>
             <div className="flex flex-col sm:flex-row gap-4">
               <label className="flex items-center text-gray-300">
-                <input type="radio" value="instructor" {...register("role", { required: "Please select a role" })} className="mr-2" />
+                <input type="radio" value="Instructor" {...register("role", { required: "Please select a role" })} className="mr-2" />
                 Instructor
               </label>
               <label className="flex items-center text-gray-300">
-                <input type="radio" value="learner" {...register("role", { required: "Please select a role" })} className="mr-2" />
+                <input type="radio" value="Learner" {...register("role", { required: "Please select a role" })} className="mr-2" />
                 Learner
               </label>
             </div>
