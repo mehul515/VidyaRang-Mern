@@ -45,12 +45,12 @@ const MainPage = () => {
 
       <div className="flex text-white">
         {/* Sidebar for Desktop */}
-        <div className="hidden lg:block h-screen">
+        <div className="hidden lg:block h-screen bg-slate-200">
           <Sidebar selectedOption={selectedOption} setSelectedOption={setSelectedOption} />
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 overflow-hidden h-full lg:p-4 p-2">{renderContent()}</div>
+        <div className="flex-1 overflow-hidden  lg:p-4 p-2 bg-slate-500">{renderContent()}</div>
       </div>
     </>
   );

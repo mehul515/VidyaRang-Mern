@@ -7,7 +7,7 @@ import { FaBrain } from "react-icons/fa";
 import { MdPlayCircle } from "react-icons/md";
 export default function Aboutmain() {
   return (
-    <div className='mt-20 h-screen overflow-auto lg:px-6 px-2 ' style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
+    <div className='mt-20 max-h-screen pb-28 overflow-auto lg:px-6 px-2  ' >
 
       <div className='bg-[#0c0c0c] lg:p-10 p-2'>
 
@@ -46,14 +46,14 @@ export default function Aboutmain() {
             <h1 className='lg:text-5xl text-4xl text-center font-bold' >Key Features of VidyaRANG</h1>
             <h2 className='mt-8 text-center lg:text-xl text-lg text-gray-300'>Secure Sharing, Engaging Learning, In-Depth Insights </h2>
 
-            <div className='flex mt-10 lg:p-8 p-1 justify-evenly flex-wrap lg:gap-2 gap-10'>
+            <div className='flex mt-10 lg:p-8 p-1 justify-between flex-wrap lg:gap-0 gap-10 '>
 
               {[
                 { icon: <FaLock className='text-2xl text-cyan-400' />, title: 'LockShare', desc: 'Privacy-First Document Sharing' },
                 { icon: <FaChartBar className='text-2xl text-cyan-400' />, title: 'GraphEval', desc: 'Comprehensive Evaluation and Analytics' },
                 { icon: <FaBrain className='text-2xl text-cyan-400' />, title: 'BrainQuiz', desc: 'Diverse Quizzes: Factual, Memory, and Reasoning' },
               ].map((item, index) => (
-                <div key={index} className='w-96 lg:h-60 h-52 flex flex-col  justify-center lg:px-7 px-7 lg:p-7 p-4 rounded-xl bg-[#242525] border-[#4d4d4e] border hover:border-cyan-500 transition-all duration-300 ease-in-out'>
+                <div key={index} className='lg:w-72 w-96 lg:h-60 h-52 flex flex-col  justify-center lg:px-7 px-7 lg:p-7 p-4 rounded-xl bg-[#242525] border-[#4d4d4e] border hover:border-cyan-500 transition-all duration-300 ease-in-out'>
                   {item.icon}
                   <h1 className='mt-5 font-semibold lg:text-2xl text-xl'>{item.title}</h1>
                   <h1 className='mt-5 text-lg text-gray-300 '>{item.desc}</h1>
