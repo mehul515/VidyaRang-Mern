@@ -59,7 +59,7 @@ export default function Login() {
   return (
     <div className="flex justify-center items-center min-h-screen px-4">
       <ToastContainer/>
-      <div className="p-8 rounded-lg shadow-md w-full max-w-sm bg-gray-900">
+      <div className="p-8 rounded-[10px] shadow-md w-full max-w-sm bg-gray-900">
         <h2 className="text-2xl font-semibold text-center mb-6 text-white">Sign In</h2>
 
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -69,7 +69,7 @@ export default function Login() {
               type="email"
               {...register("email", { required: "Email is required" })}
               placeholder="your@email.com"
-              className="w-full px-4 py-2 bg-gray-800 text-white border border-gray-700 rounded-md focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 bg-gray-800 text-white border border-gray-700 rounded-[7px] focus:ring-2 focus:ring-blue-500"
               disabled={loading}
             />
             {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
@@ -81,7 +81,7 @@ export default function Login() {
               type="password"
               {...register("password", { required: "Password is required" })}
               placeholder="••••••••"
-              className="w-full px-4 py-2 bg-gray-800 text-white border border-gray-700 rounded-md focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 bg-gray-800 text-white border border-gray-700 rounded-[7px] focus:ring-2 focus:ring-blue-500"
               disabled={loading}
             />
             {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
@@ -97,7 +97,7 @@ export default function Login() {
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition disabled:opacity-50"
+            className="w-full bg-blue-600 text-white py-2 rounded-[7px] hover:bg-blue-700 transition disabled:opacity-50"
             disabled={loading}
           >
             {loading ? "Signing in..." : "Sign In"}
@@ -112,7 +112,7 @@ export default function Login() {
 
         <button
           onClick={handleGoogleSignIn}
-          className="w-full text-gray-50 flex items-center justify-center border border-gray-700 py-2 rounded-md hover:bg-gray-800 transition disabled:opacity-50"
+          className="w-full text-gray-50 flex items-center justify-center border border-gray-700 py-2 rounded-[7px] hover:bg-gray-800 transition disabled:opacity-50"
           disabled={googleLoading}
         >
           <img src="/google.png" alt="Google" className="w-5 h-5 mr-2" />
