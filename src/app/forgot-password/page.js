@@ -24,7 +24,7 @@ export default function ForgotPassword() {
 
   return (
     <div className="flex justify-center items-center h-screen">
-      <div className="bg-gray-900 p-8 rounded-lg shadow-md w-96">
+      <div className="bg-gray-900 p-8 rounded-[10px] shadow-md w-96">
         <h2 className="text-2xl font-semibold text-gray-50 text-center mb-6">Forgot Password</h2>
         <form onSubmit={handleForgotPassword}>
           <div className="mb-4">
@@ -34,11 +34,11 @@ export default function ForgotPassword() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email"
-              className="w-full px-4 py-2 border text-gray-900 rounded-md focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border text-gray-900 rounded-[7px] focus:ring-2 focus:ring-blue-500"
               required
             />
           </div>
-          <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition">
+          <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded-[7px] hover:bg-blue-700 transition">
             Reset Password
           </button>
         </form>
