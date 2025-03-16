@@ -46,7 +46,7 @@ const MainPage = () => {
 
     <div className="flex  text-white">
       {/* Sidebar Component */}
-      <div className=" h-screen ">
+      <div className="hidden lg:block h-screen ">
       <Sidebar selectedOption={selectedOption} setSelectedOption={setSelectedOption} />
     </div>
       
