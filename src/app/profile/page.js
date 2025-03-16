@@ -77,13 +77,13 @@ export default function ProfilePage() {
                             <div className="mt-4 flex gap-4">
                                 <button
                                     onClick={() => handleRoleUpdate('Learner')}
-                                    className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition"
+                                    className="bg-blue-500 text-white px-4 py-2 rounded-[10px] hover:bg-blue-600 transition"
                                 >
                                     Set as Learner
                                 </button>
                                 <button
                                     onClick={() => handleRoleUpdate('Instructor')}
-                                    className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition"
+                                    className="bg-green-500 text-white px-4 py-2 rounded-[10px] hover:bg-green-600 transition"
                                 >
                                     Set as Instructor
                                 </button>
@@ -94,13 +94,13 @@ export default function ProfilePage() {
                     <div className="mt-6 space-y-4">
                         <button
                             onClick={handleLogout}
-                            className="bg-red-500 text-white px-4 py-2 rounded-lg w-full hover:bg-red-600 transition"
+                            className="bg-red-500 text-white px-4 py-2 rounded-[10px] w-full hover:bg-red-600 transition"
                         >
                             Logout
                         </button>
                         <button
                             onClick={() => router.push('/main')}
-                            className="bg-gray-500 text-white px-4 py-2 rounded-lg w-full hover:bg-gray-600 transition"
+                            className="bg-gray-500 text-white px-4 py-2 rounded-[10px] w-full hover:bg-gray-600 transition"
                         >
                             Back to Home
                         </button>

@@ -68,7 +68,7 @@ export default function Signup() {
   return (
     <div className="flex justify-center items-center min-h-screen px-4 sm:px-6 lg:px-8">
       <ToastContainer />
-      <div className="bg-gray-900 p-6 sm:p-8 rounded-lg shadow-md w-full max-w-md text-white">
+      <div className="bg-gray-900 p-6 sm:p-8 rounded-[10px] shadow-md w-full max-w-md text-white">
         <h2 className="text-2xl font-semibold text-center mb-6 text-gray-100">Sign Up</h2>
 
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -78,7 +78,7 @@ export default function Signup() {
               type="text"
               {...register("username", { required: "Username is required" })}
               placeholder="Enter your username"
-              className="w-full px-4 py-2 border rounded-md bg-gray-800 text-white focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border rounded-[7px] bg-gray-800 text-white focus:ring-2 focus:ring-blue-500"
             />
             {errors.username && <p className="text-red-400 text-sm">{errors.username.message}</p>}
           </div>
@@ -89,7 +89,7 @@ export default function Signup() {
               type="email"
               {...register("email", { required: "Email is required" })}
               placeholder="your@email.com"
-              className="w-full px-4 py-2 border rounded-md bg-gray-800 text-white focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border rounded-[7px] bg-gray-800 text-white focus:ring-2 focus:ring-blue-500"
             />
             {errors.email && <p className="text-red-400 text-sm">{errors.email.message}</p>}
           </div>
@@ -103,7 +103,7 @@ export default function Signup() {
                 minLength: { value: 6, message: "Password must be at least 6 characters" },
               })}
               placeholder="••••••••"
-              className="w-full px-4 py-2 border rounded-md bg-gray-800 text-white focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border rounded-[7px] bg-gray-800 text-white focus:ring-2 focus:ring-blue-500"
             />
             {errors.password && <p className="text-red-400 text-sm">{errors.password.message}</p>}
           </div>
@@ -123,7 +123,7 @@ export default function Signup() {
             {errors.role && <p className="text-red-400 text-sm">{errors.role.message}</p>}
           </div>
 
-          <button type="submit" disabled={loading} className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition">
+          <button type="submit" disabled={loading} className="w-full bg-blue-600 text-white py-2 rounded-[7px] hover:bg-blue-700 transition">
             {loading ? "Processing..." : "Sign Up"}
           </button>
         </form>
@@ -134,7 +134,7 @@ export default function Signup() {
           <div className="w-full h-px bg-gray-700"></div>
         </div>
 
-        <button onClick={handleGoogleSignIn} disabled={loading} className="w-full flex items-center justify-center border py-2 rounded-md bg-gray-800 text-white hover:bg-gray-700 transition">
+        <button onClick={handleGoogleSignIn} disabled={loading} className="w-full flex items-center justify-center border py-2 rounded-[7px] bg-gray-800 text-white hover:bg-gray-700 transition">
           <img src="/google.png" alt="Google" className="w-5 h-5 mr-2" />
           {loading ? "Processing..." : "Continue with Google"}
         </button>

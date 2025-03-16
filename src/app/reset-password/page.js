@@ -27,7 +27,7 @@ export default function ResetPassword() {
 
   return (
     <div className="flex justify-center items-center h-screen">
-      <div className="bg-gray-900 p-8 rounded-lg shadow-md w-96">
+      <div className="bg-gray-900 p-8 rounded-[10px] shadow-md w-96">
         <h2 className="text-2xl font-semibold text-center mb-6 text-gray-100">Reset Password</h2>
         <form onSubmit={handleResetPassword}>
           <div className="mb-4">
@@ -37,11 +37,11 @@ export default function ResetPassword() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter new password"
-              className="w-full text-gray-900 px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
+              className="w-full text-gray-900 px-4 py-2 border rounded-[7px] focus:ring-2 focus:ring-blue-500"
               required
             />
           </div>
-          <button type="submit" className="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700 transition">
+          <button type="submit" className="w-full bg-green-600 text-white py-2 rounded-[7px] hover:bg-green-700 transition">
             Update Password
           </button>
         </form>
