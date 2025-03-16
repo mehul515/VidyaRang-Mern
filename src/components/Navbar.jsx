@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import { User, Menu, X } from "lucide-react";
 import Link from "next/link";
 import supabase from "../app/supabaseClient";
@@ -39,17 +39,20 @@ const Header = () => {
       <nav aria-label="Global" className="mx-auto flex max-w-7xl items-center justify-between py-4 px-4">
         <a href="#" className="text-xl lg:text-2xl text-white font-bold">AIGurukul</a>
 
+        {/* Mobile Menu Button (only visible if user is signed in) */}
         <div className="flex items-center gap-4">
-          <button onClick={() => setMenuOpen(!menuOpen)} className="lg:hidden text-white">
-            {menuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+          {user && (
+            <button onClick={() => setMenuOpen(!menuOpen)} className="lg:hidden text-white">
+              {menuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          )}
         </div>
 
-        {/* Mobile Menu */}
-        <div className={`absolute top-14 right-0 w-screen bg-black p-4 lg:hidden ${menuOpen ? 'block' : 'hidden'}`}>
-          <div className="max-w-[90%] mx-auto space-y-4">
-            {user ? (
-              <Link href="/profile" className="flex items-center gap-2 text-black hover:opacity-80 transition">
+        {/* Mobile Menu (Visible only if user is signed in) */}
+        {user && menuOpen && (
+          <div className="absolute top-14 right-0 w-screen bg-black p-4 lg:hidden">
+            <div className="max-w-[90%] mx-auto space-y-4">
+              <Link href="/profile" className="flex items-center gap-2 text-white hover:opacity-80 transition">
                 <img
                   src={user.avatarUrl}
                   alt="Profile"
@@ -57,17 +60,9 @@ const Header = () => {
                 />
                 <span className="text-sm font-semibold">{user.name}</span>
               </Link>
-            ) : (
-                <>
-              <Link href="/login" className="block w-40 text-center text-black bg-cyan-400 p-2 rounded-md hover:bg-cyan-500">
-                Sign In
-              </Link>
-              
-              </>
-            )}
+            </div>
           </div>
-        </div>
-
+        )}
 
         {/* Desktop Menu */}
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
@@ -90,6 +85,17 @@ const Header = () => {
             </Link>
           )}
         </div>
+
+        {/* Mobile Sign In Button (Shown only when user is not signed in) */}
+        {!user && (
+          <div className="lg:hidden">
+            <Link href="/login">
+            <button className="rounded-[7px] p-2.5 px-6 text-black bg-cyan-400 lg:text-sm hover:bg-cyan-500">
+                Sign In
+              </button>
+            </Link>
+          </div>
+        )}
       </nav>
     </header>
   );
