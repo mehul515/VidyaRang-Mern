@@ -130,7 +130,7 @@ export default function ChatWithCourse() {
                 variant="outline"
                 size="sm"
                 onClick={handleEndConversation}
-                className="text-xs border-cyan-900 text-gray-400 hover:bg-cyan-900/20 hover:text-cyan-300"
+                className="text-xs border-cyan-900 text-gray-300 hover:bg-cyan-900/20 hover:text-cyan-300"
               >
                 End Conversation
               </Button>
@@ -203,15 +203,15 @@ export default function ChatWithCourse() {
                   <div className="bg-[#0a1628] rounded-[10px] p-3 border border-cyan-900/30">
                     <div className="flex space-x-1">
                       <div
-                        className="w-2 h-2 bg-cyan-700 rounded-full animate-bounce"
+                        className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce"
                         style={{ animationDelay: "0ms" }}
                       ></div>
                       <div
-                        className="w-2 h-2 bg-cyan-700 rounded-full animate-bounce"
+                        className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce"
                         style={{ animationDelay: "150ms" }}
                       ></div>
                       <div
-                        className="w-2 h-2 bg-cyan-700 rounded-full animate-bounce"
+                        className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce"
                         style={{ animationDelay: "300ms" }}
                       ></div>
                     </div>
@@ -231,7 +231,7 @@ export default function ChatWithCourse() {
                     onClick={() => handleRating(star)}
                     className={cn(
                       "p-1 rounded-full transition-all",
-                      rating >= star ? "text-cyan-400" : "text-gray-700 hover:text-cyan-700",
+                      rating >= star ? "text-cyan-400" : "text-gray-700 hover:text-cyan-600",
                     )}
                   >
                     <Star className="h-8 w-8" fill={rating >= star ? "currentColor" : "none"} />
@@ -242,7 +242,7 @@ export default function ChatWithCourse() {
           )}
 
           {showFeedbackForm && (
-            <div className="bg-[#0a1628] rounded-[10px] p-4 mx-auto border border-cyan-900/30">
+            <div className="bg-[#0a1628] rounded-[10px] p-4 md:mx-20 border border-cyan-900/30">
               <div className="flex justify-between items-center mb-2">
                 <div className="font-medium text-cyan-400">Additional Feedback</div>
                 <Button
@@ -258,10 +258,10 @@ export default function ChatWithCourse() {
                 placeholder="What did you like or dislike about this conversation?"
                 value={feedback}
                 onChange={(e) => setFeedback(e.target.value)}
-                className="mb-3 bg-[#0a1628] border-cyan-900/50 text-gray-300 focus-visible:ring-cyan-600"
+                className="mb-3 bg-[#0a1628] border-cyan-900/50 text-gray-300 font-medium focus-visible:ring-cyan-600"
                 rows={3}
               />
-              <Button onClick={submitFeedback} className="w-full bg-cyan-700 hover:bg-cyan-600 text-white">
+              <Button onClick={submitFeedback} className="bg-cyan-400 hover:bg-cyan-600 text-gray-900">
                 Submit Feedback
               </Button>
             </div>
@@ -275,10 +275,10 @@ export default function ChatWithCourse() {
             <form onSubmit={handleSubmit} className="w-full space-y-3">
               <div className="flex gap-2">
                 <Select value={selectedCourse} onValueChange={setSelectedCourse} disabled={isTyping}>
-                  <SelectTrigger className="w-full md:w-[200px] bg-[#0a1628] border-cyan-900/50 text-gray-300 focus:ring-cyan-600">
+                  <SelectTrigger className="w-full md:w-[200px] bg-[#0a1628] border-cyan-900/50 text-gray-300 focus:ring-cyan-600 font-medium">
                     <SelectValue placeholder="Select Course" />
                   </SelectTrigger>
-                  <SelectContent className="bg-[#0a1628] border-cyan-900/50 text-gray-300">
+                  <SelectContent className="bg-[#0a1628] border-cyan-900/50 text-gray-300 font-medium">
                     {courses.map((course) => (
                       <SelectItem key={course.id} value={course.id}>
                         {course.name}
@@ -296,14 +296,14 @@ export default function ChatWithCourse() {
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={handleKeyDown}
                     placeholder="Ask a question about the selected course..."
-                    className="min-h-16 pr-20 resize-none bg-[#0a1628] border-cyan-900/50 text-gray-300 focus-visible:ring-cyan-600"
+                    className="min-h-16 resize-none bg-[#0a1628] border-cyan-900/50 text-gray-300 font-medium placeholder:text-gray-500 focus-visible:ring-cyan-600"
                     disabled={isTyping || !selectedCourse}
                   />
                 </div>
                 <Button
                   type="submit"
                   size="icon"
-                  className="h-10 w-10 bg-cyan-700 hover:bg-cyan-600 text-white rounded-[10px]"
+                  className="h-10 w-10 bg-cyan-400 hover:bg-cyan-600 text-gray-900 rounded-[10px]"
                   disabled={isTyping || !input.trim() || !selectedCourse}
                 >
                   <Send className="h-4 w-4" />
