@@ -117,7 +117,7 @@ const Header = ({ selectedOption, setSelectedOption }) => {
             </a>
           ) : (
             <Link href="/login">
-            <button className="rounded-[7px] p-2.5 px-6 text-black bg-cyan-400 lg:text-sm hover:bg-cyan-500">
+            <button className="rounded-[7px] p-2.5 px-5 text-black bg-cyan-400 lg:text-sm hover:bg-cyan-500">
               Sign In
             </button>
             </Link>
@@ -128,7 +128,7 @@ const Header = ({ selectedOption, setSelectedOption }) => {
         {!user && (
           <Link href="/login">
           <div className="lg:hidden">
-            <button className="rounded-[7px] p-2.5 px-6 text-black bg-cyan-400 lg:text-sm hover:bg-cyan-500">
+            <button className="rounded-[7px] p-2 px-5 text-black bg-cyan-400 lg:text-sm hover:bg-cyan-500">
               Sign In
             </button>
           </div>
