@@ -1,12 +1,13 @@
-import React from 'react'
+
+import React, { forwardRef } from "react";
 import { VerticalTimeline, VerticalTimelineElement } from 'react-vertical-timeline-component';
 import { array } from "./content.js"
 import "react-vertical-timeline-component/style.min.css";
 
-const Createcourse = () => {
+const Createcourse = forwardRef((props, ref) => {
     return (
 
-        <div className='mt-28 lg:px-6 px-2 '>
+        <div ref={ref} className='mt-28 lg:px-6 px-2 '>
 
             <div className='bg-[#0c0c0c] lg:p-10 p-4'>
                 <div className='w-full mt-16'>
@@ -33,6 +34,6 @@ const Createcourse = () => {
             </div>
         </div>
     )
-}
+});
 
 export default Createcourse

@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useRef } from "react";
 import Herosection from "./Herosection";
 import Navbar from "./Navbar";
 import About from "./About";
@@ -9,7 +9,19 @@ import Createcourse from "./Createcourse";
 import Footer from "./Footer";
 
 export default function LandingPage() {
+
+
+  const createCourseRef = useRef(null);
+
+  const scrollToCreateCourse = () => {
+    if (createCourseRef.current) {
+      createCourseRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
   return (
+
+
     <div className="relative">
       {/* Sparkles Background - Positioned Behind Everything */}
       <div className="absolute inset-0 h-[calc(100vh)] -z-10 overflow-hidden">
@@ -19,12 +31,12 @@ export default function LandingPage() {
       {/* Components with Sparkles Background */}
       <div className="relative">
         <Navbar />
-        <Herosection />
+        <Herosection onScrollToCreateCourse={scrollToCreateCourse} />
       </div>
 
       {/* Normal Components */}
       <About />
-      <Createcourse/>
+      <Createcourse ref={createCourseRef} />
       <Footer/>
     </div>
   );

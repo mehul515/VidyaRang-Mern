@@ -40,8 +40,8 @@ const Sidebar = ({ selectedOption, setSelectedOption }) => {
     ];
 
     return (
-        <div className="m-5 mt-28">
-            <div className="relative w-72 p-7 rounded-2xl bg-gray-900 border-r border-gray-700 flex flex-col">
+        <div className="m-5 mt-24">
+            <div className="relative w-72 p-7 rounded-2xl bg-[#131313]   flex flex-col">
                 <div className="mt-16 flex flex-col gap-9">
                     {["Navigation", "Choose Action", "Analysis"].map((section) => (
                         <div key={section}>

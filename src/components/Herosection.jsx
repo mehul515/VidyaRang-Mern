@@ -8,7 +8,7 @@ const poppins = Poppins({
   variable: "--font-poppins",
 });
 
-const Herosection = () => {
+const Herosection = ({ onScrollToCreateCourse }) => {
 
 
   return (
@@ -33,8 +33,8 @@ const Herosection = () => {
         <a href="/signup">
           <button className='rounded-[10px] p-2.5 px-6  text-black bg-cyan-400 hover:bg-cyan-500 '>Get Started {'>'} </button>
         </a>
-        <a href="">
-          <button className="rounded-[10px] p-2.5 px-6 border-gray-700 border bg-black hover:bg-gray-950 " >How It Works</button>
+        <a >
+          <button   onClick={onScrollToCreateCourse}  className="rounded-[10px] p-2.5 px-6 border-gray-700 border bg-black hover:bg-gray-950 " >How It Works</button>
         </a>
       </div>
     </div>
