@@ -78,7 +78,7 @@ export default function Signup() {
               type="text"
               {...register("username", { required: "Username is required" })}
               placeholder="Enter your username"
-              className="w-full px-4 py-2 border rounded-[7px] bg-gray-800 text-white focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border rounded-[7px] border border-gray-700 bg-gray-800 text-white focus:ring-2 focus:ring-blue-500"
             />
             {errors.username && <p className="text-red-400 text-sm">{errors.username.message}</p>}
           </div>
@@ -89,7 +89,7 @@ export default function Signup() {
               type="email"
               {...register("email", { required: "Email is required" })}
               placeholder="your@email.com"
-              className="w-full px-4 py-2 border rounded-[7px] bg-gray-800 text-white focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border rounded-[7px] border border-gray-700 bg-gray-800 text-white focus:ring-2 focus:ring-blue-500"
             />
             {errors.email && <p className="text-red-400 text-sm">{errors.email.message}</p>}
           </div>
@@ -103,7 +103,7 @@ export default function Signup() {
                 minLength: { value: 6, message: "Password must be at least 6 characters" },
               })}
               placeholder="••••••••"
-              className="w-full px-4 py-2 border rounded-[7px] bg-gray-800 text-white focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border rounded-[7px] border border-gray-700 bg-gray-800 text-white focus:ring-2 focus:ring-blue-500"
             />
             {errors.password && <p className="text-red-400 text-sm">{errors.password.message}</p>}
           </div>
@@ -134,7 +134,7 @@ export default function Signup() {
           <div className="w-full h-px bg-gray-700"></div>
         </div>
 
-        <button onClick={handleGoogleSignIn} disabled={loading} className="w-full flex items-center justify-center border py-2 rounded-[7px] bg-gray-800 text-white hover:bg-gray-700 transition">
+        <button onClick={handleGoogleSignIn} disabled={loading} className="w-full border border-gray-700 flex items-center justify-center  py-2 rounded-[7px] bg-gray-800 text-white hover:bg-gray-700 transition">
           <img src="/google.png" alt="Google" className="w-5 h-5 mr-2" />
           {loading ? "Processing..." : "Continue with Google"}
         </button>
