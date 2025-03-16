@@ -25,7 +25,7 @@ const Header = () => {
       if (session) {
         setUser({
           name: session.user.user_metadata.full_name || "User",
-          avatarUrl: session.user.user_metadata.avatar_url || "/default-avatar.png"
+          avatarUrl: session.user.user_metadata.avatar_url || "/profile.png"
         })
       } else {
         setUser(null)
@@ -49,7 +49,7 @@ const Header = () => {
                 <img 
                   src={user.avatarUrl} 
                   alt="Profile"
-                  className="w-8 h-8 rounded-full border border-gray-600"
+                  className="h-8 rounded-full"
                 />
                 <span className="text-sm font-semibold text-white hidden lg:block">{user.name}</span>
               </div>
