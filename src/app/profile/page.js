@@ -20,7 +20,7 @@ export default function ProfilePage() {
         return;
       }
       setUserData({
-        name: session.user.user_metadata.username || "User",
+        name: session.user.user_metadata.username|| session.user.user_metadata.full_name || "User",
         email: session.user.email,
         role: session.user.user_metadata.role || "",
         avatarUrl:
