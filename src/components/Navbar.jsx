@@ -27,7 +27,7 @@ const Header = ({ selectedOption, setSelectedOption }) => {
       if (session) {
         const { user_metadata } = session.user;
         setUser({
-          name: user_metadata.full_name || "User",
+          name: session.user.user_metadata.username|| session.user.user_metadata.full_name || "User",
           avatarUrl: user_metadata.avatar_url || "/profile.png",
         });
         setUserRole(user_metadata.role || "learner"); // Fetch role (default to learner)
@@ -42,7 +42,7 @@ const Header = ({ selectedOption, setSelectedOption }) => {
       if (session) {
         const { user_metadata } = session.user;
         setUser({
-          name: user_metadata.full_name || "User",
+          name: session.user.user_metadata.username|| session.user.user_metadata.full_name || "User",
           avatarUrl: user_metadata.avatar_url || "/profile.png",
         });
         setUserRole(user_metadata.role || "learner");
