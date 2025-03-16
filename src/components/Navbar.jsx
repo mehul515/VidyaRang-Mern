@@ -8,9 +8,9 @@ import Link from "next/link";
 const allMenuItems = [
   { name: "Home", icon: HomeIcon },
   { name: "About", icon: InfoIcon },
-  { name: "Create new course", icon: PlusCircleIcon, restrictedTo: ["admin", "instructor"] }, // Restricted
+  { name: "Create new course", icon: PlusCircleIcon, restrictedTo: ["Instructor"] }, // Restricted
   { name: "Chat with course", icon: MessageCircleIcon },
-  { name: "Assign course", icon: UsersIcon, restrictedTo: ["admin", "instructor"] }, // Restricted
+  { name: "Assign course", icon: UsersIcon, restrictedTo: ["Instructor"] }, // Restricted
   { name: "Analysis", icon: BarChartIcon },
 ];
 
