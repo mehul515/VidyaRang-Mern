@@ -7,7 +7,7 @@ import { FaBrain } from "react-icons/fa";
 import { MdPlayCircle } from "react-icons/md";
 export default function Aboutmain() {
   return (
-    <div className='mt-20 max-h-screen pb-28 overflow-auto lg:px-6 px-2  ' >
+    <div className='mt-20 h-screen lg:pb-28 pb-96 overflow-auto lg:px-6 px-2  ' >
 
       <div className='bg-[#0c0c0c] lg:p-10 p-2'>
 
