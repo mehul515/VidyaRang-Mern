@@ -15,7 +15,7 @@ const Sidebar = ({ selectedOption, setSelectedOption }) => {
     ];
 
     return (
-        <div className="m-5  mt-28 ">
+        <div className="m-5 mt-28 ">
             <div className="relative w-72 p-7 rounded-2xl bg-gray-900 border-r border-gray-700 flex flex-col">
                 {/* Sidebar Options */}
                 <div className="mt-16 flex flex-col gap-9">

@@ -141,7 +141,7 @@ export default function ChatWithCourse() {
         <CardContent className="h-[50vh] md:h-[60vh] overflow-y-auto scrollbar-hide no-scrollbar">
           {messages.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-center space-y-4">
-              <div className="text-xl md:text-2xl font-bold text-cyan-400">Welcome to VidyRANG</div>
+              <div className="text-xl md:text-2xl font-bold text-cyan-400">Welcome to Vidya RANG</div>
               <div className="text-gray-400 max-w-md">
                 Select a course and ask a question to get started. I'll provide answers based on the course curriculum.
               </div>

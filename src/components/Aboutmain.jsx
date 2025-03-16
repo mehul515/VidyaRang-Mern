@@ -5,9 +5,9 @@ import { FaLock } from "react-icons/fa";
 import { FaChartBar } from "react-icons/fa";
 import { FaBrain } from "react-icons/fa";
 import { MdPlayCircle } from "react-icons/md";
-export default function About() {
+export default function Aboutmain() {
   return (
-    <div className='mt-36 lg:px-6 px-2 ' style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
+    <div className='mt-20 h-screen overflow-auto lg:px-6 px-2 ' style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
 
       <div className='bg-[#0c0c0c] lg:p-10 p-2'>
 
