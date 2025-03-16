@@ -111,7 +111,7 @@ const Header = ({ selectedOption, setSelectedOption }) => {
           {user ? (
             <a href="/profile">
             <div className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition" onClick={() => {setSelectedOption("Profile")}}>
-              <img src={user.avatarUrl} alt="Profile" className="w-8 h-8 rounded-full border border-gray-600" />
+              <img src={user.avatarUrl} alt="Profile" className=" h-8 rounded-full " />
               <span className="text-sm font-semibold text-white">{user.name}</span>
             </div>
             </a>
