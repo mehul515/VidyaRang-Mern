@@ -121,7 +121,7 @@ export default function ChatWithCourse() {
   }
 
   return (
-    <div className="mt-16 flex items-center justify-center min-h-[calc(100vh-2rem)] md:min-h-[calc(100vh-4rem)] p-0 md:p-2">
+    <div className="mt-16 flex items-center justify-center">
       <Card className="w-full shadow-lg bg-[#010912] border-cyan-900/30">
         <CardHeader className="border-cyan-900/30 p-3 md:p-4">
           <CardTitle className="flex items-center justify-between">
