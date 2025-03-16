@@ -43,7 +43,7 @@ const MainPage = () => {
     </div>
       
       {/* Content Area */}
-      <div className="flex-1 ">{renderContent()}</div>
+      <div className="flex-1 h-full overflow-hidden">{renderContent()}</div>
     </div>
     </>
   );
