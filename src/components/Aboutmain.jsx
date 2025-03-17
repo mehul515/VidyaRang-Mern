@@ -5,8 +5,10 @@ import { FaLock } from "react-icons/fa";
 import { FaChartBar } from "react-icons/fa";
 import { FaBrain } from "react-icons/fa";
 import { MdPlayCircle } from "react-icons/md";
+import Videobox from './Videobox';
 export default function Aboutmain() {
   return (
+    <>
     <div className='mt-20 h-screen lg:pb-28 pb-72 overflow-auto lg:px-6 px-2  ' >
 
       <div className='bg-[#0c0c0c] lg:p-10 p-2'>
@@ -68,9 +70,7 @@ export default function Aboutmain() {
       </div>
 
 
-
-      
-
     </div>
+    </>
   )
 }
