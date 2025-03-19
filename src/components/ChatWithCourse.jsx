@@ -1,14 +1,13 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
-import { Send, Star, X, PaperclipIcon, Smile, ChevronDown, ChevronUp } from "lucide-react"
+import { Send, Star, X, Play, Pause } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar } from "@/components/ui/avatar"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { cn } from "@/lib/utils"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 const courses = [
   { id: "react", name: "React Fundamentals" },
@@ -40,6 +39,8 @@ export default function ChatWithCourse() {
   const [showFeedbackForm, setShowFeedbackForm] = useState(false)
   const messagesEndRef = useRef(null)
   const textareaRef = useRef(null)
+  const [playingMessageId, setPlayingMessageId] = useState(null)
+  const audioRef = useRef(new Audio())
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
@@ -53,6 +54,31 @@ export default function ChatWithCourse() {
       textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 200)}px`
     }
   }, [input])
+
+  // Clean up audio when component unmounts
+  useEffect(() => {
+    const audio = audioRef.current
+
+    return () => {
+      audio.pause()
+      audio.src = ""
+    }
+  }, [])
+
+  // Handle audio end event
+  useEffect(() => {
+    const audio = audioRef.current
+
+    const handleEnded = () => {
+      setPlayingMessageId(null)
+    }
+
+    audio.addEventListener("ended", handleEnded)
+
+    return () => {
+      audio.removeEventListener("ended", handleEnded)
+    }
+  }, [])
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -120,6 +146,66 @@ export default function ChatWithCourse() {
     }
   }
 
+  const handleTextToSpeech = async (messageId, text) => {
+    const audio = audioRef.current
+
+    if (playingMessageId === messageId) {
+      // Stop playing
+      audio.pause()
+      setPlayingMessageId(null)
+    } else {
+      // If another message is playing, stop it first
+      if (playingMessageId !== null) {
+        audio.pause()
+      }
+
+      try {
+        // Show loading state
+        setPlayingMessageId("loading")
+
+        // Call our API route
+        const response = await fetch("/api/text-to-speech", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ text }),
+        })
+
+        if (!response.ok) {
+          throw new Error("Failed to generate audio")
+        }
+
+        // Get the audio blob
+        const audioBlob = await response.blob()
+
+        // Create a URL for the blob
+        const audioUrl = URL.createObjectURL(audioBlob)
+
+        // Set the audio source and play
+        audio.src = audioUrl
+
+        // Set playing message ID when audio is ready
+        audio.oncanplay = () => {
+          setPlayingMessageId(messageId)
+          audio.play().catch((err) => {
+            console.error("Error playing audio:", err)
+            setPlayingMessageId(null)
+          })
+        }
+
+        // Clean up the URL when done
+        audio.onended = () => {
+          URL.revokeObjectURL(audioUrl)
+          setPlayingMessageId(null)
+        }
+      } catch (error) {
+        console.error("Error with text-to-speech:", error)
+        setPlayingMessageId(null)
+      }
+    }
+  }
+
   return (
     <div className="mt-16 flex items-center justify-center">
       <Card className="w-full shadow-lg bg-[#010912] border-cyan-900/30">
@@ -181,6 +267,22 @@ export default function ChatWithCourse() {
                       </div>
                     )}
                     <div className="whitespace-pre-line">{message.content}</div>
+                    {message.role === "assistant" && (
+                      <div className="mt-2 flex items-center justify-end">
+                        <div
+                          onClick={() => handleTextToSpeech(message.id, message.content)}
+                          className="h-7 w-7 flex items-center justify-center rounded-full bg-cyan-900/30 border border-cyan-800/50 cursor-pointer hover:bg-cyan-900/50 transition-colors"
+                        >
+                          {playingMessageId === "loading" ? (
+                            <div className="h-3 w-3 rounded-full border-2 border-cyan-400 border-t-transparent animate-spin" />
+                          ) : playingMessageId === message.id ? (
+                            <Pause className="h-3.5 w-3.5 text-cyan-400" />
+                          ) : (
+                            <Play className="h-3.5 w-3.5 text-cyan-400" />
+                          )}
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   {message.role === "user" && (
