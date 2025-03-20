@@ -67,7 +67,7 @@ export default function Signup() {
     if (error) {
       toast.error("Google Sign-in Failed!"); // Display error if Google Sign-In fails
     } else {
-      toast.success("Google Sign-in successful. Redirecting...");
+      toast.success("Redirecting to Google..."); // Show success notification
     }
     setLoading(false);
   };
