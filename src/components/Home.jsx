@@ -5,7 +5,6 @@ import Videobox from './Videobox'
 export default function Home() {
   return (
     <div className=" mt-20 h-screen lg:pb-28 pb-72 overflow-auto lg:px-6 px-2 text-center flex flex-col ">
-      {/* <Spotlight className="absolute top-10 left-0 md:left-40 md:top-0" fill="white" /> */}
 
       <div className="text-white pb-2">
         <h1 className="lg:text-7xl text-5xl text-cyan-400 font-bold inline-block ">VidyaRANG</h1>
