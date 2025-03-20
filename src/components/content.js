@@ -1,8 +1,6 @@
-import { icons } from "lucide-react";
 import { MdOutlineCreateNewFolder } from "react-icons/md";
 import { PiChatCenteredTextFill } from "react-icons/pi";
 import { MdUpload } from "react-icons/md";
-import { FaCheckSquare } from "react-icons/fa";
 import { MdOutlineAutorenew } from "react-icons/md";
 import { IoMdCheckboxOutline } from "react-icons/io";
 

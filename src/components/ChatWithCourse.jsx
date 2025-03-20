@@ -16,17 +16,6 @@ const courses = [
   { id: "node", name: "Node.js Backend Development" },
 ]
 
-// Add custom scrollbar hiding CSS
-const scrollbarHideStyles = `
-  .no-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-  .no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-`
-
 export default function ChatWithCourse() {
   const [messages, setMessages] = useState([])
   const [input, setInput] = useState("")
@@ -139,6 +128,7 @@ export default function ChatWithCourse() {
     setMessages((prevMessages) => [...prevMessages, systemMessage])
   }
 
+  // submit the query on clicking enter
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault()
@@ -146,6 +136,8 @@ export default function ChatWithCourse() {
     }
   }
 
+
+  // function for handling Text to speech
   const handleTextToSpeech = async (messageId, text) => {
     const audio = audioRef.current
 
