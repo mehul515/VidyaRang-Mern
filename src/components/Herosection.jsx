@@ -1,7 +1,8 @@
-import React from "react";
+import {React, useState, useRef} from "react";
 import { AnimatedGradientText } from "@/components/magicui/animated-gradient-text";
 import { Poppins } from "next/font/google";
-
+import { FaPlay } from "react-icons/fa";
+import { FaPause } from "react-icons/fa";
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "600", "700"], // Choose desired weights
@@ -9,7 +10,19 @@ const poppins = Poppins({
 });
 
 const Herosection = ({ onScrollToCreateCourse }) => {
+  
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef(null);
 
+  const togglePlayPause = () => {
+    if (isPlaying) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.currentTime = 0;
+      audioRef.current.play();
+    }
+    setIsPlaying(!isPlaying);
+  };
 
   return (
     <div className={`${poppins.variable} font-sans relative text-center mt-44 flex flex-col justify-center items-center`}>
@@ -28,7 +41,10 @@ const Herosection = ({ onScrollToCreateCourse }) => {
         <h1 className=" text-gray-300">An AIGurukul Initiative - Build by students for students</h1>
       </div>
 
-      <div className="flex gap-10 z-99  mt-10 justify-center items-center">
+      <div className="flex items-center z-99  mt-10  gap-10 lg:flex-row flex-col">
+
+
+      <div className="flex gap-10 justify-center items-center">
 
         <a href="/signup">
           <button className='rounded-[10px] p-2.5 px-6  text-black bg-cyan-400 hover:bg-cyan-500 '>Get Started {'>'} </button>
@@ -36,6 +52,15 @@ const Herosection = ({ onScrollToCreateCourse }) => {
         <a >
           <button   onClick={onScrollToCreateCourse}  className="rounded-[10px] p-2.5 px-6 border-gray-700 border bg-black hover:bg-gray-950 " >How It Works</button>
         </a>
+      </div>
+      <div className="">
+
+        <audio ref={audioRef}  src="/assets/vidyarang.wav" preload="auto" />
+        <button className=" text-lg border text-cyan-400 bg-black border-gray-700 p-2.5 px-6 rounded-xl" onClick={togglePlayPause}>
+        {isPlaying ? <FaPause /> :  <FaPlay />}
+      </button>
+      </div>
+
       </div>
     </div>
   );
