@@ -24,6 +24,10 @@ const Herosection = ({ onScrollToCreateCourse }) => {
     setIsPlaying(!isPlaying);
   };
 
+  const handleAudioEnd = () => {
+    setIsPlaying(false); // Reset button to "Play" when audio finishes
+  };
+
   return (
     <div className={`${poppins.variable} font-sans relative text-center mt-44 flex flex-col justify-center items-center`}>
 
@@ -55,7 +59,7 @@ const Herosection = ({ onScrollToCreateCourse }) => {
       </div>
       <div className="">
 
-        <audio ref={audioRef}  src="/assets/vidyarang.wav" preload="auto" />
+        <audio ref={audioRef}  onEnded={handleAudioEnd} src="/assets/vidyarang.wav" preload="auto" />
         <button className=" text-lg border text-cyan-400 bg-black border-gray-700 p-2.5 px-6 rounded-xl" onClick={togglePlayPause}>
         {isPlaying ? <FaPause /> :  <FaPlay />}
       </button>
