@@ -51,7 +51,6 @@ const MainPage = () => {
         <div className="hidden lg:block h-screen border-r border-gray-900">
           <Sidebar selectedOption={selectedOption} setSelectedOption={setSelectedOption} />
         </div>
-
         {/* Main content area that dynamically displays the selected component */}
         <div className="flex-1 overflow-hidden h-full lg:p-4 p-2">
           {renderContent()}
