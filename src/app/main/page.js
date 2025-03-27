@@ -50,7 +50,7 @@ const MainPage = () => {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 overflow-hidden h-full  lg:p-4 p-2 ">{renderContent()}</div>
+        <div className="flex-1 overflow-hidden h-full lg:p-4  p-2 ">{renderContent()}</div>
       </div>
     </>
   );
