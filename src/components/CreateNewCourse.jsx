@@ -73,8 +73,8 @@ export default function CreateNewCourse() {
   const acceptedFileTypes = ".pdf,.ppt,.pptx,.doc,.docx,.xls,.xlsx,.json,.csv,.txt";
 
   return (
-    <div className="min-h-screen overflow-aut  bg-gray-900 text-gray-100 flex  items-center justify-center p-4 lg:pb-28 pb-72 ">
-      <div className="w-full max-w-md space-y-8 bg-gray-900 p-8 rounded-xl overflow-y-auto max-h-screen shadow-lg">
+    <div className="min-h-screen overflow-aut  bg-gray-950 text-gray-100 flex  items-center justify-center p-4 lg:pb-28 pb-72 ">
+      <div className="w-full mt-14 max-w-md space-y-8 bg-gray-900 p-8 rounded-xl overflow-y-auto max-h-screen shadow-lg">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-cyan-400">Create New Course</h1>
           <p className="text-gray-400 mt-2 text-sm">Fill in the details to create your course</p>
