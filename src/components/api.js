@@ -1,5 +1,5 @@
 // api.js- for req to api
-// const API_BASE_URL = 'http://23.23.188.189:8080'; // Change this to your FastAPI server URL
+const API_BASE_URL = 'https://23.23.188.189:8080'; // Change this to your FastAPI server URL
 
 export const createCourse = async (courseName, files) => {
   const formData = new FormData();
@@ -11,8 +11,7 @@ export const createCourse = async (courseName, files) => {
   });
 
   try {
-    // const response = await fetch(`${API_BASE_URL}/create-course/`, {
-    const response = await fetch("/api/create-course/", {
+    const response = await fetch(`${API_BASE_URL}/create-course/`, {
       method: 'POST',
       body: formData,
       // Don't set Content-Type header - the browser will set it automatically with the boundary
