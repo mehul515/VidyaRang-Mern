@@ -1,4 +1,4 @@
-// api.js
+// api.js- for req to api
 const API_BASE_URL = 'http://23.23.188.189:8080'; // Change this to your FastAPI server URL
 
 export const createCourse = async (courseName, files) => {
