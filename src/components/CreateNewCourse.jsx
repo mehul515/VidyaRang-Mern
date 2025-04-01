@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { Upload, Eye, EyeOff, FileText, Trash2 } from "lucide-react";
+import { createCourse } from "./api"; // Import the API service
 
 export default function CreateNewCourse() {
   const [isPublic, setIsPublic] = useState(false);
@@ -9,8 +10,11 @@ export default function CreateNewCourse() {
   const [courseNameError, setCourseNameError] = useState(false);
   const [files, setFiles] = useState([]);
   const [isDragging, setIsDragging] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState(null);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
 
-  // Function to handle file selection (appends files instead of replacing)
+  // Function to handle file selection
   const handleFileChange = (e) => {
     if (e.target.files) {
       setFiles((prevFiles) => [...prevFiles, ...Array.from(e.target.files)]);
@@ -62,10 +66,34 @@ export default function CreateNewCourse() {
   };
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateCourseName(courseName)) {
-      console.log({ courseName, isPublic, files });
+    setSubmitError(null);
+    setSubmitSuccess(false);
+    
+    if (!validateCourseName(courseName)) {
+      return;
+    }
+
+    if (files.length === 0) {
+      setSubmitError('Please upload at least one file');
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const response = await createCourse(courseName, files);
+      setSubmitSuccess(true);
+      // Reset form if needed
+      setCourseName('');
+      setFiles([]);
+      console.log('Course created successfully:', response);
+    } catch (error) {
+      setSubmitError(error.message || 'Failed to create course');
+      console.error('Error:', error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -73,12 +101,24 @@ export default function CreateNewCourse() {
   const acceptedFileTypes = ".pdf,.ppt,.pptx,.doc,.docx,.xls,.xlsx,.json,.csv,.txt";
 
   return (
-    <div className="min-h-screen overflow-auto  bg-gray-950 text-gray-100 flex  items-center justify-center p-4 ">
-      <div className="w-full mt-14 max-w-md space-y-8 bg-gray-900 p-8 rounded-xl overflow-y-auto max-h-screen shadow-lg lg:pb-28 pb-72 ">
+    <div className="min-h-screen overflow-auto bg-gray-950 text-gray-100 flex items-center justify-center p-4">
+      <div className="w-full mt-14 max-w-md space-y-8 bg-gray-900 p-8 rounded-xl overflow-y-auto max-h-screen shadow-lg lg:pb-28 pb-72">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-cyan-400">Create New Course</h1>
           <p className="text-gray-400 mt-2 text-sm">Fill in the details to create your course</p>
         </div>
+
+        {submitSuccess && (
+          <div className="p-4 bg-green-900/50 border border-green-500 rounded-lg text-green-400">
+            Course created successfully!
+          </div>
+        )}
+
+        {submitError && (
+          <div className="p-4 bg-red-900/50 border border-red-500 rounded-lg text-red-400">
+            {submitError}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Course Name Input */}
@@ -173,7 +213,14 @@ export default function CreateNewCourse() {
                       <FileText className="h-3 w-3 mr-2 text-cyan-400" />
                       <span className="truncate">{file.name}</span>
                       <span className="ml-auto text-gray-500 pl-2">{(file.size / 1024).toFixed(0)} KB</span>
-                      <button onClick={() => removeFile(index)} className="ml-2 text-red-500 hover:text-red-400">
+                      <button 
+                        type="button" // Important to prevent form submission
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          removeFile(index);
+                        }} 
+                        className="ml-2 text-red-500 hover:text-red-400"
+                      >
                         <Trash2 className="h-4 w-4" />
                       </button>
                     </li>
@@ -184,8 +231,12 @@ export default function CreateNewCourse() {
           </div>
 
           {/* Submit Button */}
-          <button type="submit" className="w-full bg-cyan-500 text-white py-2 rounded-lg hover:bg-cyan-600 transition">
-            Create Course
+          <button 
+            type="submit" 
+            className="w-full bg-cyan-500 text-white py-2 rounded-lg hover:bg-cyan-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? 'Creating...' : 'Create Course'}
           </button>
         </form>
       </div>
