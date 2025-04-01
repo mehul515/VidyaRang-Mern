@@ -1,5 +1,5 @@
 // api.js- for req to api serving on https
-const API_BASE_URL = 'https://23.23.188.189:8080'; // Change this to your FastAPI server URL
+const API_BASE_URL = 'https://vidyarang.aigurukul.dev'; // Change this to your FastAPI server URL
 
 export const createCourse = async (courseName, files) => {
   const formData = new FormData();
