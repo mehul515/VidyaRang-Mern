@@ -9,13 +9,6 @@ import { Avatar } from "@/components/ui/avatar"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { cn } from "@/lib/utils"
 
-const courses = [
-  { id: "react", name: "React Fundamentals" },
-  { id: "nextjs", name: "Next.js Advanced" },
-  { id: "typescript", name: "TypeScript Essentials" },
-  { id: "node", name: "Node.js Backend Development" },
-]
-
 export default function ChatWithCourse() {
   const [messages, setMessages] = useState([])
   const [input, setInput] = useState("")
@@ -26,10 +19,37 @@ export default function ChatWithCourse() {
   const [rating, setRating] = useState(0)
   const [feedback, setFeedback] = useState("")
   const [showFeedbackForm, setShowFeedbackForm] = useState(false)
+  const [courses, setCourses] = useState([])
+  const [loadingCourses, setLoadingCourses] = useState(true)
   const messagesEndRef = useRef(null)
   const textareaRef = useRef(null)
   const [playingMessageId, setPlayingMessageId] = useState(null)
   const audioRef = useRef(new Audio())
+
+  // Fetch courses from API
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const response = await fetch("http://localhost:8000/courses")
+        if (!response.ok) {
+          throw new Error("Failed to fetch courses")
+        }
+        const data = await response.json()
+        // Transform the array of course names into objects with id and name
+        const formattedCourses = data.courses.map(course => ({
+          id: course.toLowerCase().replace(/\s+/g, '-'),
+          name: course
+        }))
+        setCourses(formattedCourses)
+      } catch (error) {
+        console.error("Error fetching courses:", error)
+      } finally {
+        setLoadingCourses(false)
+      }
+    }
+
+    fetchCourses()
+  }, [])
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
@@ -135,7 +155,6 @@ export default function ChatWithCourse() {
       handleSubmit(e)
     }
   }
-
 
   // function for handling Text to speech
   const handleTextToSpeech = async (messageId, text) => {
@@ -368,13 +387,13 @@ export default function ChatWithCourse() {
           {!conversationEnded ? (
             <form onSubmit={handleSubmit} className="w-full space-y-3">
               <div className="flex gap-2">
-                <Select value={selectedCourse} onValueChange={setSelectedCourse} disabled={isTyping}>
+                <Select value={selectedCourse} onValueChange={setSelectedCourse} disabled={isTyping || loadingCourses}>
                   <SelectTrigger className="w-full md:w-[200px] bg-[#0a1628] border-cyan-900/50 text-gray-300 focus:ring-cyan-600 font-medium">
-                    <SelectValue placeholder="Select Course" />
+                    <SelectValue placeholder={loadingCourses ? "Loading courses..." : "Select Course"} />
                   </SelectTrigger>
                   <SelectContent className="bg-[#0a1628] border-cyan-900/50 text-gray-300 font-medium">
                     {courses.map((course) => (
-                      <SelectItem key={course.id} value={course.id}>
+                      <SelectItem key={course.name} value={course.id}>
                         {course.name}
                       </SelectItem>
                     ))}
@@ -391,20 +410,19 @@ export default function ChatWithCourse() {
                     onKeyDown={handleKeyDown}
                     placeholder="Ask a question about the selected course..."
                     className="min-h-16 resize-none bg-[#0a1628] border-cyan-900/50 text-gray-300 font-medium placeholder:text-gray-500 focus-visible:ring-cyan-600"
-                    disabled={isTyping || !selectedCourse}
+                    disabled={isTyping || !selectedCourse || loadingCourses}
                   />
                 </div>
                 <Button
                   type="submit"
                   size="icon"
                   className="h-10 w-10 bg-cyan-400 hover:bg-cyan-600 text-gray-900 rounded-[10px]"
-                  disabled={isTyping || !input.trim() || !selectedCourse}
+                  disabled={isTyping || !input.trim() || !selectedCourse || loadingCourses}
                 >
                   <Send className="h-4 w-4" />
                 </Button>
               </div>
 
-              {/* </div> */}
               <div className="text-xs text-gray-500 text-center">Press Enter to send, Shift+Enter for new line</div>
             </form>
           ) : (
@@ -430,4 +448,3 @@ export default function ChatWithCourse() {
     </div>
   )
 }
-
