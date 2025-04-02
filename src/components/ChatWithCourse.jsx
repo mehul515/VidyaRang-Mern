@@ -8,6 +8,8 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Avatar } from "@/components/ui/avatar"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { cn } from "@/lib/utils"
+import { supabase } from "@/lib/supabaseClient"
+import { useRouter } from "next/navigation"
 
 export default function ChatWithCourse() {
   const [messages, setMessages] = useState([])
@@ -21,21 +23,43 @@ export default function ChatWithCourse() {
   const [showFeedbackForm, setShowFeedbackForm] = useState(false)
   const [courses, setCourses] = useState([])
   const [loadingCourses, setLoadingCourses] = useState(true)
+  const [username, setUsername] = useState("")
   const messagesEndRef = useRef(null)
   const textareaRef = useRef(null)
   const [playingMessageId, setPlayingMessageId] = useState(null)
   const audioRef = useRef(new Audio())
+  const router = useRouter()
+
+  // Fetch user session and username
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data: { session } } = await supabase.auth.getSession()
+      
+      if (!session) {
+        router.push("/login")
+        return
+      }
+
+      setUsername(
+        session.user.user_metadata.username || 
+        session.user.user_metadata.full_name || 
+        session.user.email?.split('@')[0] || 
+        "User"
+      )
+    }
+
+    fetchUser()
+  }, [router])
 
   // Fetch courses from API
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await fetch("https://vidyarang.aigurukul.dev/courses")
+        const response = await fetch("http://localhost:8000/courses")
         if (!response.ok) {
           throw new Error("Failed to fetch courses")
         }
         const data = await response.json()
-        // Transform the array of course names into objects with id and name
         const formattedCourses = data.courses.map(course => ({
           id: course.toLowerCase().replace(/\s+/g, '-'),
           name: course
@@ -67,7 +91,6 @@ export default function ChatWithCourse() {
   // Clean up audio when component unmounts
   useEffect(() => {
     const audio = audioRef.current
-
     return () => {
       audio.pause()
       audio.src = ""
@@ -77,21 +100,18 @@ export default function ChatWithCourse() {
   // Handle audio end event
   useEffect(() => {
     const audio = audioRef.current
-
     const handleEnded = () => {
       setPlayingMessageId(null)
     }
-
     audio.addEventListener("ended", handleEnded)
-
     return () => {
       audio.removeEventListener("ended", handleEnded)
     }
   }, [])
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!input.trim() || !selectedCourse) return
+    if (!input.trim() || !selectedCourse || !username) return
 
     // Add user message
     const userMessage = {
@@ -103,25 +123,54 @@ export default function ChatWithCourse() {
     setMessages((prevMessages) => [...prevMessages, userMessage])
     setInput("")
 
-    // Simulate AI typing
     setIsTyping(true)
 
-    // Simulate AI response after a delay
-    setTimeout(() => {
+    try {
       const courseName = courses.find((c) => c.id === selectedCourse)?.name
+      
+      // Call the chat API
+      const response = await fetch("https://23.23.188.189:8080/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          option: courseName,
+          username: username,
+          prompt: input
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to get response from chat API")
+      }
+
+      const data = await response.json()
+      const aiResponse = data.response || "I couldn't generate a response for that question."
+
       const aiMessage = {
         id: Date.now() + 1,
         role: "assistant",
-        content: `Based on the ${courseName} curriculum, here's my response to your question: "${input}".\n\nThis would be a detailed explanation related to the ${courseName} course content. The actual implementation would connect to your AI backend to generate a real response based on the course material.`,
+        content: aiResponse,
       }
+      
       setMessages((prevMessages) => [...prevMessages, aiMessage])
-      setIsTyping(false)
 
       // After a few messages, show the rating option
       if (messages.length >= 3 && !conversationEnded) {
         setShowRating(true)
       }
-    }, 1500)
+    } catch (error) {
+      console.error("Error getting chat response:", error)
+      const errorMessage = {
+        id: Date.now() + 1,
+        role: "assistant",
+        content: "Sorry, I encountered an error while processing your request. Please try again later.",
+      }
+      setMessages((prevMessages) => [...prevMessages, errorMessage])
+    } finally {
+      setIsTyping(false)
+    }
   }
 
   const handleEndConversation = () => {
@@ -135,11 +184,9 @@ export default function ChatWithCourse() {
   }
 
   const submitFeedback = () => {
-    // Here you would send the rating and feedback to your backend
     console.log("Rating:", rating, "Feedback:", feedback)
     setShowFeedbackForm(false)
 
-    // Add a system message acknowledging the feedback
     const systemMessage = {
       id: Date.now(),
       role: "system",
@@ -148,7 +195,6 @@ export default function ChatWithCourse() {
     setMessages((prevMessages) => [...prevMessages, systemMessage])
   }
 
-  // submit the query on clicking enter
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault()
@@ -156,25 +202,19 @@ export default function ChatWithCourse() {
     }
   }
 
-  // function for handling Text to speech
   const handleTextToSpeech = async (messageId, text) => {
     const audio = audioRef.current
 
     if (playingMessageId === messageId) {
-      // Stop playing
       audio.pause()
       setPlayingMessageId(null)
     } else {
-      // If another message is playing, stop it first
       if (playingMessageId !== null) {
         audio.pause()
       }
 
       try {
-        // Show loading state
         setPlayingMessageId("loading")
-
-        // Call our API route
         const response = await fetch("/api/text-to-speech", {
           method: "POST",
           headers: {
@@ -187,16 +227,10 @@ export default function ChatWithCourse() {
           throw new Error("Failed to generate audio")
         }
 
-        // Get the audio blob
         const audioBlob = await response.blob()
-
-        // Create a URL for the blob
         const audioUrl = URL.createObjectURL(audioBlob)
-
-        // Set the audio source and play
         audio.src = audioUrl
 
-        // Set playing message ID when audio is ready
         audio.oncanplay = () => {
           setPlayingMessageId(messageId)
           audio.play().catch((err) => {
@@ -205,7 +239,6 @@ export default function ChatWithCourse() {
           })
         }
 
-        // Clean up the URL when done
         audio.onended = () => {
           URL.revokeObjectURL(audioUrl)
           setPlayingMessageId(null)
@@ -218,7 +251,7 @@ export default function ChatWithCourse() {
   }
 
   return (
-    <div className="mt-16 flex items-center justify-center">
+    <div className="mt-24 flex items-center justify-center">
       <Card className="w-full shadow-lg bg-[#010912] border-cyan-900/30">
         <CardHeader className="border-cyan-900/30 p-3 md:p-4">
           <CardTitle className="flex items-center justify-between">
@@ -417,7 +450,7 @@ export default function ChatWithCourse() {
                   type="submit"
                   size="icon"
                   className="h-10 w-10 bg-cyan-400 hover:bg-cyan-600 text-gray-900 rounded-[10px]"
-                  disabled={isTyping || !input.trim() || !selectedCourse || loadingCourses}
+                  disabled={isTyping || !input.trim() || !selectedCourse || loadingCourses || !username}
                 >
                   <Send className="h-4 w-4" />
                 </Button>
