@@ -30,7 +30,7 @@ export default function ChatWithCourse() {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await fetch("http://localhost:8000/courses")
+        const response = await fetch("https://vidyarang.aigurukul.dev/courses")
         if (!response.ok) {
           throw new Error("Failed to fetch courses")
         }
