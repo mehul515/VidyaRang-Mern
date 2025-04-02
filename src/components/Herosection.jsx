@@ -50,7 +50,7 @@ const Herosection = ({ onScrollToCreateCourse }) => {
 
       <div className="flex gap-10 justify-center items-center">
 
-        <a href="/signup">
+        <a href="/main">
           <button className='rounded-[10px] p-2.5 px-6  text-black bg-cyan-400 hover:bg-cyan-500 '>Get Started {'>'} </button>
         </a>
         <a >
