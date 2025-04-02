@@ -21,12 +21,13 @@ export default function ChatWithCourse() {
   const [showFeedbackForm, setShowFeedbackForm] = useState(false)
   const [courses, setCourses] = useState([])
   const [loadingCourses, setLoadingCourses] = useState(true)
+  const [username, setUsername] = useState("") // Add username state
   const messagesEndRef = useRef(null)
   const textareaRef = useRef(null)
   const [playingMessageId, setPlayingMessageId] = useState(null)
   const audioRef = useRef(new Audio())
 
-  // Fetch courses from API
+  // Fetch courses from API and set username
   useEffect(() => {
     const fetchCourses = async () => {
       try {
@@ -35,12 +36,14 @@ export default function ChatWithCourse() {
           throw new Error("Failed to fetch courses")
         }
         const data = await response.json()
-        // Transform the array of course names into objects with id and name
         const formattedCourses = data.courses.map(course => ({
           id: course.toLowerCase().replace(/\s+/g, '-'),
           name: course
         }))
         setCourses(formattedCourses)
+        
+        // Set a default username (you can modify this to get from user auth)
+        setUsername("user_" + Math.random().toString(36).substring(2, 8))
       } catch (error) {
         console.error("Error fetching courses:", error)
       } finally {
@@ -67,7 +70,6 @@ export default function ChatWithCourse() {
   // Clean up audio when component unmounts
   useEffect(() => {
     const audio = audioRef.current
-
     return () => {
       audio.pause()
       audio.src = ""
@@ -77,19 +79,16 @@ export default function ChatWithCourse() {
   // Handle audio end event
   useEffect(() => {
     const audio = audioRef.current
-
     const handleEnded = () => {
       setPlayingMessageId(null)
     }
-
     audio.addEventListener("ended", handleEnded)
-
     return () => {
       audio.removeEventListener("ended", handleEnded)
     }
   }, [])
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     if (!input.trim() || !selectedCourse) return
 
@@ -106,22 +105,50 @@ export default function ChatWithCourse() {
     // Simulate AI typing
     setIsTyping(true)
 
-    // Simulate AI response after a delay
-    setTimeout(() => {
-      const courseName = courses.find((c) => c.id === selectedCourse)?.name
+    try {
+      // Call Vidya RANG chat API
+      const response = await fetch("https://vidyarang.aigurukul.dev/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          option: selectedCourse,
+          username: username,
+          prompt: input
+        })
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to get response from AI")
+      }
+
+      const data = await response.json()
+      
+      // Add AI response to messages
       const aiMessage = {
         id: Date.now() + 1,
         role: "assistant",
-        content: `Based on the ${courseName} curriculum, here's my response to your question: "${input}".\n\nThis would be a detailed explanation related to the ${courseName} course content. The actual implementation would connect to your AI backend to generate a real response based on the course material.`,
+        content: data.response, // Use the response from the API
       }
       setMessages((prevMessages) => [...prevMessages, aiMessage])
-      setIsTyping(false)
 
       // After a few messages, show the rating option
       if (messages.length >= 3 && !conversationEnded) {
         setShowRating(true)
       }
-    }, 1500)
+    } catch (error) {
+      console.error("Error getting AI response:", error)
+      // Add error message if API fails
+      const errorMessage = {
+        id: Date.now() + 1,
+        role: "assistant",
+        content: "Sorry, I encountered an error processing your request. Please try again.",
+      }
+      setMessages((prevMessages) => [...prevMessages, errorMessage])
+    } finally {
+      setIsTyping(false)
+    }
   }
 
   const handleEndConversation = () => {
