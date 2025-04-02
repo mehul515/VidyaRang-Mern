@@ -8,7 +8,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Avatar } from "@/components/ui/avatar"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { cn } from "@/lib/utils"
-import { supabase } from "@/lib/supabaseClient"
+import supabase from "@/app/supabaseClient"
 import { useRouter } from "next/navigation"
 
 export default function ChatWithCourse() {
