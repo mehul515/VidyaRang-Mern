@@ -107,6 +107,8 @@ export default function ChatWithCourse() {
 
     try {
       // Call Vidya RANG chat API
+      console.log(selectedCourse + " " + input + " " + username);
+      
       const response = await fetch("https://vidyarang.aigurukul.dev/chat", {
         method: "POST",
         headers: {
@@ -114,11 +116,11 @@ export default function ChatWithCourse() {
         },
         body: JSON.stringify({
           option: selectedCourse,
-          username: username,
+          username: "username",
           prompt: input
         })
       })
-
+      console.log(response);
       if (!response.ok) {
         throw new Error("Failed to get response from AI")
       }
