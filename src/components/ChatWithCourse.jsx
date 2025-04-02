@@ -8,6 +8,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Avatar } from "@/components/ui/avatar"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { cn } from "@/lib/utils"
+import { getCourses, sendChatMessage } from "./api"
 
 export default function ChatWithCourse() {
   const [messages, setMessages] = useState([])
@@ -31,28 +32,22 @@ export default function ChatWithCourse() {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await fetch("https://vidyarang.aigurukul.dev/courses")
-        if (!response.ok) {
-          throw new Error("Failed to fetch courses")
-        }
-        const data = await response.json()
-        const formattedCourses = data.courses.map(course => ({
-          id: course.toLowerCase().replace(/\s+/g, '-'),
-          name: course
-        }))
-        setCourses(formattedCourses)
-        
+        const coursesData = await getCourses();
+        setCourses(coursesData);
         // Set a default username (you can modify this to get from user auth)
-        setUsername("user_" + Math.random().toString(36).substring(2, 8))
+        setUsername("user_" + Math.random().toString(36).substring(2, 8));
       } catch (error) {
-        console.error("Error fetching courses:", error)
+        console.error("Error fetching courses:", error);
       } finally {
-        setLoadingCourses(false)
+        setLoadingCourses(false);
       }
-    }
+    };
+  
+    fetchCourses();
+  }, []);
 
-    fetchCourses()
-  }, [])
+
+
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
@@ -89,8 +84,8 @@ export default function ChatWithCourse() {
   }, [])
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    if (!input.trim() || !selectedCourse) return
+    e.preventDefault();
+    if (!input.trim() || !selectedCourse) return;
   
     // Add user message
     const userMessage = {
@@ -98,63 +93,42 @@ export default function ChatWithCourse() {
       role: "user",
       content: input,
       course: selectedCourse,
-    }
-    setMessages((prevMessages) => [...prevMessages, userMessage])
-    setInput("")
+    };
+    setMessages((prevMessages) => [...prevMessages, userMessage]);
+    setInput("");
   
     // Simulate AI typing
-    setIsTyping(true)
+    setIsTyping(true);
   
     try {
-      // Call Vidya RANG chat API
-      const response = await fetch("https://vidyarang.aigurukul.dev/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-        },
-        body: JSON.stringify({
-          option: selectedCourse,
-          username: username,
-          prompt: input
-        })
-      })
-  
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}))
-        throw new Error(
-          errorData.message || 
-          `Server responded with status ${response.status}: ${response.statusText}`
-        )
-      }
-  
-      const data = await response.json()
+      // Call our chat API service
+      const data = await sendChatMessage(selectedCourse, username, input);
       
       // Add AI response to messages
       const aiMessage = {
         id: Date.now() + 1,
         role: "assistant",
         content: data.response || "I couldn't generate a response. Please try again.",
-      }
-      setMessages((prevMessages) => [...prevMessages, aiMessage])
+      };
+      setMessages((prevMessages) => [...prevMessages, aiMessage]);
   
       // After a few messages, show the rating option
       if (messages.length >= 3 && !conversationEnded) {
-        setShowRating(true)
+        setShowRating(true);
       }
     } catch (error) {
-      console.error("Error getting AI response:", error)
+      console.error("Error getting AI response:", error);
       // Add error message if API fails
       const errorMessage = {
         id: Date.now() + 1,
         role: "assistant",
         content: `Sorry, I encountered an error: ${error.message}`,
-      }
-      setMessages((prevMessages) => [...prevMessages, errorMessage])
+      };
+      setMessages((prevMessages) => [...prevMessages, errorMessage]);
     } finally {
-      setIsTyping(false)
+      setIsTyping(false);
     }
-  }
+  };
 
   const handleEndConversation = () => {
     setConversationEnded(true)
@@ -425,7 +399,7 @@ export default function ChatWithCourse() {
                   </SelectTrigger>
                   <SelectContent className="bg-[#0a1628] border-cyan-900/50 text-gray-300 font-medium">
                     {courses.map((course) => (
-                      <SelectItem key={course.name} value={course.id}>
+                      <SelectItem key={course.name} value={course.name}>
                         {course.name}
                       </SelectItem>
                     ))}
