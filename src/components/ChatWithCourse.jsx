@@ -22,7 +22,7 @@ export default function ChatWithCourse() {
   const [showFeedbackForm, setShowFeedbackForm] = useState(false)
   const [courses, setCourses] = useState([])
   const [loadingCourses, setLoadingCourses] = useState(true)
-  const [username, setUsername] = useState("") // Add username state
+  const [username, setUsername] = useState("")
   const messagesEndRef = useRef(null)
   const textareaRef = useRef(null)
   const [playingMessageId, setPlayingMessageId] = useState(null)
@@ -34,7 +34,6 @@ export default function ChatWithCourse() {
       try {
         const coursesData = await getCourses();
         setCourses(coursesData);
-        // Set a default username (you can modify this to get from user auth)
         setUsername("user_" + Math.random().toString(36).substring(2, 8));
       } catch (error) {
         console.error("Error fetching courses:", error);
@@ -45,9 +44,6 @@ export default function ChatWithCourse() {
   
     fetchCourses();
   }, []);
-
-
-
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
@@ -141,7 +137,6 @@ export default function ChatWithCourse() {
   }
 
   const submitFeedback = () => {
-    // Here you would send the rating and feedback to your backend
     console.log("Rating:", rating, "Feedback:", feedback)
     setShowFeedbackForm(false)
 
@@ -154,7 +149,6 @@ export default function ChatWithCourse() {
     setMessages((prevMessages) => [...prevMessages, systemMessage])
   }
 
-  // submit the query on clicking enter
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault()
@@ -162,7 +156,6 @@ export default function ChatWithCourse() {
     }
   }
 
-  // function for handling Text to speech
   const handleTextToSpeech = async (messageId, text) => {
     const audio = audioRef.current
 
@@ -284,7 +277,7 @@ export default function ChatWithCourse() {
                       </div>
                     )}
                     <div className="whitespace-pre-line">{message.content}</div>
-                    {message.role === "assistant" && (
+                    {message.role === "assistant" && message.content.length <= 350 && (
                       <div className="mt-2 flex items-center justify-end">
                         <div
                           onClick={() => handleTextToSpeech(message.id, message.content)}
