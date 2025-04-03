@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Upload, Eye, EyeOff, FileText, Trash2 } from "lucide-react";
 import { createCourse } from "./api"; // Import the API service
+import { toast, ToastContainer } from "react-toastify"; // Importing toast for notifications
 
 export default function CreateNewCourse() {
   const [isPublic, setIsPublic] = useState(false);
@@ -11,8 +12,6 @@ export default function CreateNewCourse() {
   const [files, setFiles] = useState([]);
   const [isDragging, setIsDragging] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState(null);
-  const [submitSuccess, setSubmitSuccess] = useState(false);
 
   // Function to handle file selection
   const handleFileChange = (e) => {
@@ -64,19 +63,19 @@ export default function CreateNewCourse() {
       validateCourseName(value);
     }
   };
-
+  
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitError(null);
-    setSubmitSuccess(false);
+
     
     if (!validateCourseName(courseName)) {
+      toast.error("Please Try diffrent course name");
       return;
     }
 
     if (files.length === 0) {
-      setSubmitError('Please upload at least one file');
+      toast.error("Please upload atleast one file");
       return;
     }
 
@@ -84,16 +83,17 @@ export default function CreateNewCourse() {
 
     try {
       const response = await createCourse(courseName, files);
-      setSubmitSuccess(true);
       // Reset form if needed
       setCourseName('');
       setFiles([]);
+      toast.success("Course created Successfully");
       console.log('Course created successfully:', response);
     } catch (error) {
-      setSubmitError(error.message || 'Failed to create course');
+      toast.error("Failed to Create course");
       console.error('Error:', error);
     } finally {
       setIsSubmitting(false);
+      
     }
   };
 
@@ -107,18 +107,7 @@ export default function CreateNewCourse() {
           <h1 className="text-2xl font-bold text-cyan-400">Create New Course</h1>
           <p className="text-gray-400 mt-2 text-sm">Fill in the details to create your course</p>
         </div>
-
-        {submitSuccess && (
-          <div className="p-4 bg-green-900/50 border border-green-500 rounded-lg text-green-400">
-            Course created successfully!
-          </div>
-        )}
-
-        {submitError && (
-          <div className="p-4 bg-red-900/50 border border-red-500 rounded-lg text-red-400">
-            {submitError}
-          </div>
-        )}
+        <ToastContainer/>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Course Name Input */}
