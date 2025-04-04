@@ -104,7 +104,7 @@ const Header = ({ selectedOption, setSelectedOption }) => {
 
               {/* Menu Items (Only visible in "/main") */}
               <div className="flex flex-col gap-4 mt-4">
-                {pathname === "/main" &&
+                {(pathname === "/main" || pathname === "/chat" || pathname === "/about" || pathname === "/assign" || pathname === "/create-course" || pathname === "/analysis") &&
                   menuItems.map(item => (
                     <button
                       key={item.name}
