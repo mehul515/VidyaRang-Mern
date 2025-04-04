@@ -273,7 +273,7 @@ export default function ChatWithCourse() {
                   >
                     {message.role === "user" && message.course && (
                       <div className="text-xs opacity-80 mb-1 text-cyan-400">
-                        Course: {courses.find((c) => c.id === message.course)?.name}
+                        Course: {courses.find((c) => c.name === message.course)?.name}
                       </div>
                     )}
                     <div className="whitespace-pre-line">{message.content}</div>

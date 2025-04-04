@@ -2,84 +2,135 @@
 import { useState, useEffect } from "react";
 import supabase from "../app/supabaseClient";
 import {
-    HomeIcon, InfoIcon, PlusCircleIcon, MessageCircleIcon, UsersIcon, BarChartIcon
+    HomeIcon, InfoIcon, PlusCircleIcon, 
+    MessageCircleIcon, UsersIcon, BarChartIcon
 } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
 
 const Sidebar = ({ selectedOption, setSelectedOption }) => {
-    // State to store the role of the logged-in user
     const [userRole, setUserRole] = useState(null);
+    const router = useRouter();
+    const pathname = usePathname();
+
+    // Define route mapping for navigation
+    const routeMap = {
+        "Home": "/main",
+        "About": "/about",
+        "Create new course": "/create-course",
+        "Chat with course": "/chat",
+        "Assign course": "/assign",
+        "Analysis": "/analysis"
+    };
 
     useEffect(() => {
-        // Function to fetch the authenticated user's role from Supabase
         const fetchUser = async () => {
-            const { data: { session } } = await supabase.auth.getSession();
+            const { data: { session }, error } = await supabase.auth.getSession();
+            if (error) {
+                console.error("Error fetching session:", error);
+                return;
+            }
+            
             if (session) {
-                const { user_metadata } = session.user;
-                setUserRole(user_metadata.role || "Learner"); // Default role is "Learner"
-            } else {
-                setUserRole(null);
+                setUserRole(session.user?.user_metadata?.role || "Learner");
             }
         };
 
         fetchUser();
 
-        // Listen for authentication state changes and update the role accordingly
-        supabase.auth.onAuthStateChange((_, session) => {
-            if (session) {
-                const { user_metadata } = session.user;
-                setUserRole(user_metadata.role || "Learner");
-            } else {
-                setUserRole(null);
-            }
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
+            setUserRole(session?.user?.user_metadata?.role || null);
         });
+
+        return () => subscription?.unsubscribe();
     }, []);
 
-    // List of menu items with role-based access control
-    const menuItems = [
-        { name: "Home", icon: HomeIcon, section: "Navigation", path: "/main" },
-        { name: "About", icon: InfoIcon, section: "Navigation" },
-        { name: "Create new course", icon: PlusCircleIcon, section: "Choose Action", roles: ["Instructor"] }, // Restricted to Instructors
-        { name: "Chat with course", icon: MessageCircleIcon, section: "Choose Action" },
-        { name: "Assign course", icon: UsersIcon, section: "Choose Action", roles: ["Instructor"] }, // Restricted to Instructors
-        { name: "Analysis", icon: BarChartIcon, section: "Analysis" },
+    // Organized menu items with better TypeScript-like structure
+    const menuSections = [
+        {
+            title: "Navigation",
+            items: [
+                { name: "Home", icon: HomeIcon, roles: null },
+                { name: "About", icon: InfoIcon, roles: null }
+            ]
+        },
+        {
+            title: "Choose Action",
+            items: [
+                { 
+                    name: "Create new course", 
+                    icon: PlusCircleIcon, 
+                    roles: ["Instructor"] 
+                },
+                { 
+                    name: "Chat with course", 
+                    icon: MessageCircleIcon, 
+                    roles: null 
+                },
+                { 
+                    name: "Assign course", 
+                    icon: UsersIcon, 
+                    roles: ["Instructor"] 
+                }
+            ]
+        },
+        {
+            title: "Analysis",
+            items: [
+                { name: "Analysis", icon: BarChartIcon, roles: null }
+            ]
+        }
     ];
 
-    return (
-        <div className="m-5 mt-24">
-            {/* Sidebar Container */}
-            <div className="relative w-72 p-7 rounded-2xl bg-[#131313] flex flex-col">
-                
-                {/* Sidebar Menu Sections */}
-                <div className="mt-16 flex flex-col gap-9">
-                    {["Navigation", "Choose Action", "Analysis"].map((section) => (
-                        <div key={section}>
-                            {/* Section Heading */}
-                            <h3 className="text-sm font-semibold text-gray-400 mb-3">{section}</h3>
+    const handleNavigation = (option) => {
+        setSelectedOption(option);
+        const route = routeMap[option];
+        if (route && route !== pathname) {
+            router.push(route);
+        }
+    };
 
-                            {/* Section Items */}
-                            <div className="flex flex-col gap-1">
-                                {menuItems
-                                    .filter((item) => item.section === section) // Filter items belonging to the current section
-                                    .filter((item) => !item.roles || item.roles.includes(userRole)) // Apply role-based filtering
+    return (
+        <aside className="m-5 mt-24 w-72">
+            <nav className="p-7 rounded-2xl bg-[#131313] flex flex-col">
+                <div className="mt-16 flex flex-col gap-9">
+                    {menuSections.map((section) => (
+                        <section key={section.title} aria-labelledby={`${section.title}-heading`}>
+                            <h3 
+                                id={`${section.title}-heading`}
+                                className="text-sm font-semibold text-gray-400 mb-3"
+                            >
+                                {section.title}
+                            </h3>
+
+                            <ul className="flex flex-col gap-1">
+                                {section.items
+                                    .filter(item => !item.roles || item.roles.includes(userRole))
                                     .map((item) => (
-                                        <button
-                                            key={item.name}
-                                            className={`group flex items-center gap-3 p-2.5 w-full rounded-[5px] transition-colors ${
-                                                selectedOption === item.name ? "bg-cyan-900/30" : "hover:bg-gray-800"
-                                            }`}
-                                            onClick={() => setSelectedOption(item.name)} // Update selected option
-                                        >
-                                            {/* Icon and Name of Menu Item */}
-                                            <item.icon size={20} className="min-w-[20px]" />
-                                            <span>{item.name}</span>
-                                        </button>
+                                        <li key={item.name}>
+                                            <button
+                                                aria-current={selectedOption === item.name ? "page" : undefined}
+                                                className={`group flex items-center gap-3 p-2.5 w-full rounded-[5px] transition-colors ${
+                                                    selectedOption === item.name 
+                                                        ? "bg-cyan-900/30 text-cyan-400" 
+                                                        : "hover:bg-gray-800 text-gray-300"
+                                                }`}
+                                                onClick={() => handleNavigation(item.name)}
+                                            >
+                                                <item.icon 
+                                                    size={20} 
+                                                    className="min-w-[20px]" 
+                                                    aria-hidden="true"
+                                                />
+                                                <span>{item.name}</span>
+                                            </button>
+                                        </li>
                                     ))}
-                            </div>
-                        </div>
+                            </ul>
+                        </section>
                     ))}
                 </div>
-            </div>
-        </div>
+            </nav>
+        </aside>
     );
 };
 

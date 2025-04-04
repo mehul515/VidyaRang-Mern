@@ -1,3 +1,5 @@
+"use client"
+
 import {React, useState, useRef} from 'react'
 import Createcourse from './Createcourse'
 import Videobox from './Videobox'
