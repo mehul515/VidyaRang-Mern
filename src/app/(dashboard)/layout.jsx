@@ -59,7 +59,7 @@ export default function DashboardLayout({ children }) {
         </div>
 
         {/* Content Area */}
-        <main className="flex-1 overflow-y-auto h-[calc(100vh-4rem)] lg:p-4 p-2">
+        <main className="flex-1 overflow-y-auto h-[calc(100vh)] lg:p-4 p-2">
           {children}
         </main>
       </div>

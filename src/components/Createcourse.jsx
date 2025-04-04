@@ -1,6 +1,7 @@
 import React, { forwardRef } from "react";
 import { array } from "./content.js"; // Importing content array
 import "react-vertical-timeline-component/style.min.css";
+import Link from "next/link.js";
 
 // ForwardRef is used to pass a ref from the parent component
 const Createcourse = forwardRef((props, ref) => {
@@ -29,6 +30,7 @@ const Createcourse = forwardRef((props, ref) => {
                         
                         {/* Mapping through the array to create step cards */}
                         {array.map((e, index) => (
+                            <Link href={e.redirect} key={e.id}>
                             <div
                                 key={e.id} // Unique key for each element
                                 className={`
@@ -44,7 +46,7 @@ const Createcourse = forwardRef((props, ref) => {
 
                                 {/* Step Description */}
                                 <h1 className='text-xl mt-3 font-semibold'>{e.des}</h1>
-                            </div>
+                            </div></Link>
                         ))}
                     </div>
                 </div>
