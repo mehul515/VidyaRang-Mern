@@ -5,6 +5,7 @@ import Navbar from "./Navbar";
 import About from "./About";
 import Createcourse from "./Createcourse";
 import Footer from "./Footer";
+import Feature from "./Feature";
 
 export default function LandingPage() {
 
@@ -33,6 +34,7 @@ export default function LandingPage() {
       {/* Normal Components */}
       <About />
       <Createcourse ref={createCourseRef} />
+      <Feature/>
       <Footer/>
     </div>
   );
