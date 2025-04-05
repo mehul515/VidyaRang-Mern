@@ -3,6 +3,8 @@ import { AnimatedGradientText } from "@/components/magicui/animated-gradient-tex
 import { Poppins } from "next/font/google";
 import { FaPlay } from "react-icons/fa";
 import { FaPause } from "react-icons/fa";
+import { HiMiniSpeakerWave } from "react-icons/hi2";
+import { HiMiniSpeakerXMark } from "react-icons/hi2";
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "600", "700"], // Choose desired weights
@@ -61,7 +63,7 @@ const Herosection = ({ onScrollToCreateCourse }) => {
 
         <audio ref={audioRef}  onEnded={handleAudioEnd} src="/assets/vidyarang.wav" preload="auto" />
         <button className=" text-lg border text-cyan-400 bg-black border-gray-700 p-2.5 px-6 rounded-xl" onClick={togglePlayPause}>
-        {isPlaying ? <FaPause /> :  <FaPlay />}
+        {isPlaying ? <HiMiniSpeakerXMark className="text-xl" /> :  <HiMiniSpeakerWave className="text-xl" />}
       </button>
       </div>
 
