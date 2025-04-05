@@ -1,88 +1,115 @@
-"use client"
+"use client";
 
-import { useState, useRef, useEffect } from "react"
-import { Send, Star, X, Play, Pause } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Avatar } from "@/components/ui/avatar"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { cn } from "@/lib/utils"
-import { getCourses, sendChatMessage } from "./api"
+import { useState, useRef, useEffect } from "react";
+import { Send, Star, X, Play, Pause } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Avatar } from "@/components/ui/avatar";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { cn } from "@/lib/utils";
+import { getCourses, sendChatMessage } from "./api";
+import supabase from "../app/supabaseClient";
 
 export default function ChatWithCourse() {
-  const [messages, setMessages] = useState([])
-  const [input, setInput] = useState("")
-  const [selectedCourse, setSelectedCourse] = useState("")
-  const [isTyping, setIsTyping] = useState(false)
-  const [showRating, setShowRating] = useState(false)
-  const [conversationEnded, setConversationEnded] = useState(false)
-  const [rating, setRating] = useState(0)
-  const [feedback, setFeedback] = useState("")
-  const [showFeedbackForm, setShowFeedbackForm] = useState(false)
-  const [courses, setCourses] = useState([])
-  const [loadingCourses, setLoadingCourses] = useState(true)
-  const [username, setUsername] = useState("")
-  const messagesEndRef = useRef(null)
-  const textareaRef = useRef(null)
-  const [playingMessageId, setPlayingMessageId] = useState(null)
-  const audioRef = useRef(new Audio())
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState("");
+  const [selectedCourse, setSelectedCourse] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const [showRating, setShowRating] = useState(false);
+  const [conversationEnded, setConversationEnded] = useState(false);
+  const [rating, setRating] = useState(0);
+  const [feedback, setFeedback] = useState("");
+  const [showFeedbackForm, setShowFeedbackForm] = useState(false);
+  const [courses, setCourses] = useState([]);
+  const [loadingCourses, setLoadingCourses] = useState(true);
+  const [username, setUsername] = useState("");
+  const messagesEndRef = useRef(null);
+  const textareaRef = useRef(null);
+  const [playingMessageId, setPlayingMessageId] = useState(null);
+  const audioRef = useRef(new Audio());
 
   // Fetch courses from API and set username
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const coursesData = await getCourses();
-        setCourses(coursesData);
+        const { data, error } = await supabase.from("course").select("*");
+
+        if (error) {
+          throw error;
+        }
+
+        setCourses(data);
         setUsername("user_" + Math.random().toString(36).substring(2, 8));
+        console.log("Fetched courses from Supabase:", data);
       } catch (error) {
         console.error("Error fetching courses:", error);
       } finally {
         setLoadingCourses(false);
       }
     };
-  
+
     fetchCourses();
   }, []);
 
+  useEffect(() => {
+    console.log(selectedCourse);
+  }, [selectedCourse])
+  
+
   // Auto-scroll to bottom when messages change
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-  }, [messages])
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   // Auto-resize textarea
   useEffect(() => {
     if (textareaRef.current) {
-      textareaRef.current.style.height = "auto"
-      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 200)}px`
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${Math.min(
+        textareaRef.current.scrollHeight,
+        200
+      )}px`;
     }
-  }, [input])
+  }, [input]);
 
   // Clean up audio when component unmounts
   useEffect(() => {
-    const audio = audioRef.current
+    const audio = audioRef.current;
     return () => {
-      audio.pause()
-      audio.src = ""
-    }
-  }, [])
+      audio.pause();
+      audio.src = "";
+    };
+  }, []);
 
   // Handle audio end event
   useEffect(() => {
-    const audio = audioRef.current
+    const audio = audioRef.current;
     const handleEnded = () => {
-      setPlayingMessageId(null)
-    }
-    audio.addEventListener("ended", handleEnded)
+      setPlayingMessageId(null);
+    };
+    audio.addEventListener("ended", handleEnded);
     return () => {
-      audio.removeEventListener("ended", handleEnded)
-    }
-  }, [])
+      audio.removeEventListener("ended", handleEnded);
+    };
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!input.trim() || !selectedCourse) return;
-  
+
     // Add user message
     const userMessage = {
       id: Date.now(),
@@ -92,22 +119,23 @@ export default function ChatWithCourse() {
     };
     setMessages((prevMessages) => [...prevMessages, userMessage]);
     setInput("");
-  
+
     // Simulate AI typing
     setIsTyping(true);
-  
+
     try {
       // Call our chat API service
       const data = await sendChatMessage(selectedCourse, username, input);
-      
+
       // Add AI response to messages
       const aiMessage = {
         id: Date.now() + 1,
         role: "assistant",
-        content: data.response || "I couldn't generate a response. Please try again.",
+        content:
+          data.response || "I couldn't generate a response. Please try again.",
       };
       setMessages((prevMessages) => [...prevMessages, aiMessage]);
-  
+
       // After a few messages, show the rating option
       if (messages.length >= 3 && !conversationEnded) {
         setShowRating(true);
@@ -127,51 +155,51 @@ export default function ChatWithCourse() {
   };
 
   const handleEndConversation = () => {
-    setConversationEnded(true)
-    setShowRating(true)
-  }
+    setConversationEnded(true);
+    setShowRating(true);
+  };
 
   const handleRating = (value) => {
-    setRating(value)
-    setShowFeedbackForm(true)
-  }
+    setRating(value);
+    setShowFeedbackForm(true);
+  };
 
   const submitFeedback = () => {
-    console.log("Rating:", rating, "Feedback:", feedback)
-    setShowFeedbackForm(false)
+    console.log("Rating:", rating, "Feedback:", feedback);
+    setShowFeedbackForm(false);
 
     // Add a system message acknowledging the feedback
     const systemMessage = {
       id: Date.now(),
       role: "system",
       content: `Thank you for your feedback! You rated this conversation ${rating} stars.`,
-    }
-    setMessages((prevMessages) => [...prevMessages, systemMessage])
-  }
+    };
+    setMessages((prevMessages) => [...prevMessages, systemMessage]);
+  };
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault()
-      handleSubmit(e)
+      e.preventDefault();
+      handleSubmit(e);
     }
-  }
+  };
 
   const handleTextToSpeech = async (messageId, text) => {
-    const audio = audioRef.current
+    const audio = audioRef.current;
 
     if (playingMessageId === messageId) {
       // Stop playing
-      audio.pause()
-      setPlayingMessageId(null)
+      audio.pause();
+      setPlayingMessageId(null);
     } else {
       // If another message is playing, stop it first
       if (playingMessageId !== null) {
-        audio.pause()
+        audio.pause();
       }
 
       try {
         // Show loading state
-        setPlayingMessageId("loading")
+        setPlayingMessageId("loading");
 
         // Call our API route
         const response = await fetch("/api/text-to-speech", {
@@ -180,41 +208,41 @@ export default function ChatWithCourse() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({ text }),
-        })
+        });
 
         if (!response.ok) {
-          throw new Error("Failed to generate audio")
+          throw new Error("Failed to generate audio");
         }
 
         // Get the audio blob
-        const audioBlob = await response.blob()
+        const audioBlob = await response.blob();
 
         // Create a URL for the blob
-        const audioUrl = URL.createObjectURL(audioBlob)
+        const audioUrl = URL.createObjectURL(audioBlob);
 
         // Set the audio source and play
-        audio.src = audioUrl
+        audio.src = audioUrl;
 
         // Set playing message ID when audio is ready
         audio.oncanplay = () => {
-          setPlayingMessageId(messageId)
+          setPlayingMessageId(messageId);
           audio.play().catch((err) => {
-            console.error("Error playing audio:", err)
-            setPlayingMessageId(null)
-          })
-        }
+            console.error("Error playing audio:", err);
+            setPlayingMessageId(null);
+          });
+        };
 
         // Clean up the URL when done
         audio.onended = () => {
-          URL.revokeObjectURL(audioUrl)
-          setPlayingMessageId(null)
-        }
+          URL.revokeObjectURL(audioUrl);
+          setPlayingMessageId(null);
+        };
       } catch (error) {
-        console.error("Error with text-to-speech:", error)
-        setPlayingMessageId(null)
+        console.error("Error with text-to-speech:", error);
+        setPlayingMessageId(null);
       }
     }
-  }
+  };
 
   return (
     <div className="mt-16 flex items-center justify-center">
@@ -237,9 +265,12 @@ export default function ChatWithCourse() {
         <CardContent className="h-[50vh] md:h-[60vh] overflow-y-auto scrollbar-hide no-scrollbar">
           {messages.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-center space-y-4">
-              <div className="text-xl md:text-2xl font-bold text-cyan-400">Welcome to Vidya RANG</div>
+              <div className="text-xl md:text-2xl font-bold text-cyan-400">
+                Welcome to Vidya RANG
+              </div>
               <div className="text-gray-400 max-w-md">
-                Select a course and ask a question to get started. I'll provide answers based on the course curriculum.
+                Select a course and ask a question to get started. I'll provide
+                answers based on the course curriculum.
               </div>
             </div>
           ) : (
@@ -250,7 +281,7 @@ export default function ChatWithCourse() {
                   className={cn(
                     "flex mb-4",
                     message.role === "user" ? "justify-end" : "justify-start",
-                    message.role === "system" ? "justify-center" : "",
+                    message.role === "system" ? "justify-center" : ""
                   )}
                 >
                   {message.role === "assistant" && (
@@ -267,32 +298,36 @@ export default function ChatWithCourse() {
                       message.role === "user"
                         ? "bg-cyan-800/30 text-gray-200 border border-cyan-800/50"
                         : message.role === "system"
-                          ? "bg-[#0a1628] text-gray-400 text-sm py-2 border border-cyan-900/30"
-                          : "bg-[#0a1628] text-gray-300 border border-cyan-900/30",
+                        ? "bg-[#0a1628] text-gray-400 text-sm py-2 border border-cyan-900/30"
+                        : "bg-[#0a1628] text-gray-300 border border-cyan-900/30"
                     )}
                   >
                     {message.role === "user" && message.course && (
                       <div className="text-xs opacity-80 mb-1 text-cyan-400">
-                        Course: {courses.find((c) => c.name === message.course)?.name}
+                        Course:{" "}
+                        {courses.find((c) => c.name === message.course)?.name}
                       </div>
                     )}
                     <div className="whitespace-pre-line">{message.content}</div>
-                    {message.role === "assistant" && message.content.length <= 350 && (
-                      <div className="mt-2 flex items-center justify-end">
-                        <div
-                          onClick={() => handleTextToSpeech(message.id, message.content)}
-                          className="h-7 w-7 flex items-center justify-center rounded-full bg-cyan-900/30 border border-cyan-800/50 cursor-pointer hover:bg-cyan-900/50 transition-colors"
-                        >
-                          {playingMessageId === "loading" ? (
-                            <div className="h-3 w-3 rounded-full border-2 border-cyan-400 border-t-transparent animate-spin" />
-                          ) : playingMessageId === message.id ? (
-                            <Pause className="h-3.5 w-3.5 text-cyan-400" />
-                          ) : (
-                            <Play className="h-3.5 w-3.5 text-cyan-400" />
-                          )}
+                    {message.role === "assistant" &&
+                      message.content.length <= 350 && (
+                        <div className="mt-2 flex items-center justify-end">
+                          <div
+                            onClick={() =>
+                              handleTextToSpeech(message.id, message.content)
+                            }
+                            className="h-7 w-7 flex items-center justify-center rounded-full bg-cyan-900/30 border border-cyan-800/50 cursor-pointer hover:bg-cyan-900/50 transition-colors"
+                          >
+                            {playingMessageId === "loading" ? (
+                              <div className="h-3 w-3 rounded-full border-2 border-cyan-400 border-t-transparent animate-spin" />
+                            ) : playingMessageId === message.id ? (
+                              <Pause className="h-3.5 w-3.5 text-cyan-400" />
+                            ) : (
+                              <Play className="h-3.5 w-3.5 text-cyan-400" />
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    )}
+                      )}
                   </div>
 
                   {message.role === "user" && (
@@ -335,7 +370,9 @@ export default function ChatWithCourse() {
 
           {showRating && conversationEnded && !showFeedbackForm && (
             <div className="bg-[#0a1628] rounded-[10px] p-4 mx-auto max-w-md border border-cyan-900/30">
-              <div className="text-center mb-3 text-cyan-400">How would you rate this conversation?</div>
+              <div className="text-center mb-3 text-cyan-400">
+                How would you rate this conversation?
+              </div>
               <div className="flex justify-center space-x-2">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <button
@@ -343,10 +380,15 @@ export default function ChatWithCourse() {
                     onClick={() => handleRating(star)}
                     className={cn(
                       "p-1 rounded-full transition-all",
-                      rating >= star ? "text-cyan-400" : "text-gray-700 hover:text-cyan-600",
+                      rating >= star
+                        ? "text-cyan-400"
+                        : "text-gray-700 hover:text-cyan-600"
                     )}
                   >
-                    <Star className="h-8 w-8" fill={rating >= star ? "currentColor" : "none"} />
+                    <Star
+                      className="h-8 w-8"
+                      fill={rating >= star ? "currentColor" : "none"}
+                    />
                   </button>
                 ))}
               </div>
@@ -356,7 +398,9 @@ export default function ChatWithCourse() {
           {showFeedbackForm && (
             <div className="bg-[#0a1628] rounded-[10px] p-4 md:mx-20 border border-cyan-900/30">
               <div className="flex justify-between items-center mb-2">
-                <div className="font-medium text-cyan-400">Additional Feedback</div>
+                <div className="font-medium text-cyan-400">
+                  Additional Feedback
+                </div>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -373,7 +417,10 @@ export default function ChatWithCourse() {
                 className="mb-3 bg-[#0a1628] border-cyan-900/50 text-gray-300 font-medium focus-visible:ring-cyan-600"
                 rows={3}
               />
-              <Button onClick={submitFeedback} className="bg-cyan-400 hover:bg-cyan-600 text-gray-900">
+              <Button
+                onClick={submitFeedback}
+                className="bg-cyan-400 hover:bg-cyan-600 text-gray-900"
+              >
                 Submit Feedback
               </Button>
             </div>
@@ -386,14 +433,25 @@ export default function ChatWithCourse() {
           {!conversationEnded ? (
             <form onSubmit={handleSubmit} className="w-full space-y-3">
               <div className="flex gap-2">
-                <Select value={selectedCourse} onValueChange={setSelectedCourse} disabled={isTyping || loadingCourses}>
+                <Select
+                  value={selectedCourse}
+                  onValueChange={setSelectedCourse}
+                  disabled={isTyping || loadingCourses}
+                >
                   <SelectTrigger className="w-full md:w-[200px] bg-[#0a1628] border-cyan-900/50 text-gray-300 focus:ring-cyan-600 font-medium">
-                    <SelectValue placeholder={loadingCourses ? "Loading courses..." : "Select Course"} />
+                    <SelectValue
+                      placeholder={
+                        loadingCourses ? "Loading courses..." : "Select Course"
+                      }
+                    />
                   </SelectTrigger>
                   <SelectContent className="bg-[#0a1628] border-cyan-900/50 text-gray-300 font-medium">
                     {courses.map((course) => (
-                      <SelectItem key={course.name} value={course.name}>
-                        {course.name}
+                      <SelectItem
+                        key={course.course_id}
+                        value={course.course_name}
+                      >
+                        {course.course_name}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -416,25 +474,32 @@ export default function ChatWithCourse() {
                   type="submit"
                   size="icon"
                   className="h-10 w-10 bg-cyan-400 hover:bg-cyan-600 text-gray-900 rounded-[10px]"
-                  disabled={isTyping || !input.trim() || !selectedCourse || loadingCourses}
+                  disabled={
+                    isTyping ||
+                    !input.trim() ||
+                    !selectedCourse ||
+                    loadingCourses
+                  }
                 >
                   <Send className="h-4 w-4" />
                 </Button>
               </div>
 
-              <div className="text-xs text-gray-500 text-center">Press Enter to send, Shift+Enter for new line</div>
+              <div className="text-xs text-gray-500 text-center">
+                Press Enter to send, Shift+Enter for new line
+              </div>
             </form>
           ) : (
             <div className="w-full text-center">
               <Button
                 variant="outline"
                 onClick={() => {
-                  setConversationEnded(false)
-                  setShowRating(false)
-                  setShowFeedbackForm(false)
-                  setRating(0)
-                  setFeedback("")
-                  setMessages([])
+                  setConversationEnded(false);
+                  setShowRating(false);
+                  setShowFeedbackForm(false);
+                  setRating(0);
+                  setFeedback("");
+                  setMessages([]);
                 }}
                 className="border-cyan-900 text-cyan-400 hover:bg-cyan-900/20"
               >
@@ -445,5 +510,5 @@ export default function ChatWithCourse() {
         </CardFooter>
       </Card>
     </div>
-  )
+  );
 }
