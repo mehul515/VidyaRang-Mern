@@ -3,8 +3,8 @@
 import {React, useState, useRef} from 'react'
 import Createcourse from './Createcourse'
 import Videobox from './Videobox'
-import { FaPlay } from "react-icons/fa";
-import { FaPause } from "react-icons/fa";
+import { HiMiniSpeakerWave } from "react-icons/hi2";
+import { HiMiniSpeakerXMark } from "react-icons/hi2";
 export default function Home() {
 
    const [isPlaying, setIsPlaying] = useState(false);
@@ -40,7 +40,7 @@ export default function Home() {
       
               <audio ref={audioRef}  onEnded={handleAudioEnd} src="/assets/vidyarang.wav" preload="auto" />
               <button className=" text-lg border text-cyan-400 bg-black border-gray-700 p-2.5 px-6 rounded-xl" onClick={togglePlayPause}>
-              {isPlaying ? <FaPause /> :  <FaPlay />}
+              {isPlaying ? <HiMiniSpeakerXMark className="text-xl" /> : <HiMiniSpeakerWave className="text-xl" />}
             </button>
             </div>
 

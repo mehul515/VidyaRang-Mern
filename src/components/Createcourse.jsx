@@ -34,7 +34,7 @@ const Createcourse = forwardRef((props, ref) => {
                             <div
                                 key={e.id} // Unique key for each element
                                 className={`
-                                    lg:w-96 w-80 lg:h-44 h-52 flex gap-4 flex-col 
+                                    lg:w-80 w-80 lg:h-52 h-52 flex gap-4 flex-col 
                                     lg:px-7 px-7 lg:py-7 py-6 rounded-xl 
                                     bg-[#242525] text-white border border-[#4d4d4e] 
                                     hover:border-cyan-500 transition-all duration-300 ease-in-out
