@@ -3,10 +3,11 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import { Search, Mail as MailIcon } from "lucide-react";
 import supabase from "../app/supabaseClient";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function AssignCoursePage() {
   const [courses, setCourses] = useState([]);
@@ -73,10 +74,15 @@ export default function AssignCoursePage() {
       // Find the course using course_id (not id)
       const course = courses.find((c) => c.course_id === id);
       if (!course) throw new Error("Course not found");
-
+      
       // Toggle between 'public' and 'private'
       const newPrivacyStatus =
-        course.course_type === "public" ? "private" : "public";
+      course.course_type === "public" ? "private" : "public";
+      const confirmed = window.confirm(
+        `Are you sure you want to make this course ${newPrivacyStatus}?`
+      );
+      if (!confirmed) return;
+      
 
       // Update in Supabase
       const { error } = await supabase
@@ -103,38 +109,43 @@ export default function AssignCoursePage() {
   };
 
   const handleAssign = async () => {
+    console.log("chekcing");
     if (!email) return toast.error("Please enter a user email");
-    const course = courses.find((c) => c.id === selectedCourseId);
 
-    if (course.is_public) {
+    const course = courses.find((c) => c.course_id === selectedCourseId);
+    if (!course) return toast.error("Course not found");
+
+    if (course.course_type === "public") {
       return toast.error("Public courses cannot be assigned");
     }
 
-    const supabase = createClient();
-
     try {
-      // Check if user exists
-      const { data: userData, error: userError } = await supabase
-        .from("profiles")
-        .select("id")
-        .eq("email", email)
+      const { data: courseData, error: fetchError } = await supabase
+        .from("course")
+        .select("allow_emails")
+        .eq("course_id", selectedCourseId)
         .single();
 
-      if (userError) throw userError;
-      if (!userData) throw new Error("User not found");
+      if (fetchError) throw fetchError;
 
-      // Assign course to user
-      const { error: assignError } = await supabase
-        .from("user_courses")
-        .upsert({
-          user_id: userData.id,
-          course_id: course.id,
-          assigned_by: user.id,
-        });
+      const currentEmails = courseData.allow_emails || [];
 
-      if (assignError) throw assignError;
+      if (!currentEmails.includes(email)) {
+        const updatedEmails = [...currentEmails, email];
 
-      toast.success(`Course "${course.title}" assigned to ${email}`);
+        const { error: updateError } = await supabase
+          .from("course")
+          .update({ allow_emails: updatedEmails })
+          .eq("course_id", selectedCourseId);
+
+        if (updateError) throw updateError;
+        toast.success(
+          `Email "${email}" successfully added to course "${course.course_name}"`
+        );
+      } else {
+        toast.info(`Email "${email}" is already assigned to this course.`);
+      }
+
       setEmail("");
     } catch (error) {
       toast.error("Assignment failed: " + error.message);
@@ -153,6 +164,7 @@ export default function AssignCoursePage() {
 
   return (
     <div className="min-h-screen bg-[#121212] text-white px-6 py-20 font-sans">
+      <ToastContainer />
       <div className="grid md:grid-cols-2 gap-8 max-w-6xl w-full mx-auto">
         {/* Courses List */}
         <div className="bg-[#1a1a1a] p-6 rounded-2xl shadow-xl">
@@ -252,11 +264,28 @@ export default function AssignCoursePage() {
               {/* Public Course Info or Email Assign */}
               {selectedCourse.course_type == "private" ? (
                 <>
+                  {selectedCourse.allow_emails &&
+                    selectedCourse.allow_emails.length > 0 && (
+                      <div className="mb-4">
+                        <p className="text-cyan-300 text-sm mb-2">
+                          Assigned to:
+                        </p>
+                        <ul className="space-y-1 pl-4 list-disc text-cyan-500 text-sm">
+                          {selectedCourse.allow_emails.map(
+                            (assignedEmail, idx) => (
+                              <li key={idx}>{assignedEmail}</li>
+                            )
+                          )}
+                        </ul>
+                      </div>
+                    )}
+
                   <div className="flex items-center gap-3 mb-4">
                     <MailIcon size={20} className="text-cyan-400" />
                     <input
                       placeholder="Enter email"
                       onChange={(e) => setEmail(e.target.value)}
+                      value={email}
                       className="flex-1 bg-transparent border border-cyan-700 text-cyan-400 placeholder:text-cyan-600 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
                     />
                   </div>
@@ -279,9 +308,16 @@ export default function AssignCoursePage() {
             </>
           ) : (
             <p className="text-cyan-600 text-lg font-medium">
-              {courses.length > 0
-                ? "Select a course to assign"
-                : "Create a course first"}
+              {courses.length > 0 ? (
+                "Select a course to assign"
+              ) : (
+                <Link
+                  href="/your-create-course-path"
+                  className="underline text-blue-600"
+                >
+                  Create a course first
+                </Link>
+              )}
             </p>
           )}
         </div>
