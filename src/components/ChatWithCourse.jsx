@@ -41,21 +41,68 @@ export default function ChatWithCourse() {
   const [playingMessageId, setPlayingMessageId] = useState(null);
   const audioRef = useRef(new Audio());
 
-  // Fetch courses from API and set username
+ 
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const { data, error } = await supabase.from("course").select("*");
+        setLoadingCourses(true);
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+        const userEmail = session?.user?.email || null;
 
-        if (error) {
-          throw error;
+        if (!userEmail) {
+          console.error("User email not found in session.");
+          return;
         }
 
-        setCourses(data);
-        setUsername("user_" + Math.random().toString(36).substring(2, 8));
-        console.log("Fetched courses from Supabase:", data);
+        // 1. Fetch all public courses
+        const { data: publicCourses, error: publicError } = await supabase
+          .from("course")
+          .select("*")
+          .eq("course_type", "public");
+
+        if (publicError) throw publicError;
+
+        // 2. Fetch private courses where user's email is in allow_emails
+        const { data: privateCourses, error: privateError } = await supabase
+          .from("course")
+          .select("*")
+          .eq("course_type", "private")
+          .contains("allow_emails", [userEmail]);
+
+        if (privateError) throw privateError;
+
+        // 3. NEW: Fetch courses where user is the creator (regardless of type)
+        // 3. Fetch courses where user is the creator (using JSON string search)
+        const { data: creatorCourses, error: creatorError } = await supabase
+          .from("course")
+          .select("*")
+          .like("course_creator", `%\"email\":\"${userEmail}\"%`);
+
+        if (creatorError) throw creatorError;
+
+        // Combine all results, removing duplicates
+        const allCourses = [
+          ...(publicCourses || []),
+          ...(privateCourses || []),
+          ...(creatorCourses || []),
+        ];
+
+        // Remove duplicates using Set
+        const uniqueCourses = [];
+        const seenIds = new Set();
+        
+        allCourses.forEach(course => {
+          if (course?.course_id && !seenIds.has(course.course_id)) {
+            seenIds.add(course.course_id);
+            uniqueCourses.push(course);
+          }
+        });
+        
+      setCourses(uniqueCourses);
       } catch (error) {
-        console.error("Error fetching courses:", error);
+        console.error("Error fetching courses:", error.message);
       } finally {
         setLoadingCourses(false);
       }
@@ -63,11 +110,9 @@ export default function ChatWithCourse() {
 
     fetchCourses();
   }, []);
-
   useEffect(() => {
     console.log(selectedCourse);
-  }, [selectedCourse])
-  
+  }, [selectedCourse]);
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
@@ -202,7 +247,7 @@ export default function ChatWithCourse() {
         setPlayingMessageId("loading");
 
         // Call our API route
-        const response = await fetch("/api/text-to-speech", {
+        const response = await fetch("http://127.0.0.1:8000/speak/", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
