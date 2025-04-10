@@ -1,7 +1,7 @@
 // api.js- for req to api serving on https
 const API_BASE_URL = 'https://vidyarang.aigurukul.dev'; // Change this to your FastAPI server URL
 
-export const createCourse = async (courseName, files) => {
+export const createCourse = async (courseName, files, creatorEmail) => {
   const formData = new FormData();
   formData.append('course_name', courseName);
   
@@ -9,6 +9,7 @@ export const createCourse = async (courseName, files) => {
   files.forEach((file) => {
     formData.append('files', file);
   });
+  formData.append("creator_email", creatorEmail.email);
 
   try {
     const response = await fetch(`${API_BASE_URL}/create-course/`, {

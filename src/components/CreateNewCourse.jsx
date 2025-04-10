@@ -132,7 +132,7 @@ export default function CreateNewCourse() {
     setProgressInterval(interval);
 
     try {
-      const response = await createCourse(courseName, files);
+      const response = await createCourse(courseName, files, userEmail);
       // Reset form if needed
       setCourseName("");
       setFiles([]);
@@ -148,7 +148,7 @@ export default function CreateNewCourse() {
         },
       ]).select();
       console.log("Course data:", data, "Error:", error);
-      toast.success("Course created Successfully");
+      toast.success("Course will be shortly created and notified on your mail");
       console.log("Course created successfully:", response);
     } catch (error) {
       toast.error("Failed to Create course");
