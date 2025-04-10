@@ -18,6 +18,8 @@ export default function Page() {
 
       if (!session) {
         router.push('/login'); // Redirect if no session
+      } else if(session.user.user_metadata.role!="Instructor"){
+        router.push('/main');
       } else {
         setLoading(false);
       }
