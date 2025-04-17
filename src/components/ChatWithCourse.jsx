@@ -247,7 +247,7 @@ export default function ChatWithCourse() {
         setPlayingMessageId("loading");
 
         // Call our API route
-        const response = await fetch("http://127.0.0.1:8000/speak/", {
+        const response = await fetch("https://vidyarang.aigurukul.dev/speak", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
