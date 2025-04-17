@@ -247,7 +247,7 @@ export default function ChatWithCourse() {
         setPlayingMessageId("loading");
 
         // Call our API route
-        const response = await fetch("https://vidyarang.aigurukul.dev/speak", {
+        const response = await fetch("https://vidyarang.aigurukul.dev/speak/", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -355,7 +355,7 @@ export default function ChatWithCourse() {
                     )}
                     <div className="whitespace-pre-line">{message.content}</div>
                     {message.role === "assistant" &&
-                      message.content.length <= 350 && (
+                      message.content.length > 0 && (
                         <div className="mt-2 flex items-center justify-end">
                           <div
                             onClick={() =>
