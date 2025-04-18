@@ -270,7 +270,7 @@ export default function ChatWithCourse() {
         setPlayingMessageId("loading");
 
         // Call our API route
-        const response = await fetch("/api/text-to-speech", {
+        const response = await fetch("https://vidyarang.aigurukul.dev/speak/", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
