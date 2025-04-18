@@ -20,7 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import { getCourses, sendChatMessage } from "./api";
+import { sendChatMessage } from "./api";
 import supabase from "../app/supabaseClient";
 
 export default function ChatWithCourse() {
@@ -36,73 +36,26 @@ export default function ChatWithCourse() {
   const [courses, setCourses] = useState([]);
   const [loadingCourses, setLoadingCourses] = useState(true);
   const [username, setUsername] = useState("");
+  const [fetchingSummary, setFetchingSummary] = useState(false);
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
   const [playingMessageId, setPlayingMessageId] = useState(null);
   const audioRef = useRef(new Audio());
 
- 
+  // Fetch courses from Supabase and set username
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        setLoadingCourses(true);
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
-        const userEmail = session?.user?.email || null;
+        const { data, error } = await supabase.from("course").select("*");
 
-        if (!userEmail) {
-          console.error("User email not found in session.");
-          return;
+        if (error) {
+          throw error;
         }
 
-        // 1. Fetch all public courses
-        const { data: publicCourses, error: publicError } = await supabase
-          .from("course")
-          .select("*")
-          .eq("course_type", "public");
-
-        if (publicError) throw publicError;
-
-        // 2. Fetch private courses where user's email is in allow_emails
-        const { data: privateCourses, error: privateError } = await supabase
-          .from("course")
-          .select("*")
-          .eq("course_type", "private")
-          .contains("allow_emails", [userEmail]);
-
-        if (privateError) throw privateError;
-
-        // 3. NEW: Fetch courses where user is the creator (regardless of type)
-        // 3. Fetch courses where user is the creator (using JSON string search)
-        const { data: creatorCourses, error: creatorError } = await supabase
-          .from("course")
-          .select("*")
-          .like("course_creator", `%\"email\":\"${userEmail}\"%`);
-
-        if (creatorError) throw creatorError;
-
-        // Combine all results, removing duplicates
-        const allCourses = [
-          ...(publicCourses || []),
-          ...(privateCourses || []),
-          ...(creatorCourses || []),
-        ];
-
-        // Remove duplicates using Set
-        const uniqueCourses = [];
-        const seenIds = new Set();
-        
-        allCourses.forEach(course => {
-          if (course?.course_id && !seenIds.has(course.course_id)) {
-            seenIds.add(course.course_id);
-            uniqueCourses.push(course);
-          }
-        });
-        
-      setCourses(uniqueCourses);
+        setCourses(data);
+        setUsername("user_" + Math.random().toString(36).substring(2, 8));
       } catch (error) {
-        console.error("Error fetching courses:", error.message);
+        console.error("Error fetching courses:", error);
       } finally {
         setLoadingCourses(false);
       }
@@ -110,9 +63,6 @@ export default function ChatWithCourse() {
 
     fetchCourses();
   }, []);
-  useEffect(() => {
-    console.log(selectedCourse);
-  }, [selectedCourse]);
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
@@ -150,6 +100,79 @@ export default function ChatWithCourse() {
       audio.removeEventListener("ended", handleEnded);
     };
   }, []);
+
+  const handleGetSummary = async () => {
+    if (!selectedCourse) return;
+    
+    setFetchingSummary(true);
+    
+    try {
+      // First check if summary exists in Supabase
+      const { data: courseData, error } = await supabase
+        .from('course')
+        .select('course_summary')
+        .eq('course_name', selectedCourse)
+        .single();
+
+      if (error) throw error;
+
+      if (courseData.course_summary) {
+        // If summary exists, display it
+        const summaryMessage = {
+          id: Date.now(),
+          role: "assistant",
+          content: `**Course Summary for ${selectedCourse}:**\n\n${courseData.course_summary}`
+        };
+        setMessages(prev => [...prev, summaryMessage]);
+      } else {
+        // If no summary exists, generate it via API
+        setIsTyping(true);
+        
+        // Call API to generate summary
+        const data = await sendChatMessage(
+          selectedCourse, 
+          username, 
+          `Generate a comprehensive summary for the ${selectedCourse} course. The summary should include:
+          - A brief overview of what the course covers
+          - Key topics and concepts taught
+          - Skills students will acquire
+          - Potential applications or career relevance
+          - Any prerequisites or recommended background knowledge
+          
+          Make the summary detailed but concise, well-structured, and easy to understand.`
+        );
+
+        if (data.response) {
+          // Save the generated summary to Supabase
+          const { error: updateError } = await supabase
+            .from('course')
+            .update({ course_summary: data.response })
+            .eq('course_name', selectedCourse);
+
+          if (updateError) throw updateError;
+
+          // Display the summary
+          const summaryMessage = {
+            id: Date.now(),
+            role: "assistant",
+            content: `**Course Summary for ${selectedCourse}:**\n\n${data.response}`
+          };
+          setMessages(prev => [...prev, summaryMessage]);
+        }
+      }
+    } catch (error) {
+      console.error("Error getting course summary:", error);
+      const errorMessage = {
+        id: Date.now(),
+        role: "assistant",
+        content: `Sorry, I couldn't fetch the course summary. Please try again later. Error: ${error.message}`
+      };
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
+      setFetchingSummary(false);
+      setIsTyping(false);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -247,7 +270,7 @@ export default function ChatWithCourse() {
         setPlayingMessageId("loading");
 
         // Call our API route
-        const response = await fetch("https://vidyarang.aigurukul.dev/speak/", {
+        const response = await fetch("/api/text-to-speech", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -355,7 +378,7 @@ export default function ChatWithCourse() {
                     )}
                     <div className="whitespace-pre-line">{message.content}</div>
                     {message.role === "assistant" &&
-                      message.content.length > 0 && (
+                      message.content.length <= 350 && (
                         <div className="mt-2 flex items-center justify-end">
                           <div
                             onClick={() =>
@@ -501,6 +524,17 @@ export default function ChatWithCourse() {
                     ))}
                   </SelectContent>
                 </Select>
+                
+                {selectedCourse && (
+                  <Button
+                    onClick={handleGetSummary}
+                    disabled={isTyping || fetchingSummary}
+                    variant="outline"
+                    className="border-cyan-900 text-cyan-400 hover:bg-cyan-900/20"
+                  >
+                    {fetchingSummary ? "Getting Summary..." : "Get Course Summary"}
+                  </Button>
+                )}
               </div>
 
               <div className="flex w-full space-x-2 items-end">
