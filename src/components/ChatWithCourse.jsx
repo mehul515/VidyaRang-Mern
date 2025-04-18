@@ -132,14 +132,7 @@ export default function ChatWithCourse() {
         const data = await sendChatMessage(
           selectedCourse, 
           username, 
-          `Generate a comprehensive summary for the this course. The summary should include:
-          - A brief overview of what the course covers
-          - Key topics and concepts taught
-          - Skills students will acquire
-          - Potential applications or career relevance
-          - Any prerequisites or recommended background knowledge
-          
-          Make the summary detailed but concise, well-structured, and easy to understand.`
+          `Tell me about this document.`
         );
 
         if (data.response) {
