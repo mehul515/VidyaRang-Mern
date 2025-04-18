@@ -132,7 +132,7 @@ export default function ChatWithCourse() {
         const data = await sendChatMessage(
           selectedCourse, 
           username, 
-          `Generate a comprehensive summary for the ${selectedCourse} course. The summary should include:
+          `Generate a comprehensive summary for the this course. The summary should include:
           - A brief overview of what the course covers
           - Key topics and concepts taught
           - Skills students will acquire
