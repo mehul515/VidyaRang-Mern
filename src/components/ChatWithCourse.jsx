@@ -378,7 +378,7 @@ export default function ChatWithCourse() {
                     )}
                     <div className="whitespace-pre-line">{message.content}</div>
                     {message.role === "assistant" &&
-                      message.content.length <= 350 && (
+                      message.content.length >= 0 && (
                         <div className="mt-2 flex items-center justify-end">
                           <div
                             onClick={() =>
