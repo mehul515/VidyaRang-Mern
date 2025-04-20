@@ -104,7 +104,7 @@ const Header = ({ selectedOption, setSelectedOption }) => {
         </div>
   
         {/* Mobile Menu */}
-        {user && menuOpen && (
+        { menuOpen && (
           <div
             className={`absolute top-14 right-0 w-screen p-4 lg:hidden transition-all ${
               darkMode ? "bg-black border-b-[0.3px] border-gray-500" : "bg-white  border-b-[0.3px] border-gray-400"
