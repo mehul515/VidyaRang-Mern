@@ -3,13 +3,14 @@
 @tailwind utilities;
 
 body {
-  @apply  text-white;
-  background: 
-  linear-gradient(to bottom, 
-    #030303,  
+  @apply text-black;
+  background: linear-gradient(to bottom, #ffffff, #f0f0f0); /* light background */
+}
 
-    #030303   
-  );
+/* Dark mode styles */
+html.dark body {
+  @apply text-white;
+  background: linear-gradient(to bottom, #030303, #030303); /* dark background */
 }
 * {
   scrollbar-width: none;

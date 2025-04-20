@@ -40,5 +40,5 @@ export default function Page() {
   }, [router]);
 
   if (loading) return <div>Loading...</div>;
-  return <Home />;
+  return <Home/>;
 }

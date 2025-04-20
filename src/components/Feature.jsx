@@ -3,7 +3,10 @@ import { FaLock } from "react-icons/fa";
 import { FaChartBar } from "react-icons/fa";
 import { FaBrain } from "react-icons/fa";
 import { MdPlayCircle } from "react-icons/md";
+import { useTheme } from "./Themecontextprovider";
 const Feature = () => {
+
+   const { darkMode, toggleTheme } = useTheme();
   return (
     <div>{/* Features Section */}
     <div className="w-full mt-20">
@@ -11,17 +14,17 @@ const Feature = () => {
         <div>
           {/* Heading for Features */}
           <h1 className='lg:text-5xl text-4xl text-center font-bold'>Key Features of VidyaRANG</h1>
-          <h2 className='mt-8 text-center lg:text-xl text-lg text-gray-300'>Secure Sharing, Engaging Learning, In-Depth Insights</h2>
+          <h2 className={`mt-8 text-center lg:text-xl text-lg ${darkMode? "text-gray-300":"text-gray-700"} `}>Secure Sharing, Engaging Learning, In-Depth Insights</h2>
 
           {/* Features Cards */}
           <div className='flex mt-10 lg:p-8 p-1 justify-evenly flex-wrap lg:gap-2 gap-10'>
             {
               [
-                { icon: <FaLock className='text-2xl text-cyan-400' />, title: 'LockShare', desc: 'Privacy-First Document Sharing' },
-                { icon: <FaChartBar className='text-2xl text-cyan-400' />, title: 'GraphEval', desc: 'Comprehensive Evaluation and Analytics' },
-                { icon: <FaBrain className='text-2xl text-cyan-400' />, title: 'BrainQuiz', desc: 'Diverse Quizzes: Factual, Memory, and Reasoning' },
+                { icon: <FaLock className={`text-2xl ${darkMode? "text-cyan-400":"text-white"} `} />, title: 'LockShare', desc: 'Privacy-First Document Sharing' },
+                { icon: <FaChartBar className={`text-2xl ${darkMode? "text-cyan-400":"text-white"} `} />, title: 'GraphEval', desc: 'Comprehensive Evaluation and Analytics' },
+                { icon: <FaBrain className={`text-2xl ${darkMode? "text-cyan-400":"text-white"} `} />, title: 'BrainQuiz', desc: 'Diverse Quizzes: Factual, Memory, and Reasoning' },
               ].map((item, index) => (
-                <div key={index} className='w-96 lg:h-60 h-52 flex flex-col justify-center lg:px-7 px-7 lg:p-7 p-4 rounded-xl bg-[#242525] border-[#4d4d4e] border hover:border-cyan-500 transition-all duration-300 ease-in-out'>
+                <div key={index} className={`w-96 lg:h-60 h-52 flex flex-col justify-center lg:px-7 px-7 lg:p-7 p-4 rounded-xl  ${darkMode? "bg-[#242525] border-[#4d4d4e] border hover:border-cyan-500":"bg-black border border-gray-800 text-white "}   transition-all duration-300 ease-in-out`}>
                   {/* Feature Icon */}
                   {item.icon}
                   {/* Feature Title */}
@@ -34,7 +37,8 @@ const Feature = () => {
           </div>
         </div>
       </div>
-    </div></div>
+    </div>
+    </div>
   )
 }
 

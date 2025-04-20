@@ -6,6 +6,7 @@ import {
     MessageCircleIcon, UsersIcon, BarChartIcon
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
+import { useTheme } from "./Themecontextprovider";
 
 const Sidebar = ({ selectedOption, setSelectedOption }) => {
     const [userRole, setUserRole] = useState(null);
@@ -88,16 +89,16 @@ const Sidebar = ({ selectedOption, setSelectedOption }) => {
             router.push(route);
         }
     };
-
+      const { darkMode, toggleTheme } = useTheme();
     return (
         <aside className="m-5 mt-24 w-72">
-            <nav className="p-7 rounded-2xl bg-[#131313] flex flex-col">
+            <nav className={` p-7 rounded-2xl  ${darkMode ? "bg-[#131313]": "bg-black"}   flex flex-col`}>
                 <div className="mt-16 flex flex-col gap-9">
                     {menuSections.map((section) => (
                         <section key={section.title} aria-labelledby={`${section.title}-heading`}>
                             <h3 
                                 id={`${section.title}-heading`}
-                                className="text-sm font-semibold text-gray-400 mb-3"
+                                className="text-sm font-semibold text-white mb-3"
                             >
                                 {section.title}
                             </h3>
