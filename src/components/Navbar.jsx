@@ -112,8 +112,24 @@ const Header = ({ selectedOption, setSelectedOption }) => {
           >
             <div className="max-w-[90%] mx-auto space-y-4">
               {/* Theme Toggle */}
-              <div className="flex justify-between items-center">
-                <button
+           
+                
+                      {user? (<button
+                  onClick={toggleTheme}
+                  className={`w-12 h-6 flex items-center rounded-full px-1 transition-all duration-300 ${
+                    darkMode ? "bg-gray-700" : "bg-gray-300"
+                  }`}
+                >
+                  <div
+                    className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform duration-300 ${
+                      darkMode ? "translate-x-6" : "translate-x-0"
+                    }`}
+                  ></div>
+                </button>):(
+                  
+                  <div className="flex justify-between items-center">
+
+                  <button
                   onClick={toggleTheme}
                   className={`w-12 h-6 flex items-center rounded-full px-1 transition-all duration-300 ${
                     darkMode ? "bg-gray-700" : "bg-gray-300"
@@ -125,15 +141,21 @@ const Header = ({ selectedOption, setSelectedOption }) => {
                     }`}
                   ></div>
                 </button>
-
-                <Link href="/login">
+                  
+                 
+                  <Link href="/login">
               <button className={`rounded-[7px] p-2.5 px-5 ${ darkMode ? "bg-cyan-400 hover:bg-cyan-500 text-black" : "bg-black hover:bg-gray-950 text-white"} lg:text-sm `}>
                 Sign In
               </button>
             </Link>
 
+                  </div>
+          
+          )}
+                
 
-              </div>
+
+          
   
               {/* Menu Items (only when logged in and on specific routes) */}
               {user && menuOpen && (
