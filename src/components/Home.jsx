@@ -5,8 +5,9 @@ import Createcourse from './Createcourse'
 import Videobox from './Videobox'
 import { HiMiniSpeakerWave } from "react-icons/hi2";
 import { HiMiniSpeakerXMark } from "react-icons/hi2";
+import { useTheme } from "./Themecontextprovider";
 export default function Home() {
-
+       const { darkMode, toggleTheme } = useTheme();
    const [isPlaying, setIsPlaying] = useState(false);
     const audioRef = useRef(null);
   
@@ -28,18 +29,18 @@ export default function Home() {
     <div className=" mt-20 h-screen lg:pb-28 pb-72 overflow-auto lg:px-6 px-2 text-center flex flex-col ">
 
       <div className="text-white pb-2">
-        <h1 className="lg:text-7xl text-5xl text-cyan-400 font-bold inline-block ">VidyaRANG</h1>
+        <h1 className={`lg:text-7xl text-5xl ${darkMode ? "text-cyan-400" : "text-black"}  font-bold inline-block `}>VidyaRANG</h1>
 
       </div>
-      <h2 className="lg:text-4xl text-2xl mt-5 text-white font-medium">Learning Made Easy</h2>
+      <h2 className={`lg:text-4xl text-2xl mt-5 ${darkMode? "text-white":"text-black"}  font-medium`}>Learning Made Easy</h2>
 
       <div className=" p-2 mt-5 lg:text-2xl text-xl cursor-not-allowed ">
-        <h1 className=" text-gray-300">An AIGurukul Initiative - Build by students for students</h1>
+        <h1 className={`${darkMode? "text-gray-300":"text-gray-700"} `}>An AIGurukul Initiative - Build by students for students</h1>
       </div>
        <div className="mt-6">
       
               <audio ref={audioRef}  onEnded={handleAudioEnd} src="/assets/vidyarang.wav" preload="auto" />
-              <button className=" text-lg border text-cyan-400 bg-black border-gray-700 p-2.5 px-6 rounded-xl" onClick={togglePlayPause}>
+              <button className={` text-lg border ${darkMode ?"text-cyan-400 bg-black border-gray-700":"text-black bg-white border-black"}   p-2.5 px-6 rounded-xl`} onClick={togglePlayPause}>
               {isPlaying ? <HiMiniSpeakerXMark className="text-xl" /> : <HiMiniSpeakerWave className="text-xl" />}
             </button>
             </div>

@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { Send, Star, X, Play, Pause } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { useTheme } from "./Themecontextprovider";
 import {
   Card,
   CardContent,
@@ -40,6 +41,7 @@ export default function ChatWithCourse() {
   const textareaRef = useRef(null);
   const [playingMessageId, setPlayingMessageId] = useState(null);
   const audioRef = useRef(new Audio());
+   const { darkMode, toggleTheme } = useTheme();
 
  
   useEffect(() => {
@@ -291,7 +293,7 @@ export default function ChatWithCourse() {
 
   return (
     <div className="mt-16 flex items-center justify-center">
-      <Card className="w-full shadow-lg bg-[#010912] border-cyan-900/30">
+      <Card className={`w-full shadow-lg ${darkMode ? "bg-[#010912] border-cyan-900/30" : "bg-[#ecedee] border-gray-900/30"} `}>
         <CardHeader className="border-cyan-900/30 p-3 md:p-4">
           <CardTitle className="flex items-center justify-between">
             {messages.length > 0 && !conversationEnded && (
@@ -310,10 +312,10 @@ export default function ChatWithCourse() {
         <CardContent className="h-[50vh] md:h-[60vh] overflow-y-auto scrollbar-hide no-scrollbar">
           {messages.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-center space-y-4">
-              <div className="text-xl md:text-2xl font-bold text-cyan-400">
+              <div className={`text-xl md:text-2xl font-bold ${darkMode?"text-cyan-400 ":"text-black"}`}>
                 Welcome to Vidya RANG
               </div>
-              <div className="text-gray-400 max-w-md">
+              <div className={`${darkMode?"text-gray-400" :"text-gray-600"} max-w-md`}>
                 Select a course and ask a question to get started. I'll provide
                 answers based on the course curriculum.
               </div>
@@ -331,7 +333,7 @@ export default function ChatWithCourse() {
                 >
                   {message.role === "assistant" && (
                     <Avatar className="h-8 w-8 mr-2 mt-1 flex-shrink-0">
-                      <div className="bg-cyan-900 rounded-full h-full w-full flex items-center justify-center text-cyan-400 font-semibold">
+                      <div className={` ${darkMode ? "bg-cyan-900 text-cyan-400 ":"bg-black text-white"}  rounded-full h-full w-full flex items-center justify-center  font-semibold`}>
                         V
                       </div>
                     </Avatar>
@@ -348,7 +350,7 @@ export default function ChatWithCourse() {
                     )}
                   >
                     {message.role === "user" && message.course && (
-                      <div className="text-xs opacity-80 mb-1 text-cyan-400">
+                      <div className={`text-xs opacity-80 mb-1 ${darkMode?"text-cyan-400":"text-black"}`}>
                         Course:{" "}
                         {courses.find((c) => c.name === message.course)?.name}
                       </div>
@@ -377,7 +379,7 @@ export default function ChatWithCourse() {
 
                   {message.role === "user" && (
                     <Avatar className="h-8 w-8 ml-2 mt-1 flex-shrink-0">
-                      <div className="bg-cyan-900/50 rounded-full h-full w-full flex items-center justify-center text-cyan-300 font-semibold">
+                      <div className={`    ${darkMode?"bg-cyan-900/50 text-cyan-300":"bg-black text-white"}    rounded-full h-full w-full flex items-center justify-center  font-semibold`}>
                         U
                       </div>
                     </Avatar>
@@ -388,7 +390,7 @@ export default function ChatWithCourse() {
               {isTyping && (
                 <div className="flex justify-start">
                   <Avatar className="h-8 w-8 mr-2 mt-1 flex-shrink-0">
-                    <div className="bg-cyan-900 rounded-full h-full w-full flex items-center justify-center text-cyan-400 font-semibold">
+                    <div className={`${darkMode? "bg-cyan-900 text-cyan-400":"bg-black text-white"}  rounded-full h-full w-full flex items-center justify-center  font-semibold`}>
                       V
                     </div>
                   </Avatar>
@@ -518,7 +520,7 @@ export default function ChatWithCourse() {
                 <Button
                   type="submit"
                   size="icon"
-                  className="h-10 w-10 bg-cyan-400 hover:bg-cyan-600 text-gray-900 rounded-[10px]"
+                  className={`h-10 w-10 ${darkMode ? "bg-cyan-400 hover:bg-cyan-600 text-gray-900 ":"bg-black text-white"}  rounded-[10px]`}
                   disabled={
                     isTyping ||
                     !input.trim() ||

@@ -1,14 +1,22 @@
 "use client"
 
 import React from 'react'
-
+import { useTheme } from "./Themecontextprovider";
 
 export default function About() {
+
+
+  const { darkMode, toggleTheme } = useTheme();
+
+
+
   return (
+
+
     <div className='mt-36 lg:px-6 px-2 '>
 
       {/* Main container with background color */}
-      <div className='bg-[#0c0c0c] lg:p-10 p-2'>
+      <div className={`  ${darkMode ? "bg-[#0c0c0c]" : "bg-black"}        lg:p-10 p-2`}>
 
         {/* Introduction Section */}
         <div className='text-white lg:px-14 px-3 py-4 mt-5 flex w-full lg:gap-10 gap-3 items-center lg:flex-row flex-col'>
@@ -18,7 +26,7 @@ export default function About() {
             
             {/* Heading */}
             <h1 className='lg:text-5xl sm:text-4xl text-3xl font-medium lg:text-left text-center '> What is{' '}
-              <span className='bg-gradient-to-t from-cyan-400 font-bold  to-white text-transparent bg-clip-text'>
+              <span className={`     ${darkMode? " bg-gradient-to-t from-cyan-400 font-bold  to-white text-transparent bg-clip-text" : "bg-gradient-to-t from-gray-400 font-bold  to-white text-transparent bg-clip-text"}    `}>
                 VidyaRANG
               </span>
             </h1>
@@ -31,11 +39,11 @@ export default function About() {
             </div>
 
             {/* Description */}
-            <h1 className='mt-6 text-gray-300 text-lg'>
+            <h1 className={` ${darkMode? "text-gray-300" : "text-white"} mt-6  text-lg`}>
               Welcome to VidyaRANG, your smart companion for learning! VidyaRANG is an AI-powered educational platform designed to make studying simpler, more interactive, and engaging. With VidyaRANG, you can easily upload your study materials, chat directly with your documents to get instant answers, take quizzes to test your knowledge, and analyze your progress with in-depth feedback.
             </h1>
 
-            <h1 className='mt-5 text-lg text-gray-300'>
+            <h1 className={` ${darkMode? "text-gray-300" : "text-white"} mt-5  text-lg`}>
               Whether you're a student or a lifelong learner, VidyaRANG makes learning easier and more effective. Dive into a personalized learning experience and see how VidyaRANG can help you reach your educational goals with confidence!
             </h1>
           </div>

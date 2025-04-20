@@ -6,6 +6,7 @@ import { createCourse } from "./api"; // Import the API service
 import { toast, ToastContainer } from "react-toastify"; // Importing toast for notifications
 import supabase from "../app/supabaseClient"; // Importing Supabase client
 import { useRouter } from "next/navigation";
+import { useTheme } from "./Themecontextprovider";
 
 export default function CreateNewCourse() {
   const [isPublic, setIsPublic] = useState(false);
@@ -18,6 +19,7 @@ export default function CreateNewCourse() {
   const [progressInterval, setProgressInterval] = useState(null);
   const router = useRouter(); // Router instance for navigation
   const [userEmail, setUserEmail] = useState(null); // State to store user data
+  const { darkMode, toggleTheme } = useTheme();
   useEffect(() => {
     const fetchUser = async () => {
       // Fetch the current session from Supabase
@@ -166,13 +168,13 @@ export default function CreateNewCourse() {
     ".pdf,.ppt,.pptx,.doc,.docx,.xls,.xlsx,.json,.csv,.txt";
 
   return (
-    <div className="min-h-screen overflow-auto bg-gray-950 text-gray-100 flex items-center justify-center p-4">
-      <div className="w-full mt-14 max-w-md space-y-8 bg-gray-900 p-8 rounded-xl overflow-y-auto max-h-screen shadow-lg lg:pb-28 pb-72">
+    <div className={`min-h-screen overflow-auto ${darkMode? "bg-gray-950":"bg-black"}  text-gray-100 flex items-center justify-center p-4`}>
+      <div className={`w-full mt-14 max-w-md space-y-8 ${darkMode? "bg-gray-900":"bg-zinc-200"}  p-8 rounded-xl overflow-y-auto max-h-screen shadow-lg lg:pb-28 pb-72`}>
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-cyan-400">
+          <h1 className={`text-2xl font-bold ${darkMode? "text-cyan-400":"text-black"} `}>
             Create New Course
           </h1>
-          <p className="text-gray-400 mt-2 text-sm">
+          <p className={`  ${darkMode?"text-gray-400":"text-gray-700"}  mt-2 text-sm`}>
             Fill in the details to create your course
           </p>
         </div>
@@ -181,7 +183,7 @@ export default function CreateNewCourse() {
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Course Name Input */}
           <div className="space-y-2">
-            <label htmlFor="courseName" className="text-white">
+            <label htmlFor="courseName" className={`${darkMode? "text-white":"text-black"} `}>
               Course Name
             </label>
             <input
@@ -191,7 +193,7 @@ export default function CreateNewCourse() {
               onChange={handleCourseNameChange}
               onBlur={() => validateCourseName(courseName)}
               placeholder="Enter course name"
-              className={`w-full bg-gray-800 border px-3 py-2 rounded text-white placeholder-gray-500 ${
+              className={`w-full ${darkMode? "bg-gray-800":"bg-gray-300"}  border px-3 py-2 rounded text-white placeholder-gray-500 ${
                 courseNameError
                   ? "border-red-500"
                   : "border-gray-700 focus:border-cyan-500"
@@ -208,7 +210,7 @@ export default function CreateNewCourse() {
           {/* Course Visibility Switch */}
           <div className="space-y-2">
             <div className="flex justify-between items-center">
-              <label htmlFor="visibility" className="text-white">
+              <label htmlFor="visibility" className={` ${darkMode? "text-white":"text-black"} `}>
                 Course Visibility
               </label>
               <div className="flex items-center space-x-2">
@@ -250,7 +252,7 @@ export default function CreateNewCourse() {
                 </span>
               </div>
             </div>
-            <p className="text-xs text-gray-400 mt-1 pl-1">
+            <p className={`text-xs ${darkMode? "text-gray-400": "text-gray-700"}  mt-1 pl-1`}>
               {isPublic
                 ? "Anyone can discover and enroll in this course"
                 : "Only people with the link can access this course"}
@@ -259,15 +261,15 @@ export default function CreateNewCourse() {
 
           {/* File Upload Section */}
           <div className="space-y-2">
-            <label htmlFor="fileUpload" className="text-white">
+            <label htmlFor="fileUpload" className={` ${darkMode? "text-white":"text-black"} `}>
               Upload Course Materials
             </label>
             <div
-              className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer ${
+              className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer ${darkMode? "bg-gray-800 hover:bg-gray-700":"bg-gray-300 hover:bg-zinc-300"} ${
                 isDragging
                   ? "border-cyan-500 bg-cyan-500/10"
-                  : "border-gray-700 bg-gray-800 hover:border-gray-500 hover:bg-gray-700"
-              }`}
+                  : "border-gray-700   hover:border-gray-500"
+              }               `}
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
               onDrop={handleDrop}
@@ -300,7 +302,7 @@ export default function CreateNewCourse() {
             {/* Display Selected Files with Remove Option */}
             {files.length > 0 && (
               <div className="mt-4 space-y-2">
-                <p className="text-sm font-medium text-white">
+                <p className={`text-sm font-medium ${darkMode? "text-white":"text-black"} `}>
                   Selected Files:
                 </p>
                 <ul className="text-xs text-gray-300 space-y-1 max-h-32 overflow-y-auto bg-gray-800 rounded-md p-2">
@@ -348,7 +350,7 @@ export default function CreateNewCourse() {
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-cyan-500 text-white py-2 rounded-lg hover:bg-cyan-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            className={`w-full ${darkMode ? "bg-cyan-500 text-white hover:bg-cyan-600":"bg-black text-white hover:bg-gray-500"}  py-2 rounded-lg  transition disabled:opacity-50 disabled:cursor-not-allowed`}
             disabled={isSubmitting}
           >
             {isSubmitting ? "Creating..." : "Create Course"}

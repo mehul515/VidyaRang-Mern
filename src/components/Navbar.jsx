@@ -14,6 +14,7 @@ import {
 } from "lucide-react"; // Icons
 import supabase from "../app/supabaseClient"; // Supabase client for authentication
 import Link from "next/link"; // Link component for navigation
+import { useTheme } from "./Themecontextprovider";
 
 // Menu items for navigation
 const allMenuItems = [
@@ -70,28 +71,72 @@ const Header = ({ selectedOption, setSelectedOption }) => {
   // Filter menu items based on the user's role
   const menuItems = allMenuItems.filter(item => !item.restrictedTo || item.restrictedTo.includes(userRole));
 
-  return (
-    <header className="fixed top-0 left-0 w-full bg-[#030303] z-50 border-b-[0.02px] border-gray-900">
-      <nav className="mx-auto flex max-w-7xl items-center justify-between py-4 px-4">
+   
+  const { darkMode, toggleTheme } = useTheme();
 
-        {/* App Name (Clicking navigates to "/main") */}
+
+  return (
+    <header
+      className={`fixed top-0 left-0 w-full z-50 border-b-[0.02px] transition-colors duration-300 ${
+        darkMode ? "bg-[#030303] border-gray-900" : "bg-white border-gray-200"
+      }`}
+    >
+      <nav className="mx-auto flex max-w-7xl items-center justify-between py-4 px-4">
+        {/* App Name */}
         <div
-          className="text-xl lg:text-2xl text-white font-bold cursor-pointer"
+          className={`text-xl lg:text-2xl font-bold cursor-pointer transition ${
+            darkMode ? "text-white" : "text-black"
+          }`}
           onClick={() => router.push("/main")}
         >
           AIGurukul
         </div>
-
-        {/* Mobile Menu Toggle Button (Only visible when logged in) */}
-        {user && (
-          <button onClick={() => setMenuOpen(!menuOpen)} className="lg:hidden text-white">
+  
+        {/* Right - Mobile */}
+        <div className="flex items-center gap-4 lg:hidden">
+          {/* Hamburger */}
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className={`${darkMode ? "text-white" : "text-black"}`}
+          >
             {menuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
-        )}
-
-        {/* Mobile Menu (Only visible when menuOpen is true) */}
+        </div>
+  
+        {/* Mobile Menu */}
         {user && menuOpen && (
-          <div className="absolute top-14 right-0 w-screen bg-black p-4 lg:hidden">
+          <div
+            className={`absolute top-14 right-0 w-screen p-4 lg:hidden transition-all ${
+              darkMode ? "bg-black border-b-[0.3px] border-gray-500" : "bg-white  border-b-[0.3px] border-gray-400"
+            }`}
+          >
+            <div className="max-w-[90%] mx-auto space-y-4">
+              {/* Theme Toggle */}
+              <div className="flex justify-between items-center">
+                <button
+                  onClick={toggleTheme}
+                  className={`w-12 h-6 flex items-center rounded-full px-1 transition-all duration-300 ${
+                    darkMode ? "bg-gray-700" : "bg-gray-300"
+                  }`}
+                >
+                  <div
+                    className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform duration-300 ${
+                      darkMode ? "translate-x-6" : "translate-x-0"
+                    }`}
+                  ></div>
+                </button>
+
+                <Link href="/login">
+              <button className={`rounded-[7px] p-2.5 px-5 ${ darkMode ? "bg-cyan-400 hover:bg-cyan-500 text-black" : "bg-black hover:bg-gray-950 text-white"} lg:text-sm `}>
+                Sign In
+              </button>
+            </Link>
+
+
+              </div>
+  
+              {/* Menu Items (only when logged in and on specific routes) */}
+              {user && menuOpen && (
             <div className="max-w-[90%] mx-auto space-y-4">
 
               {/* User Info */}
@@ -122,44 +167,63 @@ const Header = ({ selectedOption, setSelectedOption }) => {
                   ))}
               </div>
             </div>
+          
+        )}
+  
+             
+            </div>
           </div>
         )}
-
-        {/* User Profile Section (Desktop) */}
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end">
+  
+        {/* Right - Desktop */}
+        <div className="hidden lg:flex items-center gap-4">
+          {/* Theme Toggle */}
+          <button
+            onClick={toggleTheme}
+            className={`w-12 h-6 flex items-center rounded-full px-1 transition-all duration-300 ${
+              darkMode ? "bg-gray-700" : "bg-gray-300"
+            }`}
+          >
+            <div
+              className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform duration-300 ${
+                darkMode ? "translate-x-6" : "translate-x-0"
+              }`}
+            ></div>
+          </button>
+  
+          {/* Auth */}
           {user ? (
             <a href="/profile">
               <div
                 className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition"
                 onClick={() => setSelectedOption("Profile")}
               >
-                <img src={user.avatarUrl} alt="Profile" className="h-8 rounded-full" />
-                <span className="text-sm font-semibold text-white">{user.name}</span>
+                <img
+                  src={user.avatarUrl}
+                  alt="Profile"
+                  className="h-8 rounded-full"
+                />
+                <span
+                  className={`text-sm font-semibold ${
+                    darkMode ? "text-white" : "text-black"
+                  }`}
+                >
+                  {user.name}
+                </span>
               </div>
             </a>
           ) : (
-            // Sign In Button (Desktop)
             <Link href="/login">
-              <button className="rounded-[7px] p-2.5 px-5 text-black bg-cyan-400 lg:text-sm hover:bg-cyan-500">
+              <button className={`rounded-[7px] p-2.5 px-5 ${ darkMode ? "bg-cyan-400 hover:bg-cyan-500 text-black" : "bg-black hover:bg-gray-950 text-white"} lg:text-sm `}>
                 Sign In
               </button>
             </Link>
           )}
         </div>
-
-        {/* Sign In Button (Mobile) */}
-        {!user && (
-          <Link href="/login">
-            <div className="lg:hidden">
-              <button className="rounded-[7px] p-2 px-5 text-black bg-cyan-400 lg:text-sm hover:bg-cyan-500">
-                Sign In
-              </button>
-            </div>
-          </Link>
-        )}
       </nav>
     </header>
   );
+  
 };
 
 export default Header;

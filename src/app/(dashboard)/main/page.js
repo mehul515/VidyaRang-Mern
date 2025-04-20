@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import supabase from '@/app/supabaseClient';
-import Home from '@/app/page';
+import Home from '@/components/Home.jsx';
 
 export default function Page() {
   const [loading, setLoading] = useState(true);
@@ -40,5 +40,5 @@ export default function Page() {
   }, [router]);
 
   if (loading) return <div>Loading...</div>;
-  return <Home />;
+  return <Home/>;
 }
