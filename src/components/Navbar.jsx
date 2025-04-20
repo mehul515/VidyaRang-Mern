@@ -143,7 +143,7 @@ const Header = ({ selectedOption, setSelectedOption }) => {
               <Link href={"/profile"}>
                 <div className="flex items-center gap-2 text-white">
                   <img src={user.avatarUrl} alt="Profile" className="w-8 h-8 rounded-full border border-gray-600" />
-                  <span className="text-sm font-semibold">{user.name}</span>
+                  <span className={`text-sm ${darkMode?"text-white":"text-black"} font-semibold`}>{user.name}</span>
                 </div>
               </Link>
 
@@ -161,8 +161,8 @@ const Header = ({ selectedOption, setSelectedOption }) => {
                         selectedOption === item.name ? "text-cyan-400 font-bold" : ""
                       }`}
                     >
-                      <item.icon size={20} className="text-gray-400" />
-                      <span>{item.name}</span>
+                      <item.icon size={20} className={` ${darkMode?"text-gray-400":"text-gray-700"} `} />
+                      <span className={`${darkMode?"text-gray-300":"text-gray-800"}`}>{item.name}</span>
                     </button>
                   ))}
               </div>
