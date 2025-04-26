@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Send, Star, X, Play, Pause } from "lucide-react";
+import { Send, Star, X, Play, Pause, Mic, MicOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useTheme } from "./Themecontextprovider";
@@ -42,7 +42,9 @@ export default function ChatWithCourse() {
   const textareaRef = useRef(null);
   const [playingMessageId, setPlayingMessageId] = useState(null);
   const audioRef = useRef(new Audio());
-   const { darkMode, toggleTheme } = useTheme();
+  const { darkMode, toggleTheme } = useTheme();
+  const [isListening, setIsListening] = useState(false);
+  const recognitionRef = useRef(null);
 
   // Fetch courses from Supabase and set username
 
@@ -149,6 +151,36 @@ export default function ChatWithCourse() {
     return () => {
       audio.removeEventListener("ended", handleEnded);
     };
+  }, []);
+
+  // Initialize speech recognition
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (SpeechRecognition) {
+        recognitionRef.current = new SpeechRecognition();
+        recognitionRef.current.continuous = true;
+        recognitionRef.current.interimResults = true;
+        recognitionRef.current.lang = 'en-US';
+
+        recognitionRef.current.onresult = (event) => {
+          const transcript = Array.from(event.results)
+            .map(result => result[0])
+            .map(result => result.transcript)
+            .join('');
+          setInput(transcript);
+        };
+
+        recognitionRef.current.onerror = (event) => {
+          console.error('Speech recognition error:', event.error);
+          setIsListening(false);
+        };
+
+        recognitionRef.current.onend = () => {
+          setIsListening(false);
+        };
+      }
+    }
   }, []);
 
   const handleGetSummary = async () => {
@@ -353,6 +385,15 @@ export default function ChatWithCourse() {
         setPlayingMessageId(null);
       }
     }
+  };
+
+  const toggleListening = () => {
+    if (isListening) {
+      recognitionRef.current?.stop();
+    } else {
+      recognitionRef.current?.start();
+    }
+    setIsListening(!isListening);
   };
 
   return (
@@ -592,6 +633,15 @@ export default function ChatWithCourse() {
                     disabled={isTyping || !selectedCourse || loadingCourses}
                   />
                 </div>
+                <Button
+                  type="button"
+                  size="icon"
+                  onClick={toggleListening}
+                  className={`h-10 w-10 ${isListening ? "bg-red-500 hover:bg-red-600" : darkMode ? "bg-cyan-400 hover:bg-cyan-600" : "bg-black hover:bg-gray-800"} text-white rounded-[10px]`}
+                  disabled={isTyping || !selectedCourse || loadingCourses}
+                >
+                  {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+                </Button>
                 <Button
                   type="submit"
                   size="icon"
