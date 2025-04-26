@@ -164,11 +164,16 @@ export default function ChatWithCourse() {
         recognitionRef.current.lang = 'en-US';
 
         recognitionRef.current.onresult = (event) => {
-          const transcript = Array.from(event.results)
-            .map(result => result[0])
-            .map(result => result.transcript)
-            .join('');
-          setInput(transcript);
+          let interimTranscript = '';
+          let finalTranscript = '';
+          for (let i = 0; i < event.results.length; ++i) {
+            if (event.results[i].isFinal) {
+              finalTranscript += event.results[i][0].transcript;
+            } else {
+              interimTranscript += event.results[i][0].transcript;
+            }
+          }
+          setInput(finalTranscript + interimTranscript);
         };
 
         recognitionRef.current.onerror = (event) => {
