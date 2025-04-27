@@ -6,11 +6,12 @@ import Link from "next/link";
 import { User, LogOut, Home, BookOpen, Users } from "lucide-react"; // Importing icons
 import supabase from "../supabaseClient"; // Importing Supabase client
 import Navbar from "@/components/Navbar"; // Importing Navbar component
+import { useTheme } from "@/components/Themecontextprovider"; //Importing Themecontextprovider
 
 export default function ProfilePage() {
   const router = useRouter(); // Router instance for navigation
   const [userData, setUserData] = useState(null); // State to store user data
-
+  const { darkMode, toggleTheme } = useTheme();
   useEffect(() => {
     const fetchUser = async () => {
       // Fetch the current session from Supabase
@@ -61,24 +62,24 @@ export default function ProfilePage() {
       <Navbar /> {/* Navbar Component */}
 
       <div className="min-h-screen flex items-center justify-center p-6">
-        <div className="w-full max-w-lg mx-auto overflow-hidden backdrop-blur-sm bg-gray-950/80 shadow-xl border border-gray-700 rounded-xl p-4">
+        <div className={`w-full max-w-lg mx-auto overflow-hidden backdrop-blur-sm ${darkMode?"bg-gray-950/80 border-gray-700":"bg-white/80 border-zinc-300"}  shadow-xl border  rounded-xl p-4`}>
           
           {/* Profile Banner */}
-          <div className="relative h-32 bg-gradient-to-r from-gray-700 to-gray-800 rounded-t-xl flex justify-center items-center">
+          <div className={`relative h-32 ${darkMode? "bg-gradient-to-r from-gray-700 to-gray-800":"bg-gradient-to-r from-zinc-200 to-zinc-300"}  rounded-t-xl flex justify-center items-center`}>
             <img
               src={userData.avatarUrl}
               alt={userData.name}
-              className="h-24 w-24 border-4 border-gray-800 shadow-md rounded-full absolute -bottom-12 object-cover"
+              className={`h-24 w-24 border-4 ${darkMode? "border-gray-800":"border-gray-200"}  shadow-md rounded-full absolute -bottom-12 object-cover`}
               onError={(e) => (e.target.src = "/profile.png")} // Default image on error
             />
           </div>
 
           {/* User Information Section */}
           <div className="pt-16 pb-6 px-4 space-y-6 text-center">
-            <h1 className="text-2xl font-bold text-gray-100">{userData.name}</h1>
+            <h1 className={`text-2xl font-bold  ${darkMode?"text-gray-100":"text-gray-900"} `}>{userData.name}</h1>
 
             {/* Display email and role */}
-            <div className="flex items-center justify-center gap-2 text-gray-400 text-sm md:flex-row md:gap-4">
+            <div className={`flex items-center justify-center gap-2 ${darkMode?"text-gray-400":"text-gray-900"}  text-sm md:flex-row md:gap-4`}>
               <div className="flex items-center gap-2">
                 <User size={16} />
                 <span>{userData.email}</span>
@@ -118,11 +119,11 @@ export default function ProfilePage() {
           </div>
 
           {/* Navigation & Logout Buttons */}
-          <div className="flex flex-col md:flex-row justify-between border-t border-gray-700 p-4 bg-gray-800/50 gap-2">
+          <div className={`flex flex-col md:flex-row justify-between border-t ${darkMode?"border-gray-700 p-4 bg-gray-800/50":"border-gray-300 p-4 bg-gray-300/50"}  gap-2`}>
             
             {/* Home Button */}
             <Link href="/main">
-              <button className="flex items-center gap-2 bg-gray-700/50 text-gray-200 hover:bg-gray-600 hover:text-white transition-colors px-4 py-2 rounded w-full md:w-auto">
+              <button className={`flex items-center gap-2 ${darkMode?" bg-gray-700/50 text-gray-200 hover:bg-gray-600 hover:text-white":" bg-gray-800/50 text-gray-100 hover:bg-gray-600 hover:text-white"} transition-colors px-4 py-2 rounded w-full md:w-auto`}>
                 <Home className="h-4 w-4" />
                 Home
               </button>
