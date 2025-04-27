@@ -15,6 +15,8 @@ import {
 import supabase from "../app/supabaseClient"; // Supabase client for authentication
 import Link from "next/link"; // Link component for navigation
 import { useTheme } from "./Themecontextprovider";
+import { MdOutlineDarkMode } from "react-icons/md";
+import { MdOutlineLightMode } from "react-icons/md";
 
 // Menu items for navigation
 const allMenuItems = [
@@ -71,27 +73,25 @@ const Header = ({ selectedOption, setSelectedOption }) => {
   // Filter menu items based on the user's role
   const menuItems = allMenuItems.filter(item => !item.restrictedTo || item.restrictedTo.includes(userRole));
 
-   
+
   const { darkMode, toggleTheme } = useTheme();
 
 
   return (
     <header
-      className={`fixed top-0 left-0 w-full z-50 border-b-[0.02px] transition-colors duration-300 ${
-        darkMode ? "bg-[#030303] border-gray-900" : "bg-white border-gray-200"
-      }`}
+      className={`fixed top-0 left-0 w-full z-50 border-b-[0.02px] transition-colors duration-300 ${darkMode ? "bg-[#030303] border-gray-900" : "bg-white border-gray-200"
+        }`}
     >
       <nav className="mx-auto flex max-w-7xl items-center justify-between py-4 px-4">
         {/* App Name */}
         <div
-          className={`text-xl lg:text-2xl font-bold cursor-pointer transition ${
-            darkMode ? "text-white" : "text-black"
-          }`}
+          className={`text-xl lg:text-2xl font-bold cursor-pointer transition ${darkMode ? "text-white" : "text-black"
+            }`}
           onClick={() => router.push("/main")}
         >
           AIGurukul
         </div>
-  
+
         {/* Right - Mobile */}
         <div className="flex items-center gap-4 lg:hidden">
           {/* Hamburger */}
@@ -102,117 +102,128 @@ const Header = ({ selectedOption, setSelectedOption }) => {
             {menuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
-  
+
         {/* Mobile Menu */}
-        { menuOpen && (
+        {menuOpen && (
           <div
-            className={`absolute top-14 right-0 w-screen p-4 lg:hidden transition-all ${
-              darkMode ? "bg-black border-b-[0.3px] border-gray-500" : "bg-white  border-b-[0.3px] border-gray-400"
-            }`}
+            className={`absolute top-14 right-0 w-screen p-4 lg:hidden transition-all ${darkMode ? "bg-black border-b-[0.3px] border-gray-500" : "bg-white  border-b-[0.3px] border-gray-400"
+              }`}
           >
             <div className="max-w-[90%] mx-auto space-y-4">
               {/* Theme Toggle */}
-           
-                
-                      {user? (<button
-                  onClick={toggleTheme}
-                  className={`w-12 h-6 flex items-center rounded-full px-1 transition-all duration-300 ${
-                    darkMode ? "bg-gray-700" : "bg-gray-300"
+
+
+              {user ? (<button
+                onClick={toggleTheme}
+                className={`w-11 h-7 flex items-center rounded-full px-1 transition-all duration-300 ${darkMode ? "bg-gray-800" : "bg-gray-300"
                   }`}
-                >
-                  <div
-                    className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform duration-300 ${
-                      darkMode ? "translate-x-6" : "translate-x-0"
+              >
+                <div
+                  className={`w-4 h-4  flex items-center justify-center  transform transition-transform duration-300 ${darkMode ? "translate-x-5" : "translate-x-0"
                     }`}
-                  ></div>
-                </button>):(
-                  
-                  <div className="flex justify-between items-center">
+                >
+                  {darkMode ? (
+                    <MdOutlineLightMode className="text-yellow-400 text-3xl" />
+                  ) : (
+                    <MdOutlineDarkMode className="text-black text-3xl" />
+                  )}
+                </div>
+              </button>) : (
+
+                <div className="flex justify-between items-center">
 
                   <button
-                  onClick={toggleTheme}
-                  className={`w-12 h-6 flex items-center rounded-full px-1 transition-all duration-300 ${
-                    darkMode ? "bg-gray-700" : "bg-gray-300"
-                  }`}
-                >
-                  <div
-                    className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform duration-300 ${
-                      darkMode ? "translate-x-6" : "translate-x-0"
-                    }`}
-                  ></div>
-                </button>
-                  
-                 
+                    onClick={toggleTheme}
+                    className={`w-11 h-7 flex items-center rounded-full px-1 transition-all duration-300 ${darkMode ? "bg-gray-800" : "bg-gray-300"
+                      }`}
+                  >
+                    <div
+                      className={`w-4 h-4  flex items-center justify-center  transform transition-transform duration-300 ${darkMode ? "translate-x-5" : "translate-x-0"
+                        }`}
+                    >
+                      {darkMode ? (
+                        <MdOutlineLightMode className="text-yellow-400 text-3xl" />
+                      ) : (
+                        <MdOutlineDarkMode className="text-black text-3xl" />
+                      )}
+                    </div>
+                  </button>
+
+
                   <Link href="/login">
-              <button className={`rounded-[7px] p-2.5 px-5 ${ darkMode ? "bg-cyan-400 hover:bg-cyan-500 text-black" : "bg-black hover:bg-gray-950 text-white"} lg:text-sm `}>
-                Sign In
-              </button>
-            </Link>
+                    <button className={`rounded-[7px] p-2.5 px-5 ${darkMode ? "bg-cyan-400 hover:bg-cyan-500 text-black" : "bg-black hover:bg-gray-950 text-white"} lg:text-sm `}>
+                      Sign In
+                    </button>
+                  </Link>
 
-                  </div>
-          
-          )}
-                
+                </div>
+
+              )}
 
 
-          
-  
+
+
+
               {/* Menu Items (only when logged in and on specific routes) */}
               {user && menuOpen && (
-            <div className="max-w-[90%] mx-auto space-y-4">
+                <div className="max-w-[90%] mx-auto space-y-4">
 
-              {/* User Info */}
-              <Link href={"/profile"}>
-                <div className="flex items-center gap-2 text-white">
-                  <img src={user.avatarUrl} alt="Profile" className="w-8 h-8 rounded-full border border-gray-600" />
-                  <span className={`text-sm ${darkMode?"text-white":"text-black"} font-semibold`}>{user.name}</span>
+                  {/* User Info */}
+                  <Link href={"/profile"}>
+                    <div className="flex items-center gap-2 text-white">
+                      <img src={user.avatarUrl} alt="Profile" className="w-8 h-8 rounded-full border border-gray-600" />
+                      <span className={`text-sm ${darkMode ? "text-white" : "text-black"} font-semibold`}>{user.name}</span>
+                    </div>
+                  </Link>
+
+                  {/* Menu Items (Only visible in "/main") */}
+                  <div className="flex flex-col gap-4 mt-4">
+                    {(pathname === "/main" || pathname === "/chat" || pathname === "/about" || pathname === "/assign" || pathname === "/create-course" || pathname === "/analysis") &&
+                      menuItems.map(item => (
+                        <button
+                          key={item.name}
+                          onClick={() => {
+                            setSelectedOption(item.name);
+                            setMenuOpen(false);
+                          }}
+                          className={`flex items-center gap-2 text-white hover:opacity-80 transition ${selectedOption === item.name ? "text-cyan-400 font-bold" : ""
+                            }`}
+                        >
+                          <item.icon size={20} className={` ${darkMode ? "text-gray-400" : "text-gray-700"} `} />
+                          <span className={`${darkMode ? "text-gray-300" : "text-gray-800"}`}>{item.name}</span>
+                        </button>
+                      ))}
+                  </div>
                 </div>
-              </Link>
 
-              {/* Menu Items (Only visible in "/main") */}
-              <div className="flex flex-col gap-4 mt-4">
-                {(pathname === "/main" || pathname === "/chat" || pathname === "/about" || pathname === "/assign" || pathname === "/create-course" || pathname === "/analysis") &&
-                  menuItems.map(item => (
-                    <button
-                      key={item.name}
-                      onClick={() => {
-                        setSelectedOption(item.name);
-                        setMenuOpen(false);
-                      }}
-                      className={`flex items-center gap-2 text-white hover:opacity-80 transition ${
-                        selectedOption === item.name ? "text-cyan-400 font-bold" : ""
-                      }`}
-                    >
-                      <item.icon size={20} className={` ${darkMode?"text-gray-400":"text-gray-700"} `} />
-                      <span className={`${darkMode?"text-gray-300":"text-gray-800"}`}>{item.name}</span>
-                    </button>
-                  ))}
-              </div>
-            </div>
-          
-        )}
-  
-             
+              )}
+
+
             </div>
           </div>
         )}
-  
+
         {/* Right - Desktop */}
         <div className="hidden lg:flex items-center gap-4">
           {/* Theme Toggle */}
           <button
             onClick={toggleTheme}
-            className={`w-12 h-6 flex items-center rounded-full px-1 transition-all duration-300 ${
-              darkMode ? "bg-gray-700" : "bg-gray-300"
-            }`}
+            className={`w-11 h-7 flex items-center rounded-full px-1 transition-all duration-300 ${darkMode ? "bg-gray-800" : "bg-gray-300"
+              }`}
           >
             <div
-              className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform duration-300 ${
-                darkMode ? "translate-x-6" : "translate-x-0"
-              }`}
-            ></div>
+              className={`w-4 h-4  flex items-center justify-center  transform transition-transform duration-300 ${darkMode ? "translate-x-5" : "translate-x-0"
+                }`}
+            >
+              {darkMode ? (
+                <MdOutlineLightMode className="text-yellow-400 text-3xl" />
+              ) : (
+                <MdOutlineDarkMode className="text-black text-3xl" />
+              )}
+            </div>
           </button>
-  
+
+
           {/* Auth */}
           {user ? (
             <a href="/profile">
@@ -226,9 +237,8 @@ const Header = ({ selectedOption, setSelectedOption }) => {
                   className="h-8 rounded-full"
                 />
                 <span
-                  className={`text-sm font-semibold ${
-                    darkMode ? "text-white" : "text-black"
-                  }`}
+                  className={`text-sm font-semibold ${darkMode ? "text-white" : "text-black"
+                    }`}
                 >
                   {user.name}
                 </span>
@@ -236,7 +246,7 @@ const Header = ({ selectedOption, setSelectedOption }) => {
             </a>
           ) : (
             <Link href="/login">
-              <button className={`rounded-[7px] p-2.5 px-5 ${ darkMode ? "bg-cyan-400 hover:bg-cyan-500 text-black" : "bg-black hover:bg-gray-950 text-white"} lg:text-sm `}>
+              <button className={`rounded-[7px] p-2.5 px-5 ${darkMode ? "bg-cyan-400 hover:bg-cyan-500 text-black" : "bg-black hover:bg-gray-950 text-white"} lg:text-sm `}>
                 Sign In
               </button>
             </Link>
@@ -245,7 +255,7 @@ const Header = ({ selectedOption, setSelectedOption }) => {
       </nav>
     </header>
   );
-  
+
 };
 
 export default Header;

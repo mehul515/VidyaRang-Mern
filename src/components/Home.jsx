@@ -39,7 +39,7 @@ export default function Home() {
       </div>
        <div className="mt-6">
       
-              <audio ref={audioRef}  onEnded={handleAudioEnd} src="/assets/vidyarang.wav" preload="auto" />
+              <audio ref={audioRef}  onEnded={handleAudioEnd} src="/assets/vidyarangg.wav" preload="auto" />
               <button className={` text-lg border ${darkMode ?"text-cyan-400 bg-black border-gray-700":"text-black bg-white border-black"}   p-2.5 px-6 rounded-xl`} onClick={togglePlayPause}>
               {isPlaying ? <HiMiniSpeakerXMark className="text-xl" /> : <HiMiniSpeakerWave className="text-xl" />}
             </button>
