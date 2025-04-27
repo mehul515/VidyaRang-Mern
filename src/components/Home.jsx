@@ -50,7 +50,7 @@ export default function Home() {
 
       <div className='w-full  mt-10 lg:p-10 p-2 pb-10 flex flex-col justify-center'>
         <div className='text-center '>
-          <h1 className='lg:text-5xl text-4xl text-center font-bold pt-5 pb-7'>VidyaRANG Featured Videos</h1>
+          <h1 className={` ${darkMode? "text-white":"text-black"} lg:text-5xl text-4xl text-center font-bold pt-5 pb-7`}>VidyaRANG Featured Videos</h1>
         </div>
 
 
