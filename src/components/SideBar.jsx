@@ -92,13 +92,13 @@ const Sidebar = ({ selectedOption, setSelectedOption }) => {
       const { darkMode, toggleTheme } = useTheme();
     return (
         <aside className="m-5 mt-24 w-72">
-            <nav className={` p-7 rounded-2xl  ${darkMode ? "bg-[#131313]": "bg-black"}   flex flex-col`}>
+            <nav className={` p-7 rounded-2xl  ${darkMode ? "bg-[#131313]": "bg-gray-300/50"}   flex flex-col`}>
                 <div className="mt-16 flex flex-col gap-9">
                     {menuSections.map((section) => (
                         <section key={section.title} aria-labelledby={`${section.title}-heading`}>
                             <h3 
                                 id={`${section.title}-heading`}
-                                className="text-sm font-semibold text-white mb-3"
+                                className={`text-sm font-semibold   ${darkMode?"text-white":"text-gray-900"}  mb-3`}
                             >
                                 {section.title}
                             </h3>
@@ -110,11 +110,15 @@ const Sidebar = ({ selectedOption, setSelectedOption }) => {
                                         <li key={item.name}>
                                             <button
                                                 aria-current={selectedOption === item.name ? "page" : undefined}
-                                                className={`group flex items-center gap-3 p-2.5 w-full rounded-[5px] transition-colors ${
-                                                    selectedOption === item.name 
-                                                        ? "bg-cyan-900/30 text-cyan-400" 
+                                                className={`group ${darkMode?"text-gray-300":"text-gray-700"} flex items-center gap-3 p-2.5 w-full rounded-[5px] transition-colors ${
+                                                    darkMode
+                                                      ? selectedOption === item.name
+                                                        ? "bg-cyan-900/30 text-cyan-400"
                                                         : "hover:bg-gray-800 text-gray-300"
-                                                }`}
+                                                      : selectedOption === item.name
+                                                        ? "bg-gray-100 text-cyan-700"
+                                                        : "hover:bg-gray-400/40 text-gray-700"
+                                                  }`}
                                                 onClick={() => handleNavigation(item.name)}
                                             >
                                                 <item.icon 

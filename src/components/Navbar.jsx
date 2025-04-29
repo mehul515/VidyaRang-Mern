@@ -246,7 +246,7 @@ const Header = ({ selectedOption, setSelectedOption }) => {
             </a>
           ) : (
             <Link href="/login">
-              <button className={`rounded-[7px] p-2.5 px-5 ${darkMode ? "bg-cyan-400 hover:bg-cyan-500 text-black" : "bg-black hover:bg-gray-950 text-white"} lg:text-sm `}>
+              <button className={`rounded-[7px] p-2.5 px-5 ${darkMode ? "bg-cyan-400 hover:bg-cyan-500 text-black" : "bg-blue-500 hover:bg-blue-600 text-white"} lg:text-sm `}>
                 Sign In
               </button>
             </Link>

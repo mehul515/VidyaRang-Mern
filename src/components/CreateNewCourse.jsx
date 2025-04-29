@@ -168,8 +168,8 @@ export default function CreateNewCourse() {
     ".pdf,.ppt,.pptx,.doc,.docx,.xls,.xlsx,.json,.csv,.txt";
 
   return (
-    <div className={`min-h-screen overflow-auto ${darkMode? "bg-gray-950":"bg-black"}  text-gray-100 flex items-center justify-center p-4`}>
-      <div className={`w-full mt-14 max-w-md space-y-8 ${darkMode? "bg-gray-900":"bg-zinc-200"}  p-8 rounded-xl overflow-y-auto max-h-screen shadow-lg lg:pb-28 pb-72`}>
+    <div className={`min-h-screen overflow-auto ${darkMode? "bg-gray-950":"bg-gray-100/30"}  text-gray-100 flex items-center justify-center p-4`}>
+      <div className={`w-full mt-14 max-w-md space-y-8 ${darkMode? "bg-gray-900":"bg-gray-200/40"}  p-8 rounded-xl overflow-y-auto max-h-screen shadow-lg lg:pb-28 pb-72`}>
         <div className="text-center">
           <h1 className={`text-2xl font-bold ${darkMode? "text-cyan-400":"text-black"} `}>
             Create New Course
@@ -350,7 +350,7 @@ export default function CreateNewCourse() {
           {/* Submit Button */}
           <button
             type="submit"
-            className={`w-full ${darkMode ? "bg-cyan-500 text-white hover:bg-cyan-600":"bg-black text-white hover:bg-gray-500"}  py-2 rounded-lg  transition disabled:opacity-50 disabled:cursor-not-allowed`}
+            className={`w-full ${darkMode ? "bg-cyan-500 text-white hover:bg-cyan-600":"bg-blue-500 text-white hover:bg-blue-600"}  py-2 rounded-lg  transition disabled:opacity-50 disabled:cursor-not-allowed`}
             disabled={isSubmitting}
           >
             {isSubmitting ? "Creating..." : "Create Course"}

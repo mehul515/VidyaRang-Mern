@@ -32,7 +32,7 @@ export default function Home() {
         <h1 className={`lg:text-7xl text-5xl ${darkMode ? "text-cyan-400" : "text-black"}  font-bold inline-block `}>VidyaRANG</h1>
 
       </div>
-      <h2 className={`lg:text-4xl text-2xl mt-5 ${darkMode? "text-white":"text-black"}  font-medium`}>Learning Made Easy</h2>
+      <h2 className={`lg:text-4xl text-2xl mt-5 ${darkMode? "text-white":"text-gray-600"}  font-medium`}>Learning Made Easy</h2>
 
       <div className=" p-2 mt-5 lg:text-2xl text-xl cursor-not-allowed ">
         <h1 className={`${darkMode? "text-gray-300":"text-gray-700"} `}>An AIGurukul Initiative - Build by students for students</h1>
@@ -40,7 +40,7 @@ export default function Home() {
        <div className="mt-6">
       
               <audio ref={audioRef}  onEnded={handleAudioEnd} src="/assets/vidyarangg.wav" preload="auto" />
-              <button className={` text-lg border ${darkMode ?"text-cyan-400 bg-black border-gray-700":"text-black bg-white border-black"}   p-2.5 px-6 rounded-xl`} onClick={togglePlayPause}>
+              <button className={` text-lg border ${darkMode ?"text-cyan-400 bg-black border-gray-700":"text-blue-600 bg-white border-blue-600"}   p-2.5 px-6 rounded-xl`} onClick={togglePlayPause}>
               {isPlaying ? <HiMiniSpeakerXMark className="text-xl" /> : <HiMiniSpeakerWave className="text-xl" />}
             </button>
             </div>
