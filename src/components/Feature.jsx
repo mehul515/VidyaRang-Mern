@@ -20,17 +20,17 @@ const Feature = () => {
           <div className='flex mt-10 lg:p-8 p-1 justify-evenly flex-wrap lg:gap-2 gap-10'>
             {
               [
-                { icon: <FaLock className={`text-2xl ${darkMode? "text-cyan-400":"text-white"} `} />, title: 'LockShare', desc: 'Privacy-First Document Sharing' },
-                { icon: <FaChartBar className={`text-2xl ${darkMode? "text-cyan-400":"text-white"} `} />, title: 'GraphEval', desc: 'Comprehensive Evaluation and Analytics' },
-                { icon: <FaBrain className={`text-2xl ${darkMode? "text-cyan-400":"text-white"} `} />, title: 'BrainQuiz', desc: 'Diverse Quizzes: Factual, Memory, and Reasoning' },
+                { icon: <FaLock className={`text-2xl ${darkMode? "text-cyan-400":"text-blue-600"} `} />, title: 'LockShare', desc: 'Privacy-First Document Sharing' },
+                { icon: <FaChartBar className={`text-2xl ${darkMode? "text-cyan-400":"text-blue-600"} `} />, title: 'GraphEval', desc: 'Comprehensive Evaluation and Analytics' },
+                { icon: <FaBrain className={`text-2xl ${darkMode? "text-cyan-400":"text-blue-600"} `} />, title: 'BrainQuiz', desc: 'Diverse Quizzes: Factual, Memory, and Reasoning' },
               ].map((item, index) => (
-                <div key={index} className={`w-96 lg:h-60 h-52 flex flex-col justify-center lg:px-7 px-7 lg:p-7 p-4 rounded-xl  ${darkMode? "bg-[#242525] border-[#4d4d4e] border hover:border-cyan-500":"bg-black border border-gray-800 text-white "}   transition-all duration-300 ease-in-out`}>
+                <div key={index} className={`w-96 lg:h-60 h-52 flex flex-col justify-center lg:px-7 px-7 lg:p-7 p-4 rounded-xl  ${darkMode? "bg-[#242525] border-[#4d4d4e] border hover:border-cyan-500":"bg-white border border-gray-300 text-black  "}   transition-all duration-300 ease-in-out`}>
                   {/* Feature Icon */}
                   {item.icon}
                   {/* Feature Title */}
                   <h1 className='mt-5 font-semibold lg:text-2xl text-xl'>{item.title}</h1>
                   {/* Feature Description */}
-                  <h1 className='mt-5 text-lg text-gray-300'>{item.desc}</h1>
+                  <h1 className={`mt-5 text-lg  ${darkMode?"text-gray-300":"text-gray-600"} `}>{item.desc}</h1>
                 </div>
               ))
             }

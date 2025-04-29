@@ -403,7 +403,7 @@ export default function ChatWithCourse() {
 
   return (
     <div className="mt-16 flex items-center justify-center">
-      <Card className={`w-full shadow-lg ${darkMode ? "bg-[#010912] border-cyan-900/30" : "bg-[#ecedee] border-gray-900/30"} `}>
+      <Card className={`w-full shadow-lg ${darkMode ? "bg-[#010912] border-cyan-900/30" : "bg-[#f1f2f3] border-gray-900/30"} `}>
         <CardHeader className="border-cyan-900/30 p-3 md:p-4">
           <CardTitle className="flex items-center justify-between">
             {messages.length > 0 && !conversationEnded && (
@@ -595,14 +595,14 @@ export default function ChatWithCourse() {
                   onValueChange={setSelectedCourse}
                   disabled={isTyping || loadingCourses}
                 >
-                  <SelectTrigger className="w-full md:w-[200px] bg-[#0a1628] border-cyan-900/50 text-gray-300 focus:ring-cyan-600 font-medium">
+                  <SelectTrigger className={`w-full md:w-[200px] ${darkMode?"bg-[#0a1628] border-cyan-900/50 text-gray-300 focus:ring-cyan-600":"bg-blue-500 border-blue-600 text-white focus:ring-cyan-600"}  font-medium`}>
                     <SelectValue
                       placeholder={
                         loadingCourses ? "Loading courses..." : "Select Course"
                       }
                     />
                   </SelectTrigger>
-                  <SelectContent className="bg-[#0a1628] border-cyan-900/50 text-gray-300 font-medium">
+                  <SelectContent className={`  ${darkMode?"bg-[#0a1628] border-cyan-900/50 text-gray-300":"bg-[#dee6f3] border-cyan-900/50 text-gray-900"}   font-medium`}>
                     {courses.map((course) => (
                       <SelectItem
                         key={course.course_id}
@@ -619,7 +619,7 @@ export default function ChatWithCourse() {
                     onClick={handleGetSummary}
                     disabled={isTyping || fetchingSummary}
                     variant="outline"
-                    className="border-cyan-900 text-cyan-400 hover:bg-cyan-900/20"
+                    className={`  ${darkMode?"border-cyan-900 text-cyan-400 hover:bg-cyan-900/20":"border-cyan-900 text-blue-600 hover:bg-blue-300/40 hover:text-gray-700"} `}
                   >
                     {fetchingSummary ? "Getting Summary..." : "Get Course Summary"}
                   </Button>
@@ -634,7 +634,7 @@ export default function ChatWithCourse() {
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={handleKeyDown}
                     placeholder="Ask a question about the selected course..."
-                    className="min-h-16 resize-none bg-[#0a1628] border-cyan-900/50 text-gray-300 font-medium placeholder:text-gray-500 focus-visible:ring-cyan-600"
+                    className={`min-h-16 resize-none ${darkMode?"bg-[#0a1628] border-cyan-900/50 text-gray-300 font-medium placeholder:text-gray-500 focus-visible:ring-cyan-600":"bg-gray-300/30 border-gray-900/50 text-gray-600 font-medium placeholder:text-gray-500 focus-visible:ring-gray-600"} `}
                     disabled={isTyping || !selectedCourse || loadingCourses}
                   />
                 </div>
@@ -642,7 +642,7 @@ export default function ChatWithCourse() {
                   type="button"
                   size="icon"
                   onClick={toggleListening}
-                  className={`h-10 w-10 ${isListening ? "bg-red-500 hover:bg-red-600" : darkMode ? "bg-cyan-400 hover:bg-cyan-600" : "bg-black hover:bg-gray-800"} text-white rounded-[10px]`}
+                  className={`h-10 w-10 ${isListening ? "bg-red-500 hover:bg-red-600" : darkMode ? "bg-cyan-400 hover:bg-cyan-600 text-black" : "bg-blue-500 hover:bg-blue-600 text-white"}  rounded-[10px]`}
                   disabled={isTyping || !selectedCourse || loadingCourses}
                 >
                   {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
@@ -650,7 +650,7 @@ export default function ChatWithCourse() {
                 <Button
                   type="submit"
                   size="icon"
-                  className={`h-10 w-10 ${darkMode ? "bg-cyan-400 hover:bg-cyan-600 text-gray-900 ":"bg-black text-white"}  rounded-[10px]`}
+                  className={`h-10 w-10 ${darkMode ? "bg-cyan-400 hover:bg-cyan-600 text-gray-900 ":"bg-blue-500 hover:bg-blue-600 text-white"}  rounded-[10px]`}
                   disabled={
                     isTyping ||
                     !input.trim() ||
