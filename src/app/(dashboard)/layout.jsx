@@ -3,6 +3,7 @@ import { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Sidebar from "@/components/SideBar";
 import Navbar from "@/components/Navbar";
+import Script from "next/script";
 
 export default function DashboardLayout({ children }) {
   const router = useRouter();
@@ -37,6 +38,27 @@ export default function DashboardLayout({ children }) {
 
   return (
     <>
+
+      {/* Google tag (gtag.js) */}
+      <Script
+    strategy="afterInteractive"
+    src={`https://www.googletagmanager.com/gtag/js?id=G-R59CWQG99J`}
+  />
+
+  {/* Initialize gtag */}
+  <Script
+    id="gtag-init"
+    strategy="afterInteractive"
+    dangerouslySetInnerHTML={{
+      __html: `
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){window.dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-R59CWQG99J');
+      `,
+    }}
+  />
+
       <style jsx global>{`
         html, body {
           height: 100%;
