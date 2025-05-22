@@ -189,48 +189,46 @@ export default function ChatWithCourse() {
   // }, []);
 const lastFinalTranscriptRef = useRef('');
 
+
 useEffect(() => {
   if (typeof window !== 'undefined') {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
     if (SpeechRecognition) {
-      recognitionRef.current = new SpeechRecognition();
-      recognitionRef.current.continuous = true;
-      recognitionRef.current.interimResults = true;
-      recognitionRef.current.lang = 'en-US';
+      const recognition = new SpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.lang = 'en-US';
+      recognitionRef.current = recognition;
 
-      recognitionRef.current.onresult = (event) => {
-        let finalTranscript = '';
-        let interimTranscript = '';
+      let finalTranscript = '';
 
-        for (let i = 0; i < event.results.length; ++i) {
-          const transcript = event.results[i][0].transcript;
-          if (event.results[i].isFinal) {
-            finalTranscript += transcript;
-          } else {
-            interimTranscript += transcript;
-          }
-        }
+      recognition.onresult = (event) => {
+        const lastResultIndex = event.results.length - 1;
+        const result = event.results[lastResultIndex];
+        const transcript = result[0].transcript;
 
-        // Avoid duplication
-        if (finalTranscript !== lastFinalTranscriptRef.current) {
-          lastFinalTranscriptRef.current = finalTranscript;
-          setInput(finalTranscript + interimTranscript);
+        if (result.isFinal) {
+          finalTranscript += transcript + ' ';
+          setInput(finalTranscript.trim());
         } else {
-          setInput(lastFinalTranscriptRef.current + interimTranscript);
+          // Show final + interim
+          setInput((finalTranscript + transcript).trim());
         }
       };
 
-      recognitionRef.current.onerror = (event) => {
+      recognition.onerror = (event) => {
         console.error('Speech recognition error:', event.error);
         setIsListening(false);
       };
 
-      recognitionRef.current.onend = () => {
+      recognition.onend = () => {
         setIsListening(false);
       };
     }
   }
 }, []);
+
 
   const handleGetSummary = async () => {
     if (!selectedCourse) return;
