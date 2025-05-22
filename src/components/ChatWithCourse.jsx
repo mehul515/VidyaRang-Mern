@@ -189,8 +189,8 @@ export default function ChatWithCourse() {
   // }, []);
 const lastFinalTranscriptRef = useRef('');
 
-const lastResultIndexRef = useRef(-1);
 const finalTranscriptRef = useRef('');
+const ignoreInterimRef = useRef(false);
 
 useEffect(() => {
   if (typeof window !== 'undefined') {
@@ -206,21 +206,35 @@ useEffect(() => {
       recognition.onresult = (event) => {
         let interimTranscript = '';
         let newFinalTranscript = '';
+        let hasNewFinal = false;
 
-        for (let i = lastResultIndexRef.current + 1; i < event.results.length; ++i) {
+        // Mobile-specific handling
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+        for (let i = 0; i < event.results.length; i++) {
           const result = event.results[i];
-          const transcript = result[0].transcript;
+          const transcript = result[0].transcript.trim();
 
           if (result.isFinal) {
-            newFinalTranscript += transcript + ' ';
-            lastResultIndexRef.current = i; // Mark this index as processed
-          } else {
-            interimTranscript += transcript;
+            // Only add if not duplicate of last final result
+            if (!finalTranscriptRef.current.endsWith(transcript)) {
+              newFinalTranscript += transcript + ' ';
+              hasNewFinal = true;
+              ignoreInterimRef.current = false; // Reset after final result
+            }
+          } else if (!ignoreInterimRef.current) {
+            // For mobile, we sometimes want to ignore interim results after final
+            if (!isMobile || !finalTranscriptRef.current.endsWith(transcript)) {
+              interimTranscript = transcript; // Only keep the latest interim
+            }
           }
         }
 
-        if (newFinalTranscript) {
+        if (hasNewFinal) {
           finalTranscriptRef.current += newFinalTranscript;
+          if (isMobile) {
+            ignoreInterimRef.current = true; // On mobile, ignore interim until next final
+          }
         }
 
         setInput((finalTranscriptRef.current + interimTranscript).trim());
@@ -229,6 +243,7 @@ useEffect(() => {
       recognition.onerror = (event) => {
         console.error('Speech recognition error:', event.error);
         setIsListening(false);
+        finalTranscriptRef.current = ''; // Reset on error
       };
 
       recognition.onend = () => {
@@ -236,7 +251,14 @@ useEffect(() => {
       };
     }
   }
+
+  return () => {
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
+    }
+  };
 }, []);
+
 
 
 
