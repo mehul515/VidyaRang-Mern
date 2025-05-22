@@ -154,39 +154,83 @@ export default function ChatWithCourse() {
   }, []);
 
   // Initialize speech recognition
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (SpeechRecognition) {
-        recognitionRef.current = new SpeechRecognition();
-        recognitionRef.current.continuous = true;
-        recognitionRef.current.interimResults = true;
-        recognitionRef.current.lang = 'en-US';
+  // useEffect(() => {
+  //   if (typeof window !== 'undefined') {
+  //     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  //     if (SpeechRecognition) {
+  //       recognitionRef.current = new SpeechRecognition();
+  //       recognitionRef.current.continuous = true;
+  //       recognitionRef.current.interimResults = true;
+  //       recognitionRef.current.lang = 'en-US';
 
-        recognitionRef.current.onresult = (event) => {
-          let interimTranscript = '';
-          let finalTranscript = '';
-          for (let i = 0; i < event.results.length; ++i) {
-            if (event.results[i].isFinal) {
-              finalTranscript += event.results[i][0].transcript;
-            } else {
-              interimTranscript += event.results[i][0].transcript;
-            }
+  //       recognitionRef.current.onresult = (event) => {
+  //         let interimTranscript = '';
+  //         let finalTranscript = '';
+  //         for (let i = 0; i < event.results.length; ++i) {
+  //           if (event.results[i].isFinal) {
+  //             finalTranscript += event.results[i][0].transcript;
+  //           } else {
+  //             interimTranscript += event.results[i][0].transcript;
+  //           }
+  //         }
+  //         setInput(finalTranscript + interimTranscript);
+  //       };
+
+  //       recognitionRef.current.onerror = (event) => {
+  //         console.error('Speech recognition error:', event.error);
+  //         setIsListening(false);
+  //       };
+
+  //       recognitionRef.current.onend = () => {
+  //         setIsListening(false);
+  //       };
+  //     }
+  //   }
+  // }, []);
+const lastFinalTranscriptRef = useRef('');
+
+useEffect(() => {
+  if (typeof window !== 'undefined') {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+      recognitionRef.current = new SpeechRecognition();
+      recognitionRef.current.continuous = true;
+      recognitionRef.current.interimResults = true;
+      recognitionRef.current.lang = 'en-US';
+
+      recognitionRef.current.onresult = (event) => {
+        let finalTranscript = '';
+        let interimTranscript = '';
+
+        for (let i = 0; i < event.results.length; ++i) {
+          const transcript = event.results[i][0].transcript;
+          if (event.results[i].isFinal) {
+            finalTranscript += transcript;
+          } else {
+            interimTranscript += transcript;
           }
+        }
+
+        // Avoid duplication
+        if (finalTranscript !== lastFinalTranscriptRef.current) {
+          lastFinalTranscriptRef.current = finalTranscript;
           setInput(finalTranscript + interimTranscript);
-        };
+        } else {
+          setInput(lastFinalTranscriptRef.current + interimTranscript);
+        }
+      };
 
-        recognitionRef.current.onerror = (event) => {
-          console.error('Speech recognition error:', event.error);
-          setIsListening(false);
-        };
+      recognitionRef.current.onerror = (event) => {
+        console.error('Speech recognition error:', event.error);
+        setIsListening(false);
+      };
 
-        recognitionRef.current.onend = () => {
-          setIsListening(false);
-        };
-      }
+      recognitionRef.current.onend = () => {
+        setIsListening(false);
+      };
     }
-  }, []);
+  }
+}, []);
 
   const handleGetSummary = async () => {
     if (!selectedCourse) return;
