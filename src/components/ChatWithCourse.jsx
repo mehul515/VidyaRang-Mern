@@ -187,78 +187,37 @@ export default function ChatWithCourse() {
   //     }
   //   }
   // }, []);
-const lastFinalTranscriptRef = useRef('');
-
-const finalTranscriptRef = useRef('');
-const ignoreInterimRef = useRef(false);
+const [chatInput, setChatInput] = useState('');
+const [isRecording, setIsRecording] = useState(false);
 
 useEffect(() => {
-  if (typeof window !== 'undefined') {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if ('webkitSpeechRecognition' in window) {
+    const recognition = new window.webkitSpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.lang = 'en-US';
 
-    if (SpeechRecognition) {
-      const recognition = new SpeechRecognition();
-      recognition.continuous = true;
-      recognition.interimResults = true;
-      recognition.lang = 'en-US';
-      recognitionRef.current = recognition;
+    recognition.onresult = (event) => {
+      let transcript = event.results[0][0].transcript.trim();
+      // Remove repeated words like: "what what", "is is"
+      transcript = transcript.replace(/\b(\w+)\s+\1\b/gi, '$1');
 
-      recognition.onresult = (event) => {
-        let interimTranscript = '';
-        let newFinalTranscript = '';
-        let hasNewFinal = false;
+      setInput(prev => prev.trim().length ? `${prev} ${transcript}` : transcript);
+      setIsListening(false);
+    };
 
-        // Mobile-specific handling
-        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    recognition.onerror = (event) => {
+      console.error('Speech recognition error:', event.error);
+      setIsListening(false);
+    };
 
-        for (let i = 0; i < event.results.length; i++) {
-          const result = event.results[i];
-          const transcript = result[0].transcript.trim();
+    recognition.onend = () => {
+      setIsListening(false);
+    };
 
-          if (result.isFinal) {
-            // Only add if not duplicate of last final result
-            if (!finalTranscriptRef.current.endsWith(transcript)) {
-              newFinalTranscript += transcript + ' ';
-              hasNewFinal = true;
-              ignoreInterimRef.current = false; // Reset after final result
-            }
-          } else if (!ignoreInterimRef.current) {
-            // For mobile, we sometimes want to ignore interim results after final
-            if (!isMobile || !finalTranscriptRef.current.endsWith(transcript)) {
-              interimTranscript = transcript; // Only keep the latest interim
-            }
-          }
-        }
-
-        if (hasNewFinal) {
-          finalTranscriptRef.current += newFinalTranscript;
-          if (isMobile) {
-            ignoreInterimRef.current = true; // On mobile, ignore interim until next final
-          }
-        }
-
-        setInput((finalTranscriptRef.current + interimTranscript).trim());
-      };
-
-      recognition.onerror = (event) => {
-        console.error('Speech recognition error:', event.error);
-        setIsListening(false);
-        finalTranscriptRef.current = ''; // Reset on error
-      };
-
-      recognition.onend = () => {
-        setIsListening(false);
-      };
-    }
+    recognitionRef.current = recognition;
   }
-
-  return () => {
-    if (recognitionRef.current) {
-      recognitionRef.current.stop();
-    }
-  };
 }, []);
-
 
 
 
