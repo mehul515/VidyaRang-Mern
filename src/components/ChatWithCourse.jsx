@@ -189,6 +189,8 @@ export default function ChatWithCourse() {
   // }, []);
 const lastFinalTranscriptRef = useRef('');
 
+const lastResultIndexRef = useRef(-1);
+const finalTranscriptRef = useRef('');
 
 useEffect(() => {
   if (typeof window !== 'undefined') {
@@ -201,20 +203,27 @@ useEffect(() => {
       recognition.lang = 'en-US';
       recognitionRef.current = recognition;
 
-      let finalTranscript = '';
-
       recognition.onresult = (event) => {
-        const lastResultIndex = event.results.length - 1;
-        const result = event.results[lastResultIndex];
-        const transcript = result[0].transcript;
+        let interimTranscript = '';
+        let newFinalTranscript = '';
 
-        if (result.isFinal) {
-          finalTranscript += transcript + ' ';
-          setInput(finalTranscript.trim());
-        } else {
-          // Show final + interim
-          setInput((finalTranscript + transcript).trim());
+        for (let i = lastResultIndexRef.current + 1; i < event.results.length; ++i) {
+          const result = event.results[i];
+          const transcript = result[0].transcript;
+
+          if (result.isFinal) {
+            newFinalTranscript += transcript + ' ';
+            lastResultIndexRef.current = i; // Mark this index as processed
+          } else {
+            interimTranscript += transcript;
+          }
         }
+
+        if (newFinalTranscript) {
+          finalTranscriptRef.current += newFinalTranscript;
+        }
+
+        setInput((finalTranscriptRef.current + interimTranscript).trim());
       };
 
       recognition.onerror = (event) => {
@@ -228,6 +237,7 @@ useEffect(() => {
     }
   }
 }, []);
+
 
 
   const handleGetSummary = async () => {
