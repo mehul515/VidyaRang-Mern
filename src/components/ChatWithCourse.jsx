@@ -163,40 +163,7 @@ export default function ChatWithCourse() {
     };
   }, []);
 
-  // Initialize speech recognition
-  // useEffect(() => {
-  //   if (typeof window !== 'undefined') {
-  //     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  //     if (SpeechRecognition) {
-  //       recognitionRef.current = new SpeechRecognition();
-  //       recognitionRef.current.continuous = true;
-  //       recognitionRef.current.interimResults = true;
-  //       recognitionRef.current.lang = 'en-US';
-
-  //       recognitionRef.current.onresult = (event) => {
-  //         let interimTranscript = '';
-  //         let finalTranscript = '';
-  //         for (let i = 0; i < event.results.length; ++i) {
-  //           if (event.results[i].isFinal) {
-  //             finalTranscript += event.results[i][0].transcript;
-  //           } else {
-  //             interimTranscript += event.results[i][0].transcript;
-  //           }
-  //         }
-  //         setInput(finalTranscript + interimTranscript);
-  //       };
-
-  //       recognitionRef.current.onerror = (event) => {
-  //         console.error('Speech recognition error:', event.error);
-  //         setIsListening(false);
-  //       };
-
-  //       recognitionRef.current.onend = () => {
-  //         setIsListening(false);
-  //       };
-  //     }
-  //   }
-  // }, []);
+  // Speech recognition setup
   const [chatInput, setChatInput] = useState('');
   const [isRecording, setIsRecording] = useState(false);
 
@@ -385,54 +352,148 @@ export default function ChatWithCourse() {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!input.trim() || !selectedCourse) return;
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   if (!input.trim() || !selectedCourse) return;
 
-    // Add user message
-    const userMessage = {
-      id: Date.now(),
-      role: "user",
-      content: input,
-      course: selectedCourse,
-    };
-    setMessages((prevMessages) => [...prevMessages, userMessage]);
-    setInput("");
+  //   // Add user message
+  //   const userMessage = {
+  //     id: Date.now(),
+  //     role: "user",
+  //     content: input,
+  //     course: selectedCourse,
+  //   };
+  //   setMessages((prevMessages) => [...prevMessages, userMessage]);
+  //   setInput("");
 
-    // Simulate AI typing
-    setIsTyping(true);
+  //   // Simulate AI typing
+  //   setIsTyping(true);
 
-    try {
-      // Call our chat API service
-      const data = await sendChatMessage(selectedCourse, username, input);
+  //   try {
+  //     // Call our chat API service
+  //     const data = await sendChatMessage(selectedCourse, username, input);
 
-      // Add AI response to messages
-      const aiMessage = {
-        id: Date.now() + 1,
-        role: "assistant",
-        content:
-          data.response || "I couldn't generate a response. Please try again.",
-      };
-      setMessages((prevMessages) => [...prevMessages, aiMessage]);
+  //     // Add AI response to messages
+  //     const aiMessage = {
+  //       id: Date.now() + 1,
+  //       role: "assistant",
+  //       content:
+  //         data.response || "I couldn't generate a response. Please try again.",
+  //     };
+  //     setMessages((prevMessages) => [...prevMessages, aiMessage]);
 
-      // After a few messages, show the rating option
-      if (messages.length >= 3 && !conversationEnded) {
-        setShowRating(true);
-      }
-    } catch (error) {
-      console.error("Error getting AI response:", error);
-      // Add error message if API fails
-      const errorMessage = {
-        id: Date.now() + 1,
-        role: "assistant",
-        content: `Sorry, I encountered an error: ${error.message}`,
-      };
-      setMessages((prevMessages) => [...prevMessages, errorMessage]);
-    } finally {
-      setIsTyping(false);
-    }
+  //     // After a few messages, show the rating option
+  //     if (messages.length >= 3 && !conversationEnded) {
+  //       setShowRating(true);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error getting AI response:", error);
+  //     // Add error message if API fails
+  //     const errorMessage = {
+  //       id: Date.now() + 1,
+  //       role: "assistant",
+  //       content: `Sorry, I encountered an error: ${error.message}`,
+  //     };
+  //     setMessages((prevMessages) => [...prevMessages, errorMessage]);
+  //   } finally {
+  //     setIsTyping(false);
+  //   }
+  // };
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (!input.trim() || !selectedCourse) return;
+
+  const timestamp = new Date().toISOString();
+
+  const userMessage = {
+    id: Date.now(),
+    role: "user",
+    content: input,
+    course: selectedCourse,
   };
+  setMessages((prevMessages) => [...prevMessages, userMessage]);
+  setInput("");
+  setIsTyping(true);
 
+  try {
+    // Get course_id from course_name
+    const { data: courseData, error: courseError } = await supabase
+      .from("course")
+      .select("course_id")
+      .eq("course_name", selectedCourse)
+      .single();
+
+    if (courseError || !courseData) {
+      throw new Error("Course not found");
+    }
+
+    const course_id = courseData.course_id;
+
+    // Get AI response
+    const data = await sendChatMessage(selectedCourse, username, input);
+    const aiResponse = data.response || "I couldn't generate a response. Please try again.";
+
+    const aiMessage = {
+      id: Date.now() + 1,
+      role: "assistant",
+      content: aiResponse,
+    };
+    setMessages((prevMessages) => [...prevMessages, aiMessage]);
+
+    if (messages.length >= 3 && !conversationEnded) {
+      setShowRating(true);
+    }
+
+    const chatEntry = {
+      prompt: input,
+      response: aiResponse,
+      timestamp,
+    };
+
+    // Check if log exists
+    const { data: existingLog, error: fetchError } = await supabase
+      .from("course_chat_logs")
+      .select("id, chat_history")
+      .eq("user_id", userId)
+      .eq("course_id", course_id)
+      .single();
+
+    if (existingLog) {
+      // Update chat_history
+      const updatedHistory = [...existingLog.chat_history, chatEntry];
+      await supabase
+        .from("course_chat_logs")
+        .update({
+          chat_history: updatedHistory,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", existingLog.id);
+    } else {
+      // Insert new chat log
+      await supabase.from("course_chat_logs").insert([
+        {
+          user_id: userId,
+          course_id: course_id,
+          chat_history: [chatEntry],
+        },
+      ]);
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    const errorMessage = {
+      id: Date.now() + 1,
+      role: "assistant",
+      content: `Sorry, I encountered an error: ${error.message}`,
+    };
+    setMessages((prevMessages) => [...prevMessages, errorMessage]);
+  } finally {
+    setIsTyping(false);
+  }
+};
+
+
+  
   const handleEndConversation = () => {
     setConversationEnded(true);
     setShowRating(true);
