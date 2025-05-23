@@ -45,6 +45,10 @@ export default function ChatWithCourse() {
   const { darkMode, toggleTheme } = useTheme();
   const [isListening, setIsListening] = useState(false);
   const recognitionRef = useRef(null);
+  const [userId, setUserId] = useState(null);
+  const [courseStartTime, setCourseStartTime] = useState(null);
+  const [courseTimeMap, setCourseTimeMap] = useState({});
+
 
   // Fetch courses from Supabase and set username
 
@@ -52,17 +56,22 @@ export default function ChatWithCourse() {
     const fetchCourses = async () => {
       try {
         setLoadingCourses(true);
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
-        const userEmail = session?.user?.email || null;
 
-        if (!userEmail) {
-          console.error("User email not found in session.");
+        // Get user session
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        if (sessionError) throw sessionError;
+
+        const userEmail = session?.user?.email || null;
+        const userId = session?.user?.id || null;
+
+        if (!userEmail || !userId) {
+          console.error("User session not found.");
           return;
         }
 
-        // 1. Fetch all public courses
+        setUserId(userId); // Store userId for later use
+
+        // 1. Fetch public courses
         const { data: publicCourses, error: publicError } = await supabase
           .from("course")
           .select("*")
@@ -70,7 +79,7 @@ export default function ChatWithCourse() {
 
         if (publicError) throw publicError;
 
-        // 2. Fetch private courses where user's email is in allow_emails
+        // 2. Fetch private courses where user's email is allowed
         const { data: privateCourses, error: privateError } = await supabase
           .from("course")
           .select("*")
@@ -79,8 +88,7 @@ export default function ChatWithCourse() {
 
         if (privateError) throw privateError;
 
-        // 3. NEW: Fetch courses where user is the creator (regardless of type)
-        // 3. Fetch courses where user is the creator (using JSON string search)
+        // 3. Fetch courses created by user (by email string match)
         const { data: creatorCourses, error: creatorError } = await supabase
           .from("course")
           .select("*")
@@ -88,14 +96,13 @@ export default function ChatWithCourse() {
 
         if (creatorError) throw creatorError;
 
-        // Combine all results, removing duplicates
+        // Combine and deduplicate
         const allCourses = [
           ...(publicCourses || []),
           ...(privateCourses || []),
           ...(creatorCourses || []),
         ];
 
-        // Remove duplicates using Set
         const uniqueCourses = [];
         const seenIds = new Set();
 
@@ -106,7 +113,7 @@ export default function ChatWithCourse() {
           }
         });
 
-      setCourses(uniqueCourses);
+        setCourses(uniqueCourses);
       } catch (error) {
         console.error("Error fetching courses:", error.message);
       } finally {
@@ -116,6 +123,9 @@ export default function ChatWithCourse() {
 
     fetchCourses();
   }, []);
+
+
+
   // Auto-scroll to bottom when messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -187,45 +197,133 @@ export default function ChatWithCourse() {
   //     }
   //   }
   // }, []);
-const [chatInput, setChatInput] = useState('');
-const [isRecording, setIsRecording] = useState(false);
+  const [chatInput, setChatInput] = useState('');
+  const [isRecording, setIsRecording] = useState(false);
 
-useEffect(() => {
-  if ('webkitSpeechRecognition' in window) {
-    const recognition = new window.webkitSpeechRecognition();
-    recognition.continuous = false;
-    recognition.interimResults = false;
-    recognition.lang = 'en-US';
+  useEffect(() => {
+    if ('webkitSpeechRecognition' in window) {
+      const recognition = new window.webkitSpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = 'en-US';
 
-    recognition.onresult = (event) => {
-      let transcript = event.results[0][0].transcript.trim();
-      // Remove repeated words like: "what what", "is is"
-      transcript = transcript.replace(/\b(\w+)\s+\1\b/gi, '$1');
+      recognition.onresult = (event) => {
+        let transcript = event.results[0][0].transcript.trim();
+        // Remove repeated words like: "what what", "is is"
+        transcript = transcript.replace(/\b(\w+)\s+\1\b/gi, '$1');
 
-      setInput(prev => prev.trim().length ? `${prev} ${transcript}` : transcript);
-      setIsListening(false);
+        setInput(prev => prev.trim().length ? `${prev} ${transcript}` : transcript);
+        setIsListening(false);
+      };
+
+      recognition.onerror = (event) => {
+        console.error('Speech recognition error:', event.error);
+        setIsListening(false);
+      };
+
+      recognition.onend = () => {
+        setIsListening(false);
+      };
+
+      recognitionRef.current = recognition;
+    }
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (selectedCourse && courseStartTime) {
+        const now = Date.now();
+        const secondsSpent = Math.floor((now - courseStartTime) / 1000);
+        setCourseTimeMap((prev) => ({
+          ...prev,
+          [selectedCourse]: (prev[selectedCourse] || 0) + secondsSpent,
+        }));
+        setCourseStartTime(now);
+      }
+    }, 15000);
+
+    return () => clearInterval(interval);
+  }, [selectedCourse, courseStartTime]);
+
+
+  useEffect(() => {
+    return () => {
+      if (selectedCourse && courseStartTime) {
+        updateTimeInDB(selectedCourse);
+      }
     };
+  }, [selectedCourse, courseStartTime]);
 
-    recognition.onerror = (event) => {
-      console.error('Speech recognition error:', event.error);
-      setIsListening(false);
-    };
 
-    recognition.onend = () => {
-      setIsListening(false);
-    };
 
-    recognitionRef.current = recognition;
+
+  const updateTimeInDB = async (courseName) => {
+  if (!userId || !courseName || !courses.length || !courseStartTime) return;
+
+  const course = courses.find(c => c.course_name === courseName);
+  if (!course) return;
+
+  const sessionSeconds = Math.floor((Date.now() - courseStartTime) / 1000);
+  if (sessionSeconds <= 0) return;
+
+  try {
+    const { data: existingData, error: fetchError } = await supabase
+      .from("user_course_time")
+      .select("time_spent_seconds")
+      .eq("user_id", userId)
+      .eq("course_id", course.course_id)
+      .single();
+
+    if (fetchError && fetchError.code !== "PGRST116") {
+      console.error("Error fetching existing time:", fetchError.message);
+      return;
+    }
+
+    const previousTime = existingData?.time_spent_seconds || 0;
+    const totalTime = previousTime + sessionSeconds;
+
+    const { error: upsertError } = await supabase
+      .from("user_course_time")
+      .upsert([
+        {
+          user_id: userId,
+          course_id: course.course_id,
+          time_spent_seconds: totalTime,
+          last_accessed: new Date().toISOString(),
+        },
+      ], {
+        onConflict: "user_id,course_id"
+      });
+
+    if (upsertError) {
+      console.error("Error updating course time:", upsertError.message);
+    } else {
+      console.log(`Updated total time for ${courseName}: ${totalTime} seconds (added ${sessionSeconds})`);
+    }
+  } catch (err) {
+    console.error("Unexpected error while updating time:", err);
   }
-}, []);
+};
+
+
+
+
+  const handleSelectCourse = (course) => {
+    if (selectedCourse && selectedCourse !== course) {
+      updateTimeInDB(selectedCourse);
+    }
+    setSelectedCourse(course);
+    setCourseStartTime(Date.now());
+  };
+
 
 
 
   const handleGetSummary = async () => {
     if (!selectedCourse) return;
-    
+
     setFetchingSummary(true);
-    
+
     try {
       // First check if summary exists in Supabase
       const { data: courseData, error } = await supabase
@@ -247,11 +345,11 @@ useEffect(() => {
       } else {
         // If no summary exists, generate it via API
         setIsTyping(true);
-        
+
         // Call API to generate summary
         const data = await sendChatMessage(
-          selectedCourse, 
-          username, 
+          selectedCourse,
+          username,
           `Tell me about this document.`
         );
 
@@ -455,10 +553,10 @@ useEffect(() => {
         <CardContent className="h-[50vh] md:h-[60vh] overflow-y-auto scrollbar-hide no-scrollbar">
           {messages.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-center space-y-4">
-              <div className={`text-xl md:text-2xl font-bold ${darkMode?"text-cyan-400 ":"text-black"}`}>
+              <div className={`text-xl md:text-2xl font-bold ${darkMode ? "text-cyan-400 " : "text-black"}`}>
                 Welcome to Vidya RANG
               </div>
-              <div className={`${darkMode?"text-gray-400" :"text-gray-600"} max-w-md`}>
+              <div className={`${darkMode ? "text-gray-400" : "text-gray-600"} max-w-md`}>
                 Select a course and ask a question to get started. I'll provide
                 answers based on the course curriculum.
               </div>
@@ -476,7 +574,7 @@ useEffect(() => {
                 >
                   {message.role === "assistant" && (
                     <Avatar className="h-8 w-8 mr-2 mt-1 flex-shrink-0">
-                      <div className={` ${darkMode ? "bg-cyan-900 text-cyan-400 ":"bg-black text-white"}  rounded-full h-full w-full flex items-center justify-center  font-semibold`}>
+                      <div className={` ${darkMode ? "bg-cyan-900 text-cyan-400 " : "bg-black text-white"}  rounded-full h-full w-full flex items-center justify-center  font-semibold`}>
                         V
                       </div>
                     </Avatar>
@@ -488,12 +586,12 @@ useEffect(() => {
                       message.role === "user"
                         ? "bg-cyan-800/30 text-gray-200 border border-cyan-800/50"
                         : message.role === "system"
-                        ? "bg-[#0a1628] text-gray-400 text-sm py-2 border border-cyan-900/30"
-                        : "bg-[#0a1628] text-gray-300 border border-cyan-900/30"
+                          ? "bg-[#0a1628] text-gray-400 text-sm py-2 border border-cyan-900/30"
+                          : "bg-[#0a1628] text-gray-300 border border-cyan-900/30"
                     )}
                   >
                     {message.role === "user" && message.course && (
-                      <div className={`text-xs opacity-80 mb-1 ${darkMode?"text-cyan-400":"text-black"}`}>
+                      <div className={`text-xs opacity-80 mb-1 ${darkMode ? "text-cyan-400" : "text-black"}`}>
                         Course:{" "}
                         {courses.find((c) => c.name === message.course)?.name}
                       </div>
@@ -522,7 +620,7 @@ useEffect(() => {
 
                   {message.role === "user" && (
                     <Avatar className="h-8 w-8 ml-2 mt-1 flex-shrink-0">
-                      <div className={`    ${darkMode?"bg-cyan-900/50 text-cyan-300":"bg-black text-white"}    rounded-full h-full w-full flex items-center justify-center  font-semibold`}>
+                      <div className={`    ${darkMode ? "bg-cyan-900/50 text-cyan-300" : "bg-black text-white"}    rounded-full h-full w-full flex items-center justify-center  font-semibold`}>
                         U
                       </div>
                     </Avatar>
@@ -533,7 +631,7 @@ useEffect(() => {
               {isTyping && (
                 <div className="flex justify-start">
                   <Avatar className="h-8 w-8 mr-2 mt-1 flex-shrink-0">
-                    <div className={`${darkMode? "bg-cyan-900 text-cyan-400":"bg-black text-white"}  rounded-full h-full w-full flex items-center justify-center  font-semibold`}>
+                    <div className={`${darkMode ? "bg-cyan-900 text-cyan-400" : "bg-black text-white"}  rounded-full h-full w-full flex items-center justify-center  font-semibold`}>
                       V
                     </div>
                   </Avatar>
@@ -625,17 +723,18 @@ useEffect(() => {
               <div className="flex gap-2">
                 <Select
                   value={selectedCourse}
-                  onValueChange={setSelectedCourse}
+                  onValueChange={handleSelectCourse}
                   disabled={isTyping || loadingCourses}
                 >
-                  <SelectTrigger className={`w-full md:w-[200px] ${darkMode?"bg-[#0a1628] border-cyan-900/50 text-gray-300 focus:ring-cyan-600":"bg-blue-500 border-blue-600 text-white focus:ring-cyan-600"}  font-medium`}>
+
+                  <SelectTrigger className={`w-full md:w-[200px] ${darkMode ? "bg-[#0a1628] border-cyan-900/50 text-gray-300 focus:ring-cyan-600" : "bg-blue-500 border-blue-600 text-white focus:ring-cyan-600"}  font-medium`}>
                     <SelectValue
                       placeholder={
                         loadingCourses ? "Loading courses..." : "Select Course"
                       }
                     />
                   </SelectTrigger>
-                  <SelectContent className={`  ${darkMode?"bg-[#0a1628] border-cyan-900/50 text-gray-300":"bg-[#dee6f3] border-cyan-900/50 text-gray-900"}   font-medium`}>
+                  <SelectContent className={`  ${darkMode ? "bg-[#0a1628] border-cyan-900/50 text-gray-300" : "bg-[#dee6f3] border-cyan-900/50 text-gray-900"}   font-medium`}>
                     {courses.map((course) => (
                       <SelectItem
                         key={course.course_id}
@@ -646,13 +745,13 @@ useEffect(() => {
                     ))}
                   </SelectContent>
                 </Select>
-                
+
                 {selectedCourse && (
                   <Button
                     onClick={handleGetSummary}
                     disabled={isTyping || fetchingSummary}
                     variant="outline"
-                    className={`  ${darkMode?"border-cyan-900 text-cyan-400 hover:bg-cyan-900/20":"border-cyan-900 text-blue-600 hover:bg-blue-300/40 hover:text-gray-700"} `}
+                    className={`  ${darkMode ? "border-cyan-900 text-cyan-400 hover:bg-cyan-900/20" : "border-cyan-900 text-blue-600 hover:bg-blue-300/40 hover:text-gray-700"} `}
                   >
                     {fetchingSummary ? "Getting Summary..." : "Get Course Summary"}
                   </Button>
@@ -667,7 +766,7 @@ useEffect(() => {
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={handleKeyDown}
                     placeholder="Ask a question about the selected course..."
-                    className={`min-h-16 resize-none ${darkMode?"bg-[#0a1628] border-cyan-900/50 text-gray-300 font-medium placeholder:text-gray-500 focus-visible:ring-cyan-600":"bg-gray-300/30 border-gray-900/50 text-gray-600 font-medium placeholder:text-gray-500 focus-visible:ring-gray-600"} `}
+                    className={`min-h-16 resize-none ${darkMode ? "bg-[#0a1628] border-cyan-900/50 text-gray-300 font-medium placeholder:text-gray-500 focus-visible:ring-cyan-600" : "bg-gray-300/30 border-gray-900/50 text-gray-600 font-medium placeholder:text-gray-500 focus-visible:ring-gray-600"} `}
                     disabled={isTyping || !selectedCourse || loadingCourses}
                   />
                 </div>
@@ -683,7 +782,7 @@ useEffect(() => {
                 <Button
                   type="submit"
                   size="icon"
-                  className={`h-10 w-10 ${darkMode ? "bg-cyan-400 hover:bg-cyan-600 text-gray-900 ":"bg-blue-500 hover:bg-blue-600 text-white"}  rounded-[10px]`}
+                  className={`h-10 w-10 ${darkMode ? "bg-cyan-400 hover:bg-cyan-600 text-gray-900 " : "bg-blue-500 hover:bg-blue-600 text-white"}  rounded-[10px]`}
                   disabled={
                     isTyping ||
                     !input.trim() ||
