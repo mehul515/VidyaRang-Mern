@@ -23,6 +23,8 @@ import {
 import { cn } from "@/lib/utils";
 import { sendChatMessage } from "./api";
 import supabase from "../app/supabaseClient";
+import { SafeMarkdown } from "@/components/SafeMarkdown";
+
 
 export default function ChatWithCourse() {
   const [messages, setMessages] = useState([]);
@@ -225,52 +227,52 @@ export default function ChatWithCourse() {
 
 
   const updateTimeInDB = async (courseName) => {
-  if (!userId || !courseName || !courses.length || !courseStartTime) return;
+    if (!userId || !courseName || !courses.length || !courseStartTime) return;
 
-  const course = courses.find(c => c.course_name === courseName);
-  if (!course) return;
+    const course = courses.find(c => c.course_name === courseName);
+    if (!course) return;
 
-  const sessionSeconds = Math.floor((Date.now() - courseStartTime) / 1000);
-  if (sessionSeconds <= 0) return;
+    const sessionSeconds = Math.floor((Date.now() - courseStartTime) / 1000);
+    if (sessionSeconds <= 0) return;
 
-  try {
-    const { data: existingData, error: fetchError } = await supabase
-      .from("user_course_time")
-      .select("time_spent_seconds")
-      .eq("user_id", userId)
-      .eq("course_id", course.course_id)
-      .single();
+    try {
+      const { data: existingData, error: fetchError } = await supabase
+        .from("user_course_time")
+        .select("time_spent_seconds")
+        .eq("user_id", userId)
+        .eq("course_id", course.course_id)
+        .single();
 
-    if (fetchError && fetchError.code !== "PGRST116") {
-      console.error("Error fetching existing time:", fetchError.message);
-      return;
+      if (fetchError && fetchError.code !== "PGRST116") {
+        console.error("Error fetching existing time:", fetchError.message);
+        return;
+      }
+
+      const previousTime = existingData?.time_spent_seconds || 0;
+      const totalTime = previousTime + sessionSeconds;
+
+      const { error: upsertError } = await supabase
+        .from("user_course_time")
+        .upsert([
+          {
+            user_id: userId,
+            course_id: course.course_id,
+            time_spent_seconds: totalTime,
+            last_accessed: new Date().toISOString(),
+          },
+        ], {
+          onConflict: "user_id,course_id"
+        });
+
+      if (upsertError) {
+        console.error("Error updating course time:", upsertError.message);
+      } else {
+        console.log(`Updated total time for ${courseName}: ${totalTime} seconds (added ${sessionSeconds})`);
+      }
+    } catch (err) {
+      console.error("Unexpected error while updating time:", err);
     }
-
-    const previousTime = existingData?.time_spent_seconds || 0;
-    const totalTime = previousTime + sessionSeconds;
-
-    const { error: upsertError } = await supabase
-      .from("user_course_time")
-      .upsert([
-        {
-          user_id: userId,
-          course_id: course.course_id,
-          time_spent_seconds: totalTime,
-          last_accessed: new Date().toISOString(),
-        },
-      ], {
-        onConflict: "user_id,course_id"
-      });
-
-    if (upsertError) {
-      console.error("Error updating course time:", upsertError.message);
-    } else {
-      console.log(`Updated total time for ${courseName}: ${totalTime} seconds (added ${sessionSeconds})`);
-    }
-  } catch (err) {
-    console.error("Unexpected error while updating time:", err);
-  }
-};
+  };
 
 
 
@@ -400,100 +402,100 @@ export default function ChatWithCourse() {
   //   }
   // };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (!input.trim() || !selectedCourse) return;
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!input.trim() || !selectedCourse) return;
 
-  const timestamp = new Date().toISOString();
+    const timestamp = new Date().toISOString();
 
-  const userMessage = {
-    id: Date.now(),
-    role: "user",
-    content: input,
-    course: selectedCourse,
-  };
-  setMessages((prevMessages) => [...prevMessages, userMessage]);
-  setInput("");
-  setIsTyping(true);
-
-  try {
-    // Get course_id from course_name
-    const { data: courseData, error: courseError } = await supabase
-      .from("course")
-      .select("course_id")
-      .eq("course_name", selectedCourse)
-      .single();
-
-    if (courseError || !courseData) {
-      throw new Error("Course not found");
-    }
-
-    const course_id = courseData.course_id;
-
-    // Get AI response
-    const data = await sendChatMessage(selectedCourse, username, input);
-    const aiResponse = data.response || "I couldn't generate a response. Please try again.";
-
-    const aiMessage = {
-      id: Date.now() + 1,
-      role: "assistant",
-      content: aiResponse,
+    const userMessage = {
+      id: Date.now(),
+      role: "user",
+      content: input,
+      course: selectedCourse,
     };
-    setMessages((prevMessages) => [...prevMessages, aiMessage]);
+    setMessages((prevMessages) => [...prevMessages, userMessage]);
+    setInput("");
+    setIsTyping(true);
 
-    if (messages.length >= 3 && !conversationEnded) {
-      setShowRating(true);
-    }
+    try {
+      // Get course_id from course_name
+      const { data: courseData, error: courseError } = await supabase
+        .from("course")
+        .select("course_id")
+        .eq("course_name", selectedCourse)
+        .single();
 
-    const chatEntry = {
-      prompt: input,
-      response: aiResponse,
-      timestamp,
-    };
+      if (courseError || !courseData) {
+        throw new Error("Course not found");
+      }
 
-    // Check if log exists
-    const { data: existingLog, error: fetchError } = await supabase
-      .from("course_chat_logs")
-      .select("id, chat_history")
-      .eq("user_id", userId)
-      .eq("course_id", course_id)
-      .single();
+      const course_id = courseData.course_id;
 
-    if (existingLog) {
-      // Update chat_history
-      const updatedHistory = [...existingLog.chat_history, chatEntry];
-      await supabase
+      // Get AI response
+      const data = await sendChatMessage(selectedCourse, username, input);
+      const aiResponse = data.response || "I couldn't generate a response. Please try again.";
+
+      const aiMessage = {
+        id: Date.now() + 1,
+        role: "assistant",
+        content: aiResponse,
+      };
+      setMessages((prevMessages) => [...prevMessages, aiMessage]);
+
+      if (messages.length >= 3 && !conversationEnded) {
+        setShowRating(true);
+      }
+
+      const chatEntry = {
+        prompt: input,
+        response: aiResponse,
+        timestamp,
+      };
+
+      // Check if log exists
+      const { data: existingLog, error: fetchError } = await supabase
         .from("course_chat_logs")
-        .update({
-          chat_history: updatedHistory,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", existingLog.id);
-    } else {
-      // Insert new chat log
-      await supabase.from("course_chat_logs").insert([
-        {
-          user_id: userId,
-          course_id: course_id,
-          chat_history: [chatEntry],
-        },
-      ]);
+        .select("id, chat_history")
+        .eq("user_id", userId)
+        .eq("course_id", course_id)
+        .single();
+
+      if (existingLog) {
+        // Update chat_history
+        const updatedHistory = [...existingLog.chat_history, chatEntry];
+        await supabase
+          .from("course_chat_logs")
+          .update({
+            chat_history: updatedHistory,
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", existingLog.id);
+      } else {
+        // Insert new chat log
+        await supabase.from("course_chat_logs").insert([
+          {
+            user_id: userId,
+            course_id: course_id,
+            chat_history: [chatEntry],
+          },
+        ]);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      const errorMessage = {
+        id: Date.now() + 1,
+        role: "assistant",
+        content: `Sorry, I encountered an error: ${error.message}`,
+      };
+      setMessages((prevMessages) => [...prevMessages, errorMessage]);
+    } finally {
+      setIsTyping(false);
     }
-  } catch (error) {
-    console.error("Error:", error);
-    const errorMessage = {
-      id: Date.now() + 1,
-      role: "assistant",
-      content: `Sorry, I encountered an error: ${error.message}`,
-    };
-    setMessages((prevMessages) => [...prevMessages, errorMessage]);
-  } finally {
-    setIsTyping(false);
-  }
-};
+  };
 
 
-  
+
   const handleEndConversation = () => {
     setConversationEnded(true);
     setShowRating(true);
@@ -643,21 +645,26 @@ const handleSubmit = async (e) => {
 
                   <div
                     className={cn(
-                      "max-w-[80%] rounded-[10px] p-3",
+                      "max-w-[80%] rounded-[10px] p-3 ",
                       message.role === "user"
-                        ? "bg-cyan-800/30 text-gray-200 border border-cyan-800/50"
+                        ? "dark:bg-cyan-800/30 text-gray-200 border border-cyan-800/50"
                         : message.role === "system"
-                          ? "bg-[#0a1628] text-gray-400 text-sm py-2 border border-cyan-900/30"
-                          : "bg-[#0a1628] text-gray-300 border border-cyan-900/30"
+                          ? "dark:bg-[#0a1628] text-gray-400 text-sm py-2 border border-cyan-900/30"
+                          : "dark:bg-[#0a1628] text-gray-300 border border-cyan-900/30"
                     )}
                   >
                     {message.role === "user" && message.course && (
                       <div className={`text-xs opacity-80 mb-1 ${darkMode ? "text-cyan-400" : "text-black"}`}>
                         Course:{" "}
-                        {courses.find((c) => c.name === message.course)?.name}
+                        {message.course}
                       </div>
                     )}
-                    <div className="whitespace-pre-line">{message.content}</div>
+                    <div className="whitespace-pre-line ">
+                      <SafeMarkdown
+                        content={message.content}
+                        className="text-gray-800 dark:text-gray-200 max-w-full"
+                      />
+                    </div>
                     {message.role === "assistant" &&
                       message.content.length >= 0 && (
                         <div className="mt-2 flex items-center justify-end">
